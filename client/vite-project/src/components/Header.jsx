@@ -8,13 +8,58 @@ function Header() {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [bookNowButtonActive, setBookNowButtonActive] = useState(false);
+  
+  const [signInData, setSignInData] = useState({ username: '', password: '' });
+  const [createAccountData, setCreateAccountData] = useState({ newUsername: '', email: '', newpassword: '' });
+
+  const [signInErrors, setSignInErrors] = useState({ username: false, password: false });
+  const [createAccountErrors, setCreateAccountErrors] = useState({ newUsername: false, email: false, newpassword: false });
+
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    if (id === 'username' || id === 'password') {
+      setSignInData({ ...signInData, [id]: value });
+    } else {
+      setCreateAccountData({ ...createAccountData, [id]: value });
+    }
+  };
+
+  const validateSignIn = () => {
+    const errors = { username: !signInData.username, password: !signInData.password };
+    setSignInErrors(errors);
+    return !errors.username && !errors.password;
+  };
+
+  const validateCreateAccount = () => {
+    const errors = {
+      newUsername: !createAccountData.newUsername,
+      email: !createAccountData.email,
+      newpassword: !createAccountData.newpassword || createAccountData.newpassword.length < 8
+    };
+    setCreateAccountErrors(errors);
+    return !errors.newUsername && !errors.email && !errors.newpassword;
+  };
 
   const handleSignIn = () => {
-    setIsSignedIn(true);
-    setShowSignInForm(false);
-    setShowCreateAccountForm(false);
-    setBookNowButtonActive(false);
-    setShowMenu(false);
+    if (validateSignIn()) {
+      console.log('Sign-In Data:', signInData);
+      setIsSignedIn(true);
+      setShowSignInForm(false);
+      setShowCreateAccountForm(false);
+      setBookNowButtonActive(false);
+      setShowMenu(false);
+    }
+  };
+
+  const handleCreateAccount = () => {
+    if (validateCreateAccount()) {
+      console.log('Create Account Data:', createAccountData);
+      setIsSignedIn(true);
+      setShowSignInForm(false);
+      setShowCreateAccountForm(false);
+      setBookNowButtonActive(false);
+      setShowMenu(false);
+    }
   };
 
   const handleSignOut = () => {
@@ -152,8 +197,11 @@ function Header() {
                   type="text"
                   id="username"
                   placeholder="Enter your username"
-                  className="w-full p-2 border border-gray-300 rounded-lg"
+                  value={signInData.username}
+                  onChange={handleInputChange}
+                  className={`w-full p-2 border rounded-lg ${signInErrors.username ? 'border-red-500' : 'border-gray-300'}`}
                 />
+                {signInErrors.username && <p className="text-red-500 text-sm">Username is required</p>}
               </div>
               <div className="mb-4">
                 <label htmlFor="password" className="block text-gray-700 mb-2">Password</label>
@@ -161,24 +209,20 @@ function Header() {
                   type="password"
                   id="password"
                   placeholder="Enter your password"
-                  className="w-full p-2 border border-gray-300 rounded-lg"
+                  value={signInData.password}
+                  onChange={handleInputChange}
+                  className={`w-full p-2 border rounded-lg ${signInErrors.password ? 'border-red-500' : 'border-gray-300'}`}
                 />
+                {signInErrors.password && <p className="text-red-500 text-sm">Password is required</p>}
               </div>
               <button
                 type="button"
                 onClick={handleSignIn}
-                className="w-full bg-purple-700 text-white py-2 rounded-lg hover:bg-purple-800"
+                className="w-full bg-purple-700 text-white p-2 rounded-lg font-semibold"
               >
                 Sign In
               </button>
             </form>
-            <button
-              type="button"
-              onClick={() => setShowSignInForm(false)}
-              className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
-            >
-              <FaTimes />
-            </button>
           </div>
         </div>
       )}
@@ -195,72 +239,58 @@ function Header() {
                   type="text"
                   id="newUsername"
                   placeholder="Enter your username"
-                  className="w-full p-2 border border-gray-300 rounded-lg"
+                  value={createAccountData.newUsername}
+                  onChange={handleInputChange}
+                  className={`w-full p-2 border rounded-lg ${createAccountErrors.newUsername ? 'border-red-500' : 'border-gray-300'}`}
                 />
+                {createAccountErrors.newUsername && <p className="text-red-500 text-sm">Username is required</p>}
               </div>
               <div className="mb-4">
                 <label htmlFor="email" className="block text-gray-700 mb-2">Email</label>
                 <input
                   type="email"
                   id="email"
-                  placeholder="Enter your password"
-                  className="w-full p-2 border border-gray-300 rounded-lg"
+                  placeholder="Enter your email"
+                  value={createAccountData.email}
+                  onChange={handleInputChange}
+                  className={`w-full p-2 border rounded-lg ${createAccountErrors.email ? 'border-red-500' : 'border-gray-300'}`}
                 />
+                {createAccountErrors.email && <p className="text-red-500 text-sm">Email is required</p>}
               </div>
               <div className="mb-4">
-                <label htmlFor="password" className="block text-gray-700 mb-2">Password</label>
+                <label htmlFor="newpassword" className="block text-gray-700 mb-2">Password</label>
                 <input
                   type="password"
-                  id="password"
-                  placeholder="Password"
-                  className="w-full p-2 border border-gray-300 rounded-lg"
+                  id="newpassword"
+                  placeholder="Enter your password"
+                  value={createAccountData.newpassword}
+                  onChange={handleInputChange}
+                  className={`w-full p-2 border rounded-lg ${createAccountErrors.newpassword ? 'border-red-500' : 'border-gray-300'}`}
                 />
+                {createAccountErrors.newpassword && <p className="text-red-500 text-sm">Password must be at least 8 characters</p>}
               </div>
               <button
                 type="button"
-                onClick={handleSignIn}
-                className="w-full bg-purple-700 text-white py-2 rounded-lg hover:bg-purple-800"
+                onClick={handleCreateAccount}
+                className="w-full bg-purple-700 text-white p-2 rounded-lg font-semibold"
               >
                 Create Account
               </button>
             </form>
-            <button
-              type="button"
-              onClick={() => setShowCreateAccountForm(false)}
-              className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
-            >
-              <FaTimes />
-            </button>
           </div>
         </div>
       )}
 
-      {/* Sign Out Confirmation */}
+      {/* Sign Out Confirmation Modal */}
       {showConfirmation && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 p-4">
-          <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm relative">
-            <h2 className="text-xl font-bold mb-4 text-gray-800">Are you sure you want to sign out?</h2>
-            <div className="flex justify-end">
-              <button
-                onClick={cancelSignOut}
-                className="px-4 py-2 bg-gray-300 rounded-lg text-gray-700 mr-4"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={confirmSignOut}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg"
-              >
-                Sign Out
-              </button>
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+            <h2 className="text-2xl font-bold mb-4 text-gray-800">Confirm Sign Out</h2>
+            <p className="mb-4">Are you sure you want to sign out?</p>
+            <div className="flex justify-end gap-4">
+              <button onClick={cancelSignOut} className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg font-semibold">Cancel</button>
+              <button onClick={confirmSignOut} className="px-4 py-2 bg-purple-700 text-white rounded-lg font-semibold">Sign Out</button>
             </div>
-            <button
-              type="button"
-              onClick={() => setShowConfirmation(false)}
-              className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
-            >
-              <FaTimes />
-            </button>
           </div>
         </div>
       )}
