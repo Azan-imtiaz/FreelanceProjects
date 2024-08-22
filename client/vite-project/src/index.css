@@ -18,3 +18,42 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0;
   padding: 0;
 }
+
+.hero-section {
+  background-image: url('./components//pexels-abdulgafur-ogel-619359636-27107818.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%; /* Make the section full width */
+  height: 100vh; /* Make the section full height */
+  position: relative; /* Ensure that the overlay and content are positioned correctly */
+}
+
+.overlay {
+  background-color: rgba(255, 255, 255, 0.7); /* Light overlay with reduced opacity */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1; /* Place the overlay above the background image */
+}
+
+.content-wrapper {
+  position: relative;
+  z-index: 2; /* Place the content above the overlay */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+
+
+
+
+
+
+
+

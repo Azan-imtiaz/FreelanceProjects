@@ -10,7 +10,7 @@ const BookingPage = () => {
   return (
     <div className="App">
             <Header />
-             <main className="custom-scrollbar container mx-auto  p-[0.5px] lg:p-4 pt-16 mt-8">
+             <main className="custom-scrollbar container mx-auto  p-[0.5px] px-0  pt-16 mt-8">
                <Booking/>
                <InfoBoxes />
                <VehicleShowcase />

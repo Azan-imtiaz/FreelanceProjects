@@ -1,3 +1,7 @@
+
+
+
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import suv from "../assets/suv.jpg";
@@ -30,6 +34,9 @@ const VehicleBookingSteps = () => {
   const vehicles = [
     { id: 1, name: 'Sedan', price: '£50', passengers: 4, image: `${suv}` },
     { id: 2, name: 'SUV', price: '£80', passengers: 6, image: `${suv}` },
+    { id: 3, name: 'SUV', price: '£80', passengers: 6, image: `${suv}` },
+    { id: 4, name: 'SUV', price: '£80', passengers: 6, image: `${suv}` },
+    { id: 5, name: 'SUV', price: '£80', passengers: 6, image: `${suv}` },
     // Add more vehicles as needed
   ];
 
@@ -61,7 +68,13 @@ const VehicleBookingSteps = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto lg:p-16 md:p-16 p-4 bg-gray-50 rounded-lg shadow-lg">
+  
+  
+  
+  <div className="max-w-5xl mx-auto lg:p-16 md:p-16 p-4 bg-gray-50 rounded-lg shadow-lg">
+    
+   
+    
       {/* Stepper */}
       <div className="flex justify-between mb-8">
         {steps.map((step) => (
