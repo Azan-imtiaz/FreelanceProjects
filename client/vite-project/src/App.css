@@ -1,10 +1,39 @@
-html, body, #root, .App {
-  height: 100%;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
+/* Remove or customize border */
+.custom-border {
+  border: none; /* Remove border */
+  /* If you want a customized border */
+  border: 2px solid #ddd; /* Example: light gray border */
+  border-radius: 8px; /* Optional: rounded corners */
+}
+/* Applies to all scrollable elements */
+::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+  height: 8px; /* Height of the scrollbar */
 }
 
-main {
-  flex: 1;
+/* Track of the scrollbar */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+
+/* Handle of the scrollbar */
+::-webkit-scrollbar-thumb {
+  /* background: #888;  */
+  background:rgb(96, 34, 96) ;
+  
+  border-radius: 4px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background:purple ;
+   
+}
+
+/* Ensures the scrollbar is always visible */
+.scroll-container {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  scrollbar-color: #888 #f1f1f1; /* Firefox support */
+  scrollbar-width: thin; /* Firefox support */
 }
