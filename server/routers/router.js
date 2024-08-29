@@ -4,12 +4,13 @@ const {  loginFunc,
     registerFunc,
     changePasswordFunc,
     deleteAccountFunc,
-    signOutFunc } = require("../controllers/cont");
+    signOutFunc,verifyOTPFunc } = require("../controllers/cont");
 
 router.post("/signin", loginFunc);
 router.post("/create-account", registerFunc);
-router.post("/change-password", changePasswordFunc);
+router.put("/change-password", changePasswordFunc);
 router.post("/signout", signOutFunc);
-router.post("/delete-account", deleteAccountFunc);
+router.delete("/delete-account", deleteAccountFunc);
+router.delete("/verifyOtp", verifyOTPFunc);
 
 module.exports = router; 

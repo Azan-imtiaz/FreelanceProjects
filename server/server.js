@@ -1,22 +1,25 @@
 require("dotenv").config();
 const express = require("express");
-const app = new express();
-const PORT = process.env.PORT ||3000;
+const app = express();
+const PORT = process.env.PORT || 3000;
 const router = require("./routers/router");
-// const cookieParser = require("cookie-parser"); // Correct import of cookie-parser
+const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
 // Middleware setup
-app.use(cors());
 
+// Configure CORS with specific origin and credentials
+app.use(cors({
+  origin: 'http://localhost:5173', // Replace this with your React app's actual URL
+  credentials: true, // Allow credentials (cookies) to be sent
+}));
 
-
-// app.use(cookieParser()); 
+app.use(cookieParser());
 require("./conn/conn");
 app.use(express.json());
 
 app.use("/api", router);
 
 app.listen(PORT, () => {
-    console.log(`App listening on port ${PORT}!`);
+  console.log(`App listening on port ${PORT}!`);
 });

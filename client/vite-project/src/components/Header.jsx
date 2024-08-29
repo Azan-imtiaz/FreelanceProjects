@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { FaUser, FaSignInAlt, FaSignOutAlt, FaBars, FaTimes, FaUserCircle, FaTrashAlt, FaKey } from 'react-icons/fa';
 import { IoClose } from "react-icons/io5";
 import logo from './logo.png'; // Make sure to update the path to your actual logo image
-import { createAccount,signIn} from "../Services/apis";
+import { createAccount,signIn,changePassword,signOut,deleteUserAccount } from "../Services/apis";
 
 
 
@@ -19,16 +19,18 @@ function Header() {
   const [showCreateAccountForm, setShowCreateAccountForm] = useState(false);
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [showChangePasswordForm, setShowChangePasswordForm] = useState(false);
   const [bookNowButtonActive, setBookNowButtonActive] = useState(false);
 
   const [signInData, setSignInData] = useState({ username: '', password: '' });
   const [createAccountData, setCreateAccountData] = useState({ newUsername: '', email: '', newpassword: '' });
-  const [changePasswordData, setChangePasswordData] = useState({ newPassword: '', confirmPassword: '' });
+  const [changePasswordData, setChangePasswordData] = useState({ newPassword: '', confirmPassword: '' ,oldPassword:''});
+  const [passwordDeleteAccount, setPasswordDeleteAccount] = useState({password:""});
 
   const [signInErrors, setSignInErrors] = useState({ username: false, password: false });
   const [createAccountErrors, setCreateAccountErrors] = useState({ newUsername: false, email: false, newpassword: false });
-  const [changePasswordErrors, setChangePasswordErrors] = useState({ newPassword: false, confirmPassword: false });
+  const [changePasswordErrors, setChangePasswordErrors] = useState({ newPassword: false, confirmPassword: false,oldPassword:false });
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -36,7 +38,7 @@ function Header() {
       setSignInData({ ...signInData, [id]: value });
     } else if (id === 'newUsername' || id === 'email' || id === 'newpassword') {
       setCreateAccountData({ ...createAccountData, [id]: value });
-    } else if (id === 'newPassword' || id === 'confirmPassword') {
+    } else if (id === 'newPassword' || id === 'confirmPassword' || id==='oldPassword') {
       setChangePasswordData({ ...changePasswordData, [id]: value });
     }
   };
@@ -47,6 +49,7 @@ function Header() {
     return !errors.username && !errors.password;
   };
 
+  
   const validateCreateAccount = () => {
     const errors = {
       newUsername: !createAccountData.newUsername,
@@ -60,10 +63,11 @@ function Header() {
   const validateChangePassword = () => {
     const errors = {
       newPassword: !changePasswordData.newPassword || changePasswordData.newPassword.length < 8,
-      confirmPassword: changePasswordData.confirmPassword !== changePasswordData.newPassword
+      confirmPassword: changePasswordData.confirmPassword !== changePasswordData.newPassword,
+      oldPassword: !changePasswordData.oldPassword || changePasswordData.newPassword.length <=0
     };
     setChangePasswordErrors(errors);
-    return !errors.newPassword && !errors.confirmPassword;
+    return !errors.newPassword && !errors.confirmPassword && !errors.oldPassword;
   };
 
   const handleSignIn =async() => {
@@ -72,20 +76,8 @@ function Header() {
         
         const res=await signIn(signInData.username,signInData.password);
   
-        console.log('Create Account Data:', res.jwt);
        
-      // Check if the response contains the JWT token
-   if (res.jwt) {
-    console.log("hello");
-    // Set the token as a cookie in the browser
-    document.cookie = `token=${res.jwt}; `; 
-
-    // Additional cookie attributes can be set such as:
-    // Secure; // Uncomment if you're serving your site over HTTPS
-    // HttpOnly; // Uncomment to prevent JavaScript from accessing the cookie
-  }
-  
-        // Display success SweetAlert2 notification
+      // Display success SweetAlert2 notification
         MySwal.fire({
           title: 'Success!',
           text: 'Login Succesfully!',
@@ -120,7 +112,7 @@ setSignInData({ username: '', password: '' })
           icon: 'error',
           confirmButtonText: 'OK'
         });
-
+        setSignInData({ username: '', password: '' })
       }
     }
   };
@@ -130,7 +122,6 @@ setSignInData({ username: '', password: '' })
       try {
         const res = await createAccount(createAccountData.newUsername,createAccountData.email, createAccountData.newpassword);
         
-        console.log('Create Account Data:', res);
   
         // Display success SweetAlert2 notification
         MySwal.fire({
@@ -165,16 +156,35 @@ setCreateAccountData({ newUsername: '', email: '', newpassword: '' })
           icon: 'error',
           confirmButtonText: 'OK'
         });
+      
+setCreateAccountData({ newUsername: '', email: '', newpassword: '' })
+       
       }
     }
   };
   
 
-  const handleSignOut = () => {
-    setShowConfirmation(true);
+  const handleSignOut = async () => {
+     setShowConfirmation(true);
+
+   
+
+
+
   };
 
-  const confirmSignOut = () => {
+  const confirmSignOut = async () => {
+    try{
+
+      const res= await signOut(passwordDeleteAccount.password);
+      
+        
+    MySwal.fire({
+      title: 'Success!',
+      text: 'Logout Succesfully!',
+      icon: 'success',
+      confirmButtonText: 'OK'
+    });
     
     setIsSignedIn(false);
     setShowSignInForm(false);
@@ -183,7 +193,47 @@ setCreateAccountData({ newUsername: '', email: '', newpassword: '' })
     setShowConfirmation(false);
     setShowChangePasswordForm(false);
 
+    setPasswordDeleteAccount({password:""});
 
+
+    }
+    catch(err){
+     
+     
+      if(err.message.includes("Enter the correct password")){
+        MySwal.fire({
+          title: 'Error!',
+          text: ' Enter the correct password!',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+        setShowConfirmation(true);
+
+
+        setPasswordDeleteAccount({password:""});
+
+        
+      }
+      else{
+
+        MySwal.fire({
+          title: 'Error!',
+          text: 'You nead to sign in  first!',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+
+        setIsSignedIn(false);
+        setShowSignInForm(false);
+        setShowCreateAccountForm(false);
+        setBookNowButtonActive(false);
+        setShowConfirmation(false);
+        setShowChangePasswordForm(false);
+        setShowDeleteConfirmation(false);
+      }
+     
+    }
+    
   };
 
   const cancelSignOut = () => {
@@ -191,15 +241,20 @@ setCreateAccountData({ newUsername: '', email: '', newpassword: '' })
   };
 
   const handleDeleteAccount = () => {
-    setShowConfirmation(true);
+    setShowDeleteConfirmation(true);
   };
+// Helper function to get a specific cookie by name
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+}
 
-  const handleChangePassword = () => {
-    if (validateChangePassword()) {
-      console.log('Change Password Data:', changePasswordData);
-      setShowChangePasswordForm(false);
-    }
-  };
+// Helper function to delete a specific cookie by name
+function deleteCookie(name) {
+  // Set the cookie's expiration date to a past date to delete it
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC;`;
+}
 
   const toggleSignInForm = () => {
     setShowSignInForm(!showSignInForm);
@@ -219,6 +274,7 @@ setCreateAccountData({ newUsername: '', email: '', newpassword: '' })
   };
 
   const handleCloseForm = () => {
+  
     setShowSignInForm(false);
     setShowCreateAccountForm(false);
     setShowChangePasswordForm(false);
@@ -227,6 +283,159 @@ setCreateAccountData({ newUsername: '', email: '', newpassword: '' })
   const handleBookNowClick = () => {
     setShowMenu(false);
   };
+ const cancelDelete=()=>{
+  setShowDeleteConfirmation(false);
+ }
+
+
+const handleConfirmPasswordChange =async(e)=>{
+  
+setPasswordDeleteAccount(()=>{
+  return {
+    ...passwordDeleteAccount,[e.target.name]:e.target.value
+  }
+})
+
+}
+
+
+const handleChangePassword = async () => {
+  
+  if (validateChangePassword()) {
+    try {
+      // const token = getCookie('token'); // Retrieve the token from the cookie
+      
+      // Call the changePassword function with the necessary parameters
+      const res = await changePassword(changePasswordData.newPassword, changePasswordData.confirmPassword,changePasswordData.oldPassword);
+
+
+
+      // Display success notification
+      MySwal.fire({
+        title: 'Success!',
+        text: 'Password Changed Successfully!',
+        icon: 'success',
+        confirmButtonText: 'OK'
+      });
+
+      // Update the state to hide the change password form and reset input fields
+      setShowChangePasswordForm(false);
+      setChangePasswordData({ newPassword: '', confirmPassword: '' ,oldPassword:''});
+
+    } catch (err) {
+      console.log(err.message); // Log the error message for debugging
+
+      setChangePasswordData({ newPassword: '', confirmPassword: '' ,oldPassword:''});
+      if(err.message.includes('Enter all fields')){
+        MySwal.fire({
+          title: 'Error!',
+          text: 'Enter all fields!',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+        setShowChangePasswordForm(true);
+ 
+      }
+      
+      // Display error notification based on the error message
+      
+    if( err.message.includes('Enter the correct old password.')){
+      MySwal.fire({
+        title: 'Error!',
+        text: 'Enter the correct old password!',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+      setShowChangePasswordForm(true);
+    }
+   else{
+
+   
+    MySwal.fire({
+        title: 'Error!',
+        text: err.message.includes('Both passwords should be same.')
+          ? 'Both passwords should be same.'
+          : 'You need to sign in first.',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+
+      // Check if the error is due to mismatched passwords
+      if (err.message.includes('Both passwords should be same.')  ) {
+        setShowChangePasswordForm(true); // Show the change password form again
+
+      } else {
+        setIsSignedIn(false); // Update the signed-in state
+        setShowChangePasswordForm(false); // Hide the change password form
+        deleteCookie('token'); // Delete the token cookie by its name
+         // Reset input fields
+      setChangePasswordData({ newPassword: '', confirmPassword: '' });
+      }
+
+    }  
+    }
+  }
+};
+
+
+
+
+const confirmDelete=async ()=>{
+  try{
+    const res= await deleteUserAccount(passwordDeleteAccount.password);
+      
+  MySwal.fire({
+    title: 'Success!',
+    text: 'Deleted  Succesfully!',
+    icon: 'success',
+    confirmButtonText: 'OK'
+  });
+  
+  setIsSignedIn(false);
+  setShowSignInForm(false);
+  setShowCreateAccountForm(false);
+  setBookNowButtonActive(false);
+  setShowConfirmation(false);
+  setShowChangePasswordForm(false);
+setShowDeleteConfirmation(false);
+
+setPasswordDeleteAccount({password:""});
+
+  }
+  catch(err){
+   
+    if(err.message.includes("Enter the correct password")){
+      MySwal.fire({
+        title: 'Error!',
+        text: 'Enter the correct password!',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+      setPasswordDeleteAccount({password:""});
+      
+    setShowDeleteConfirmation(true); 
+
+    }
+    else{
+      MySwal.fire({
+        title: 'Error!',
+        text: 'You nead to login first!',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+     
+    setIsSignedIn(false);
+    setShowSignInForm(false);
+    setShowCreateAccountForm(false);
+    setBookNowButtonActive(false);
+    setShowConfirmation(false);
+    setShowChangePasswordForm(false);
+  setShowDeleteConfirmation(false); 
+  setPasswordDeleteAccount({password:""});   
+    }
+    }
+  
+}
 
   return (
     <>
@@ -246,7 +455,7 @@ setCreateAccountData({ newUsername: '', email: '', newpassword: '' })
                   <span>Profile</span>
                 </button>
                 {showMenu && (
-                  <div className="absolute right-0 top-8 bg-white text-black p-4 rounded-lg shadow-lg">
+                  <div className="absolute right-0 top-8 bg-white text-black p-4  lg:w-64 rounded-lg shadow-lg">
                     <button onClick={handleDeleteAccount} className="block text-red-600 hover:bg-red-100 px-4 py-2 rounded-lg flex items-center">
                       <FaTrashAlt className="mr-2" /> Delete Account
                     </button>
@@ -303,8 +512,8 @@ setCreateAccountData({ newUsername: '', email: '', newpassword: '' })
                   <FaUserCircle className="mr-2" />
                   <span>Profile</span>
                 </div> */}
-                <button onClick={handleDeleteAccount} className="flex items-center text-white text-lg">
-                  <FaTrashAlt className="mr-2" /> Delete Account
+                <button onClick={handleDeleteAccount} className="flex items-center text-red-600 text-lg">
+                  <FaTrashAlt className="mr-2"  /> Delete Account
                 </button>
                 <button onClick={handleSignOut} className="flex items-center text-white text-lg">
                   <FaSignOutAlt className="mr-2" /> Sign Out
@@ -469,7 +678,7 @@ setCreateAccountData({ newUsername: '', email: '', newpassword: '' })
 
 {/* Change Password Form */}
 {showChangePasswordForm && (
-  <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+  <div className="fixed inset-0 flex items-center justify-center z-50 p-4 ">
     <div className="relative bg-white p-4 md:p-8 rounded-lg shadow-lg w-full max-w-md">
       {/* Close Icon */}
       <button
@@ -478,6 +687,9 @@ setCreateAccountData({ newUsername: '', email: '', newpassword: '' })
       >
         <IoClose size={24} />
       </button>
+
+    
+
       <h2 className="text-xl md:text-2xl mb-4">Change Password</h2>
       <form
         onSubmit={(e) => {
@@ -485,6 +697,23 @@ setCreateAccountData({ newUsername: '', email: '', newpassword: '' })
           handleChangePassword();
         }}
       >
+ <label htmlFor="oldPassword" className="block mb-2">
+          Old Password:
+        </label>
+        <input
+          type="password"
+          id="oldPassword"
+          value={changePasswordData.oldPassword}
+          onChange={handleInputChange}
+          className="w-full mb-4 p-2 border border-gray-300 rounded-lg"
+        />
+        {changePasswordErrors.oldPassword && (
+          <p className="text-red-500 text-sm mb-2">
+           Enter old password
+          </p>
+        )}
+
+
         <label htmlFor="newPassword" className="block mb-2">
           New Password:
         </label>
@@ -526,10 +755,11 @@ setCreateAccountData({ newUsername: '', email: '', newpassword: '' })
   </div>
 )}
 
-{/* Confirmation Popup */}
+
+{/*  Confirmation Popup  */}
 {showConfirmation && (
   <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
-    <div className="relative bg-white p-4 md:p-8 rounded-lg shadow-lg w-full max-w-md">
+    <div className="relative bg-white p-4 md:p-6 lg:p-8 rounded-lg shadow-lg w-full max-w-md">
       {/* Close Icon */}
       <button
         onClick={cancelSignOut}
@@ -537,22 +767,76 @@ setCreateAccountData({ newUsername: '', email: '', newpassword: '' })
       >
         <IoClose size={24} />
       </button>
-      <h2 className="text-xl md:text-2xl mb-4">Are you sure?</h2>
-      <p className="mb-4">
-        This action will delete your account and sign you out.
-      </p>
-      <div className="flex flex-col md:flex-row items-center justify-between">
-        <button
-          onClick={confirmSignOut}
-          className="w-full md:w-auto mb-2 md:mb-0 px-4 py-2 bg-red-600 text-white rounded-lg"
-        >
-          Confirm
-        </button>
-     
+      <h2 className="text-lg md:text-xl lg:text-2xl mb-4">Are you sure?</h2>
+      <p className="mb-4">This action will  sign you out. </p>
+      <div className="flex flex-col gap-4 md:flex-row md:items-center">
+        <div className="w-full md:flex-1 ">
+          <label htmlFor="username" className="block mb-2">
+            Enter Password:
+          </label>
+          <input
+            type="password"
+            name="password"
+            value={ passwordDeleteAccount.password }
+            onChange={handleConfirmPasswordChange}
+            className="w-full p-2 border border-gray-300 rounded-lg"
+          />
+        </div>
+        <div className="w-full md:w-auto mt-4  md:ml-4 lg:mt-8 md:mt-8 flex-shrink-0">
+          <button
+            onClick={confirmSignOut}
+            className="w-full md:w-auto px-4 py-2 bg-red-600 text-white rounded-lg"
+          >
+            Confirm
+          </button>
+        </div>
       </div>
     </div>
   </div>
 )}
+
+
+
+
+{/* delete confirmation popup*/}
+{showDeleteConfirmation && (
+  <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+    <div className="relative bg-white p-4 md:p-6 lg:p-8 rounded-lg shadow-lg w-full max-w-md">
+      {/* Close Icon */}
+      <button
+        onClick={cancelDelete}
+        className="absolute top-2 right-2 text-gray-600 hover:text-black"
+      >
+        <IoClose size={24} />
+      </button>
+      <h2 className="text-lg md:text-xl lg:text-2xl mb-4">Are you sure?</h2>
+      <p className="mb-4">This action will delete your account.</p>
+      <div className="flex flex-col gap-4 md:flex-row md:items-center">
+        <div className="w-full md:flex-1 ">
+          <label htmlFor="username" className="block mb-2">
+            Enter Password:
+          </label>
+          <input
+            type="password"
+            name="password"
+            value={ passwordDeleteAccount.password }
+            onChange={handleConfirmPasswordChange}
+            className="w-full p-2 border border-gray-300 rounded-lg"
+          />
+        </div>
+        <div className="w-full md:w-auto mt-4  md:ml-4 lg:mt-8 md:mt-8 flex-shrink-0">
+          <button
+            onClick={confirmDelete}
+            className="w-full md:w-auto px-4 py-2 bg-red-600 text-white rounded-lg"
+          >
+            Confirm
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
     </>
   );
 }
