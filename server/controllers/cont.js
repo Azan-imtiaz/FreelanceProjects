@@ -98,39 +98,7 @@ async function verifyOTPFunc(req, res) {
 }
 
 
-// // Register a new user
-// async function registerFunc(req, res) {
-//     try {
-//         const { newUsername, email, newpassword } = req.body;
 
-//         // Check if email is already registered
-//         const existingUser = await userModel.findOne({ email });
-
-//         if (existingUser) {
-//             return res.status(400).send({ st: 400, message: "Email already exists" });
-//         }
-
-//         // Hash the password
-//         const hashedPassword = await bcrypt.hash(newpassword, 10);
-
-//         // Create a new user with the hashed password
-//         const user = await userModel.create({
-//             newUsername,
-//             email,
-//             newpassword: hashedPassword
-//         });
-
-//         if (user) {
-//             return res.status(201).send({ st: 201, message: "User created successfully" });
-//         }
-
-//         // If the user is not created for some reason
-//         res.status(400).send({ st: 400, message: "User not created" });
-//     } catch (err) {
-//         console.error(err.message);
-//         res.status(500).send({ st: 500, message: "Internal server error" });
-//     }
-// }
 
 // Login a user
 async function loginFunc(req, res) {
@@ -347,10 +315,70 @@ async function signOutFunc(req, res) {
     }
 }
 
+
+
+// Forgot Password Endpoint
+  async function forgetPaswordFunc (req, res){
+    try {
+        const { email, newPassword } = req.body;
+
+        // Check if email is registered
+        const user = await userModel.findOne({ email });
+        if (!user) {
+            return res.status(400).send({ st: 400, message: "Email not registered" });
+        }
+
+        // Generate OTP
+        const otp = generateOTP();
+
+        // Store OTP temporarily
+        await otpModel.create({ email, otp, newpassword:newPassword,  newUsername:user.newUsername });
+
+        // Send OTP email
+        await sendOTPEmail(email, otp);
+
+        return res.status(200).send({ st: 200, message: "OTP sent to email" });
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send({ st: 500, message: "Internal server error" });
+     }
+};
+
+
+ async function resetPasword(req, res)  {
+    try {
+        const { email, otp } = req.body;
+
+        // Find the OTP entry
+        const otpEntry = await otpModel.findOne({ email, otp });
+        if (!otpEntry) {
+            return res.status(400).send({ st: 400, message: "Invalid OTP" });
+        }
+
+        // Hash the new password
+        const hashedPassword = await bcrypt.hash(otpEntry.newpassword,10);
+
+        // Update the user's password
+        await userModel.updateOne({ email }, { newpassword: hashedPassword });
+
+        // Delete OTP entry after successful password reset
+        await otpModel.deleteMany({ email });
+
+        return res.status(200).send({ st: 200, message: "Password reset successfully" });
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send({ st: 500, message: "Internal server error" });
+    }
+};
+
+
 module.exports = {
     loginFunc,
     registerFunc,
     changePasswordFunc,
     deleteAccountFunc,
     signOutFunc,verifyOTPFunc
+    , forgetPaswordFunc,resetPasword
 };

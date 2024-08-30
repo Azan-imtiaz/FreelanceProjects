@@ -116,3 +116,83 @@ export const deleteUserAccount
       throw error;
     }
   };
+
+
+
+
+
+
+
+  
+export const verifyOTPFunc
+= async (email,otp) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/verifyOtp`, {
+      method: 'POST',credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({email,otp}), // Send the password in the request body
+    });
+    if (!response.ok) {
+      const errorData = await response.json(); // Parse the error response JSON
+
+
+      throw new Error(errorData.message); // Use the server-provided message or a default message
+    }
+    return await response.json();
+  } catch (error) {
+   
+    throw error;
+  }
+};
+
+
+
+export const  forgetPaswordFunc = async (email,newPassword) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/forgetPassword`, {
+      method: 'POST',credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email,newPassword}),
+    });
+    if (!response.ok) {
+      const errorData = await response.json(); // Parse the error response JSON
+
+
+      throw new Error(errorData.message); // Use the server-provided message or a default message
+    }
+    return await response.json();
+
+  } catch (error) {
+    
+    throw error;
+  }
+};
+
+
+
+export const resetPasword = async (email,otp) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/resetPasword`, {
+      method: 'POST',credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email,otp}),
+    });
+    if (!response.ok) {
+      const errorData = await response.json(); // Parse the error response JSON
+
+
+      throw new Error(errorData.message); // Use the server-provided message or a default message
+    }
+    return await response.json();
+
+  } catch (error) {
+    
+    throw error;
+  }
+};
