@@ -18,7 +18,7 @@ const Booking = () => {
   };
 
   return (
-    <div className="container mx-auto px-6 lg:px-8 py-8">
+    <div className="container max-w-7xl px-6 lg:px-8 py-8 ">
       <div className="steps mb-8">
         <div className="step">1. Select Vehicle</div>
         <div className="step active">2. Booking</div>
