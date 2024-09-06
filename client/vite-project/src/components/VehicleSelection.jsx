@@ -1,32 +1,81 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import suv from "../assets/suv.jpg";
-import { FaCheckCircle, FaCar, FaClipboardList, FaCreditCard, FaArrowLeft, FaArrowRight, FaUser,
+import {
+  FaCheckCircle, FaCar, FaClipboardList, FaCreditCard, FaArrowLeft, FaArrowRight, FaUser, FaSuitcase, FaBriefcase
 } from 'react-icons/fa';
+import { AuthContext } from './contextProvider';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+
+
+
 
 
 const VehicleBookingSteps = () => {
+  const { isSignedInFinal, signInFinal, signOutFinal } = useContext(AuthContext);
 
+  const MySwal = withReactContent(Swal);
 
   const [activeStep, setActiveStep] = useState(1);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [count, setCount] = useState(0);
+
+  // const [formData, setFormData] = useState({
+  //   persons: 1,
+  //   handLuggage: 0,
+  //   checkedLuggage: 0,
+  //   childSeat: false,
+  //   meetAndGreet: false,
+  //   paymentMethod: 'credit',
+  //   cardNumber: '',
+  //   cardExpiry: '',
+  //   cardCVC: '',
+  // });
+
 
   const [formData, setFormData] = useState({
-    persons: 1,
-    handLuggage: 0,
-    checkedLuggage: 0,
-    childSeat: false,
-    meetAndGreet: false,
-    paymentMethod: 'credit',
-    cardNumber: '',
-    cardExpiry: '',
-    cardCVC: '',
+    persons: '',
+    handLuggage: '',
+    checkedLuggage: '',
+    flightNumber: '',
+    landingTime: '',
+    driverNote: '',
+    addOns: [], // Initialize as an empty array
   });
+  const [errors, setErrors] = useState({
+    persons: '',
+    handLuggage: '',
+    checkedLuggage: '',
+    flightNumber: '',
+    landingTime: '',
+  });
+
+
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prevState => ({ ...prevState, [name]: value }));
+  };
+
+  const handleAddOnChange = (addOn) => {
+    setFormData(prevState => {
+      const addOns = new Set(prevState.addOns);
+      if (addOns.has(addOn)) {
+        addOns.delete(addOn);
+      } else {
+        addOns.add(addOn);
+      }
+      return { ...prevState, addOns: Array.from(addOns) };
+    });
+  };
+
 
   const navigate = useNavigate(); // Hook to handle navigation
   const location = useLocation();
   const data = location.state?.formData;
-console.log(data.to)
-  
+  console.log(data.to)
+
   const steps = [
     { id: 1, name: 'Select Vehicle', icon: <FaCar /> },
     { id: 2, name: 'Booking', icon: <FaClipboardList /> },
@@ -34,33 +83,115 @@ console.log(data.to)
   ];
 
   const vehicles = [
-    { id: 1, name: 'Sedan', price: '£50', passengers: 4, image: `${suv}` },
-    { id: 2, name: 'SUV', price: '£80', passengers: 6, image: `${suv}` },
-    { id: 3, name: 'SUV', price: '£80', passengers: 6, image: `${suv}` },
-    { id: 4, name: 'SUV', price: '£80', passengers: 6, image: `${suv}` },
-    { id: 5, name: 'SUV', price: '£80', passengers: 6, image: `${suv}` },
-    // Add more vehicles as needed
+    { id: 1, name: 'Sedan', price: '$50', passengers: 'x4', image: `${suv}`, luggage: 'x2', handLuggage: 'x3' },
+    { id: 2, name: 'SUV', price: '$80', passengers: 'x4', image: `${suv}`, luggage: 'x2', handLuggage: 'x3' },
+    { id: 3, name: 'SUV', price: '$80', passengers: 'x4', image: `${suv}`, luggage: 'x2', handLuggage: 'x3' },
+    { id: 4, name: 'SUV', price: '$80', passengers: 'x4', image: `${suv}`, luggage: 'x2', handLuggage: 'x3' },
+    { id: 5, name: 'SUV', price: '$80', passengers: 'x4', image: `${suv}`, luggage: 'x2', handLuggage: 'x3' },
   ];
 
   const selectVehicle = (vehicleId) => {
+    let totalPrice = 0;
+    let currencySymbol = '';
+
+    // Find the vehicle based on its ID
+    const selectedVehicle = vehicles.find(vehicle => vehicle.id === vehicleId);
+
+    if (selectedVehicle) {
+      // Extract the currency symbol and numeric part
+      currencySymbol = selectedVehicle.price.charAt(0); // Get the currency symbol (e.g., £)
+      const vehiclePrice = parseFloat(selectedVehicle.price.slice(1)); // Remove the currency symbol and convert to number
+
+      setCount(vehiclePrice);
+      console.log("vehiclePrice" + vehiclePrice)
+      console.log(count);
+      // Set the base price to the vehicle's price
+      totalPrice += vehiclePrice;
+
+
+      // Add additional costs based on formData
+      if (formData.addOns.includes("childSeat")) totalPrice += 5;   // Add £5 for child seat
+      if (formData.addOns.includes("meetAndGreet")) totalPrice += 10; // Add £10 for meet and greet
+      console.log("formData.addOns.meetAndGreet" + formData.addOns.meetAndGreet)
+    }
+
+    // Set the total price in the state 
+    setTotalPrice(`${totalPrice}`);
+    console.log("totalPrice while next=" + totalPrice);
+
+    // Move to the next step
     setActiveStep(2);
   };
 
   const goBack = () => {
+    //  setFormData({
+    //   persons: '',
+    //   handLuggage: '',
+    //   checkedLuggage: '',
+    //   flightNumber: '',
+    //   landingTime: '',
+    //   driverNote: '',
+    //   addOns: [], // Initialize as an empty array
+    // });
+    //  setTotalPrice(0)
     setActiveStep((prevStep) => (prevStep > 1 ? prevStep - 1 : prevStep));
   };
 
   const goNext = () => {
-    setActiveStep((prevStep) => (prevStep < 3 ? prevStep + 1 : prevStep));
+    // Validate form data and set errors
+    const newErrors = {
+      persons: formData.persons ? '' : 'Total persons is required.',
+      handLuggage: formData.handLuggage !== '' ? '' : 'Hand luggage quantity is required.',
+      checkedLuggage: formData.checkedLuggage !== '' ? '' : 'Checked luggage quantity is required.',
+      flightNumber: formData.flightNumber ? '' : 'Flight number is required.',
+
+      landingTime: formData.landingTime ? '' : 'Landing time is required.',
+    };
+
+    setErrors(newErrors);
+
+    // Check if there are any validation errors
+    const hasErrors = Object.values(newErrors).some(error => error !== '');
+
+    if (hasErrors) {
+      return;
+    }
+
+    // Compute the total price based on selected add-ons
+    console.log("count=" + count)
+    let calculatedPrice = count;
+
+    if (formData.addOns.includes('childSeat')) {
+      calculatedPrice += 5;
+    }
+    if (formData.addOns.includes('meetAndGreet')) {
+      calculatedPrice += 10;
+    }
+
+    // Set the updated total price
+    setTotalPrice(calculatedPrice);
+
+    if (isSignedInFinal) {
+      // Debug output // Set the updated total price
+      setTotalPrice(calculatedPrice);
+
+      // Proceed to the next step if there are no errors
+      // setActiveStep((prevStep) => (prevStep < 3 ? prevStep + 1 : prevStep));
+    }
+    else {
+      MySwal.fire({
+        title: 'Error!',
+        text: 'Please Login to proceed!',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+    }
+
+
+
+
   };
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: type === 'checkbox' ? checked : value,
-    }));
-  };
 
   const calculatePrice = () => {
     let totalPrice = 0;
@@ -69,16 +200,18 @@ console.log(data.to)
     return totalPrice;
   };
 
+
+
   return (
-  
-  
-  
-  <div className="max-w-7xl mx-auto lg:p-16 md:p-16 p-4 bg-gray-50 rounded-lg shadow-lg">
-    
-   
-    
+
+
+
+    <div className="max-w-7xl mx-auto lg:p-16 md:p-16  p-4  bg-gray-50 rounded-lg shadow-lg">
+
+
+
       {/* Stepper */}
-      <div className="flex justify-between mb-8">
+      <div className="flex justify-between mb-8 lg:mt-6">
         {steps.map((step) => (
           <div key={step.id} className="flex-1 text-center">
             <div
@@ -97,10 +230,10 @@ console.log(data.to)
       {/* Vehicle Selection */}
       {activeStep === 1 && (
         <div>
-          <h2 className="text-2xl font-bold mb-4 text-purple-700">Select Your Vehicle</h2>
+          <h2 className="text-2xl font-bold mb-4  text-purple-700">Select Your Vehicle</h2>
 
-          <div className="bg-white rounded-lg shadow-md p-4">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="bg-white rounded-lg shadow-md md:p-4 lg:p-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2  gap-4">
               {vehicles.map((vehicle) => (
                 <div
                   key={vehicle.id}
@@ -111,9 +244,19 @@ console.log(data.to)
                   <div className="flex-grow">
                     <h3 className="text-lg font-semibold text-purple-800">{vehicle.name}</h3>
                     <p className="text-sm text-yellow-600">Price: <span className="text-yellow-600">{vehicle.price}</span></p>
-                    <div className="flex items-center mt-2">
-                      <FaUser className="mr-2" />
-                      <span>Passengers: <span className="text-purple-800">{vehicle.passengers}</span></span>
+                    <div className="flex items-center mt-2 justify-between">
+                      <div className="flex items-center">
+                        <FaUser className="text-purple-800 mr-1 text-2xl" />
+                        <span className="text-purple-800 text-lg">{vehicle.passengers}</span>
+                      </div>
+                      <div className="flex items-center">
+                        <FaSuitcase className="text-purple-800 mx-2 text-2xl" />
+                        <span className="text-purple-800 text-lg">{vehicle.luggage}</span>
+                      </div>
+                      <div className="flex items-center">
+                        <FaBriefcase className="text-purple-800 ml-1 mr-2 text-2xl" />
+                        <span className="text-purple-800 text-lg">{vehicle.handLuggage}</span>
+                      </div>
                     </div>
                   </div>
                   <div className="absolute top-2 right-2 bg-purple-600 text-white text-xs px-2 py-1 rounded-full">
@@ -126,7 +269,19 @@ console.log(data.to)
 
           {/* Navigation Back Button */}
           <button
-            onClick={() => navigate('/')}
+            onClick={function () {
+              setFormData({
+                persons: '',
+                handLuggage: '',
+                checkedLuggage: '',
+                flightNumber: '',
+                landingTime: '',
+                driverNote: '',
+                addOns: [], // Initialize as an empty array
+              });
+              setTotalPrice("0£");
+              navigate('/')
+            }}
             className="mb-4 flex items-center bg-purple-100 text-purple-700 mt-4 px-4 py-2 rounded-lg hover:bg-purple-200 focus:outline-none"
           >
             <FaArrowLeft className="mr-2" />
@@ -134,351 +289,427 @@ console.log(data.to)
           </button>
         </div>
       )}
-
       {/* Booking Form */}
       {activeStep === 2 && (
-  <div className="bg-gray-50 rounded-lg shadow-lg p-6 lg:p-8 mt-8 mx-auto w-full lg:max-w-4xl md:max-w-2xl sm:max-w-md transition-transform transform hover:scale-100">
-    <h2 className="text-3xl font-extrabold mb-6 text-purple-800">Booking Details</h2>
-    <form className="space-y-6">
-      {/* Total Persons */}
-      <div className="flex flex-col mb-4">
-        <label className="text-sm font-semibold text-gray-700 mb-2">Total Persons</label>
-        <input
-          type="number"
-          name="persons"
-          min="1"
-          value={formData.persons}
-          onChange={handleChange}
-          placeholder="Enter number of persons"
-          className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-500"
-        />
-      </div>
+        <div className="bg-gray-50 rounded-lg shadow-lg p-6 lg:p-8 mt-8 mx-auto w-full lg:max-w-4xl md:max-w-2xl sm:max-w-md transition-transform transform hover:scale-100">
+          {/* Stylish Instruction */}
+          <div className="text-center mb-6 p-4 bg-purple-100 rounded-md border border-purple-300 text-purple-800">
+            <h2 className="text-xl font-bold">Please Log In to Proceed</h2>
+            <p className="text-sm">To continue with your booking, you need to be logged in.</p>
+          </div>
 
-      {/* Luggage Information */}
-      <div className="flex flex-col mb-4">
-        <div className="flex justify-between mb-4">
-          <label className="text-sm font-semibold text-gray-700">Hand Luggage</label>
-          <input
-            type="number"
-            name="handLuggage"
-            min="0"
-            value={formData.handLuggage}
-            onChange={handleChange}
-            placeholder="0"
-            className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-500 w-1/2"
-          />
+          <h2 className="text-3xl font-extrabold mb-6 text-purple-800">Booking Details</h2>
+          <form className="space-y-6">
+            {/* Total Persons */}
+            <div className="flex flex-col mb-4">
+              <label className="text-sm font-semibold text-gray-700 mb-2">Total Persons</label>
+              <select
+                name="persons"
+                value={formData.persons}
+                onChange={handleChange}
+                className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
+              >
+                <option value="">Select number of persons</option>
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(number => (
+                  <option key={number} value={number}>{number}</option>
+                ))}
+              </select>
+              {errors.persons && <p className="text-red-500 text-sm mt-1">{errors.persons}</p>}
+            </div>
+
+            {/* Luggage Information */}
+            <div className="flex flex-col md:flex-row gap-4 mb-4">
+              <div className="flex flex-col w-full md:w-1/2">
+                <label className="text-sm font-semibold text-gray-700 mb-2">Hand Luggage</label>
+                <select
+                  name="handLuggage"
+                  value={formData.handLuggage}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
+                >
+                  <option value="">Select hand luggage quantity</option>
+                  {[0, 1, 2, 3, 4, 5].map(number => (
+                    <option key={number} value={number}>{number}</option>
+                  ))}
+                </select>
+                {errors.handLuggage && <p className="text-red-500 text-sm mt-1">{errors.handLuggage}</p>}
+              </div>
+              <div className="flex flex-col w-full md:w-1/2">
+                <label className="text-sm font-semibold text-gray-700 mb-2">Checked Luggage</label>
+                <select
+                  name="checkedLuggage"
+                  value={formData.checkedLuggage}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
+                >
+                  <option value="">Select checked luggage quantity</option>
+                  {[0, 1, 2, 3, 4, 5].map(number => (
+                    <option key={number} value={number}>{number}</option>
+                  ))}
+                </select>
+                {errors.checkedLuggage && <p className="text-red-500 text-sm mt-1">{errors.checkedLuggage}</p>}
+              </div>
+            </div>
+
+            {/* Add-ons */}
+            <div className="flex flex-col mb-6">
+              <label className="text-sm font-semibold text-gray-700 mb-2">Add-Ons</label>
+              <div className="flex flex-wrap gap-4">
+                <button
+                  type="button"
+                  onClick={() => handleAddOnChange('childSeat')}
+                  className={`py-3 px-4 rounded-md border ${formData.addOns.includes('childSeat') ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-700'} focus:outline-none flex-1 sm:flex-none`}
+                >
+                  Child Seat (+£5)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleAddOnChange('meetAndGreet')}
+                  className={`py-3 px-4 rounded-md border ${formData.addOns.includes('meetAndGreet') ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-700'} focus:outline-none flex-1 sm:flex-none`}
+                >
+                  Meet & Greet (+£10)
+                </button>
+              </div>
+            </div>
+
+            {/* New Fields */}
+            <div className="flex flex-col mb-6">
+              <label className="text-sm font-semibold text-gray-700 mb-2">Flight Number</label>
+              <input
+                type="text"
+                name="flightNumber"
+                value={formData.flightNumber}
+                onChange={handleChange}
+                placeholder="Enter your flight number"
+                className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-500"
+              />
+              {errors.flightNumber && <p className="text-red-500 text-sm mt-1">{errors.flightNumber}</p>}
+            </div>
+            <div className="flex flex-col mb-6">
+              <label className="text-sm font-semibold text-gray-700 mb-2">Email Address</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Enter your email address"
+                className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-500"
+              />
+              {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+            </div>
+            <div className="flex flex-col mb-6">
+              <label className="text-sm font-semibold text-gray-700 mb-2">Landing Time</label>
+              <input
+                type="datetime-local"
+                name="landingTime"
+                value={formData.landingTime}
+                onChange={handleChange}
+                className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+              {errors.landingTime && <p className="text-red-500 text-sm mt-1">{errors.landingTime}</p>}
+            </div>
+            <div className="flex flex-col mb-6">
+              <label className="text-sm font-semibold text-gray-700 mb-2">Comment or Note for Drivers</label>
+              <textarea
+                name="driverNote"
+                value={formData.driverNote}
+                onChange={handleChange}
+                placeholder="Enter any comments or notes for the drivers"
+                className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 h-32"
+              />
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row justify-between mt-6 gap-4">
+              {activeStep > 1 && (
+                <button
+                  type="button"
+                  onClick={goBack}
+                  className="bg-purple-100 text-purple-700 px-6 py-3 rounded-lg flex items-center"
+                >
+                  <FaArrowLeft className="mr-2" />
+                  Back
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={goNext}
+                className="bg-purple-600 text-white px-6 py-3 rounded-lg flex items-center"
+              >
+                {activeStep < 3 ? (
+                  <>
+                    Next
+                    <FaArrowRight className="ml-2" />
+                  </>
+                ) : (
+                  'Confirm Booking'
+                )}
+              </button>
+            </div>
+          </form>
         </div>
-        <div className="flex justify-between">
-          <label className="text-sm font-semibold text-gray-700">Checked Luggage</label>
-          <input
-            type="number"
-            name="checkedLuggage"
-            min="0"
-            value={formData.checkedLuggage}
-            onChange={handleChange}
-            placeholder="0"
-            className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-500 w-1/2"
-          />
-        </div>
-      </div>
-
-      {/* Add-ons */}
-      <div className="flex flex-col mb-6">
-        <label className="text-sm font-semibold text-gray-700 mb-2">Add-Ons</label>
-        <div className="flex gap-4">
-          <button
-            type="button"
-            onClick={() => handleAddOnChange('childSeat')}
-            className={`py-3 px-4 rounded-md border ${formData.childSeat ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-700'} focus:outline-none`}
-          >
-            Child Seat (+£5)
-          </button>
-          <button
-            type="button"
-            onClick={() => handleAddOnChange('meetAndGreet')}
-            className={`py-3 px-4 rounded-md border ${formData.meetAndGreet ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-700'} focus:outline-none`}
-          >
-            Meet & Greet (+£10)
-          </button>
-        </div>
-      </div>
-
-      {/* Flight Details */}
-      <div className="flex flex-col mb-6">
-        <label className="text-sm font-semibold text-gray-700 mb-2">Flight Number</label>
-        <input
-          type="text"
-          name="flightNumber"
-          value={formData.flightNumber}
-          onChange={handleChange}
-          placeholder="Enter your flight number"
-          className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-500"
-        />
-      </div>
-      <div className="flex flex-col mb-6">
-        <label className="text-sm font-semibold text-gray-700 mb-2">Arrival From</label>
-        <input
-          type="text"
-          name="arrivalFrom"
-          value={formData.arrivalFrom}
-          onChange={handleChange}
-          placeholder="Enter arrival city"
-          className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-500"
-        />
-      </div>
-
-      {/* Action Buttons */}
-      <div className="flex justify-between mt-6">
-        {activeStep > 1 && (
-          <button
-            type="button"
-            onClick={goBack}
-            className="bg-purple-100 text-purple-700 px-6 py-3 rounded-lg flex items-center"
-          >
-            <FaArrowLeft className="mr-2" />
-            Back
-          </button>
-        )}
-        <button
-          type="button"
-          onClick={goNext}
-          className="bg-purple-600 text-white px-6 py-3 rounded-lg flex items-center"
-        >
-          {activeStep < 3 ? (
-            <>
-              Next
-              <FaArrowRight className="ml-2" />
-            </>
-          ) : (
-            'Confirm Booking'
-          )}
-        </button>
-      </div>
-    </form>
-  </div>
-)}
+      )}
 
 
       {/* Payment Form */}
 
-{activeStep === 3 && (
-  <div>
-    <h2 className="text-2xl font-bold mb-4 text-purple-700">Payment Details</h2>
-    <form className="space-y-4">
-      {/* Payment Method Selection */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Payment Method</label>
-        <select
-          name="paymentMethod"
-          value={formData.paymentMethod}
-          onChange={handleChange}
-          className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-        >
-          <option value="credit">Credit Card</option>
-          <option value="paypal">PayPal</option>
-          {/* Add more payment options if needed */}
-        </select>
-      </div>
-
-      {/* Credit Card Details */}
-      {formData.paymentMethod === 'credit' && (
-        <>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Card Number</label>
-            <input
-              type="text"
-              name="cardNumber"
-              value={formData.cardNumber}
-              onChange={handleChange}
-              className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-              placeholder="1234 5678 9012 3456"
-              required
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Expiry Date</label>
-              <input
-                type="text"
-                name="cardExpiry"
-                value={formData.cardExpiry}
-                onChange={handleChange}
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-                placeholder="MM/YY"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">CVC</label>
-              <input
-                type="text"
-                name="cardCVC"
-                value={formData.cardCVC}
-                onChange={handleChange}
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-                placeholder="123"
-                required
-              />
-            </div>
-          </div>
-        </>
-      )}
-
-      {/* Billing Address */}
-      {formData.paymentMethod === 'credit' && (
-        <>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Billing Address</label>
-            <input
-              type="text"
-              name="billingAddress"
-              value={formData.billingAddress}
-              onChange={handleChange}
-              className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-              placeholder="123 Main St, City, Country"
-              required
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">City</label>
-              <input
-                type="text"
-                name="billingCity"
-                value={formData.billingCity}
-                onChange={handleChange}
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-                placeholder="City"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Postal Code</label>
-              <input
-                type="text"
-                name="billingPostalCode"
-                value={formData.billingPostalCode}
-                onChange={handleChange}
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-                placeholder="Postal Code"
-                required
-              />
-            </div>
-          </div>
-        </>
-      )}
-
-      {/* PayPal Details */}
-      {formData.paymentMethod === 'paypal' && (
+      {activeStep === 3 && (
         <div>
-          <p className="text-sm font-medium text-gray-700">You will be redirected to PayPal for payment.</p>
+          <h2 className="text-2xl font-bold mb-4 text-purple-700">Payment Details</h2>
+          <form className="space-y-4">
+            {/* Payment Method Selection */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Payment Method</label>
+              <select
+                name="paymentMethod"
+                value={formData.paymentMethod}
+                onChange={handleChange}
+                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+              >
+                <option value="credit">Credit Card</option>
+                <option value="paypal">PayPal</option>
+                {/* Add more payment options if needed */}
+              </select>
+            </div>
+
+            {/* Credit Card Details */}
+            {formData.paymentMethod === 'credit' && (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Card Number</label>
+                  <input
+                    type="text"
+                    name="cardNumber"
+                    value={formData.cardNumber}
+                    onChange={handleChange}
+                    className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                    placeholder="1234 5678 9012 3456"
+                    required
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Expiry Date</label>
+                    <input
+                      type="text"
+                      name="cardExpiry"
+                      value={formData.cardExpiry}
+                      onChange={handleChange}
+                      className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                      placeholder="MM/YY"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">CVC</label>
+                    <input
+                      type="text"
+                      name="cardCVC"
+                      value={formData.cardCVC}
+                      onChange={handleChange}
+                      className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                      placeholder="123"
+                      required
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* Billing Address */}
+            {formData.paymentMethod === 'credit' && (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Billing Address</label>
+                  <input
+                    type="text"
+                    name="billingAddress"
+                    value={formData.billingAddress}
+                    onChange={handleChange}
+                    className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                    placeholder="123 Main St, City, Country"
+                    required
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">City</label>
+                    <input
+                      type="text"
+                      name="billingCity"
+                      value={formData.billingCity}
+                      onChange={handleChange}
+                      className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                      placeholder="City"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Postal Code</label>
+                    <input
+                      type="text"
+                      name="billingPostalCode"
+                      value={formData.billingPostalCode}
+                      onChange={handleChange}
+                      className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                      placeholder="Postal Code"
+                      required
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* PayPal Details */}
+            {formData.paymentMethod === 'paypal' && (
+              <div>
+                <p className="text-sm font-medium text-gray-700">You will be redirected to PayPal for payment.</p>
+              </div>
+            )}
+
+            {/* Error Handling */}
+            <div id="error-message" className="text-red-500 text-sm mt-2">
+              {/* Show error messages if any */}
+            </div>
+
+            {/* Navigation Buttons */}
+            <div className="flex justify-between mt-4">
+              <button
+                type="button"
+                onClick={goBack}
+                className="bg-purple-100 text-purple-700 px-4 py-2 rounded-lg hover:bg-purple-200 focus:outline-none"
+              >
+                <FaArrowLeft className="mr-2" />
+                Back
+              </button>
+              <button
+                type="submit"
+                className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 focus:outline-none"
+              >
+                Confirm Booking
+              </button>
+            </div>
+          </form>
         </div>
       )}
+      {/* Trip Details Sidebar */}
+      {/* Trip Details Sidebar */}
+      <div className="bg-gradient-to-r from-white via-gray-50 to-gray-100 rounded-lg shadow-lg p-4 lg:p-6 mt-6 mx-auto border border-gray-300 w-full lg:max-w-2xl md:max-w-lg sm:max-w-md">
+        <h3 className="text-xl lg:text-2xl font-semibold mb-4 text-purple-800 border-b border-purple-300 pb-2">Trip Details</h3>
 
-      {/* Error Handling */}
-      <div id="error-message" className="text-red-500 text-sm mt-2">
-        {/* Show error messages if any */}
-      </div>
+        <div className="space-y-4">
+          <div className="flex items-start py-2 border-b border-gray-200">
+            <svg className="w-5 h-5 text-purple-600 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 11c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 20c-6.627 0-12-5.373-12-12s5.373-12 12-12 12 5.373 12 12-5.373 12-12 12z" />
+            </svg>
+            <div className="flex-1">
+              <p className="text-gray-600 font-medium mb-1"><strong>Pickup:</strong></p>
+              <p className="text-gray-800">{data.from}</p>
+            </div>
+          </div>
 
-      {/* Navigation Buttons */}
-      <div className="flex justify-between mt-4">
-        <button
-          type="button"
-          onClick={goBack}
-          className="bg-purple-100 text-purple-700 px-4 py-2 rounded-lg hover:bg-purple-200 focus:outline-none"
-        >
-          <FaArrowLeft className="mr-2" />
-          Back
-        </button>
-        <button
-          type="submit"
-          className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 focus:outline-none"
-        >
-          Confirm Booking
-        </button>
-      </div>
-    </form>
-  </div>
-)}
-{/* Trip Details Sidebar */}
-{/* Trip Details Sidebar */}
-<div className="bg-gradient-to-r from-white via-gray-50 to-gray-100 rounded-lg shadow-lg p-4 lg:p-6 mt-6 mx-auto border border-gray-300 w-full lg:max-w-2xl md:max-w-lg sm:max-w-md">
-  <h3 className="text-xl lg:text-2xl font-semibold mb-4 text-purple-800 border-b border-purple-300 pb-2">Trip Details</h3>
+          <div className="flex items-start py-2 border-b border-gray-200">
+            <svg className="w-5 h-5 text-purple-600 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 11c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 20c-6.627 0-12-5.373-12-12s5.373-12 12-12 12 5.373 12 12-5.373 12-12 12z" />
+            </svg>
+            <div className="flex-1">
+              <p className="text-gray-600 font-medium mb-1"><strong>Dropoff:</strong></p>
+              <p className="text-gray-800">{data.to}</p>
+            </div>
+          </div>
 
-  <div className="space-y-4">
-    <div className="flex items-start py-2 border-b border-gray-200">
-      <svg className="w-5 h-5 text-purple-600 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 11c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 20c-6.627 0-12-5.373-12-12s5.373-12 12-12 12 5.373 12 12-5.373 12-12 12z" />
-      </svg>
-      <div className="flex-1">
-        <p className="text-gray-600 font-medium mb-1"><strong>Pickup:</strong></p>
-        <p className="text-gray-800">{data.from}</p>
-      </div>
-    </div>
+          <div className="grid grid-cols-2 gap-4 py-2 border-b border-gray-200">
+            <div>
+              <p className="text-gray-600 font-medium"><strong>Pickup Date:</strong></p>
+              <p className="text-gray-800">{data.pickupDate}</p>
+            </div>
+            <div>
+              <p className="text-gray-600 font-medium"><strong>Pickup Time:</strong></p>
+              <p className="text-gray-800">{data.pickupTime}</p>
+            </div>
+          </div>
 
-    <div className="flex items-start py-2 border-b border-gray-200">
-      <svg className="w-5 h-5 text-purple-600 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 11c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 20c-6.627 0-12-5.373-12-12s5.373-12 12-12 12 5.373 12 12-5.373 12-12 12z" />
-      </svg>
-      <div className="flex-1">
-        <p className="text-gray-600 font-medium mb-1"><strong>Dropoff:</strong></p>
-        <p className="text-gray-800">{data.to}</p>
-      </div>
-    </div>
+          {false && false && (
+            <div className="grid grid-cols-2 gap-4 py-2 border-b border-gray-200">
+              <div>
+                <p className="text-gray-600 font-medium"><strong>Return Date:</strong></p>
+                <p className="text-gray-800">{data.returnDate}</p>
+              </div>
+              <div>
+                <p className="text-gray-600 font-medium"><strong>Return Time:</strong></p>
+                <p className="text-gray-800">{data.returnTime}</p>
+              </div>
+            </div>
+          )}
 
-    <div className="grid grid-cols-2 gap-4 py-2 border-b border-gray-200">
-      <div>
-        <p className="text-gray-600 font-medium"><strong>Pickup Date:</strong></p>
-        <p className="text-gray-800">{data.pickupDate}</p>
-      </div>
-      <div>
-        <p className="text-gray-600 font-medium"><strong>Pickup Time:</strong></p>
-        <p className="text-gray-800">{data.pickupTime}</p>
-      </div>
-    </div>
+          {true && true && (
+            <div className="grid grid-cols-2 gap-4 py-2 border-b border-gray-200">
+              <div>
+                <p className="text-gray-600 font-medium"><strong>Landing Date/Time: </strong></p>
 
-    {data.returnDate && data.returnTime && (
-      <div className="grid grid-cols-2 gap-4 py-2 border-b border-gray-200">
-        <div>
-          <p className="text-gray-600 font-medium"><strong>Return Date:</strong></p>
-          <p className="text-gray-800">{data.returnDate}</p>
+              </div>
+              <div>
+                <p className="text-gray-800">{" " + formData.landingTime}</p>
+              </div>
+            </div>
+          )}
+
+          {true && (
+
+            <div className="grid grid-cols-2 gap-4 py-2 border-b border-gray-200">
+              <div>
+                <p className="text-gray-600 font-medium"><strong>Flight Number: </strong></p>
+
+              </div>
+              <div>
+                <p className="text-gray-800">{" " + formData.flightNumber}</p>
+              </div>
+            </div>
+
+
+          )}
+
+          {false && false && (
+            <div className="grid grid-cols-2 gap-4 py-2 border-b border-gray-200">
+              <div>
+                <p className="text-gray-600 font-medium"><strong>Luggage:</strong></p>
+                <p className="text-gray-800">{formData.checkedLuggage}</p>
+              </div>
+              <div>
+                <p className="text-gray-600 font-medium"><strong>Hand Luggage:</strong></p>
+                <p className="text-gray-800">{formData.handLuggage}</p>
+              </div>
+            </div>
+          )}
+
+
+
+          <div className="grid grid-cols-2 gap-4 py-2 border-b border-gray-200">
+            <div>
+              <p className="text-gray-600 font-medium"><strong>Distance: </strong></p>
+
+            </div>
+            <div>
+              <p className="text-gray-800"> {data.distance} ({data.estimatedTime})</p>
+            </div>
+          </div>
+
+          {true && true && (
+            <div className="py-2 border-b border-gray-200">
+              <p className="text-gray-600 font-medium"><strong>Persons:</strong> {" " + formData.persons}</p>
+            </div>
+          )}
+
+          <div className="py-2">
+            <p className="text-gray-800 text-xl font-extrabold"><strong>Total:</strong> <span className="text-purple-700 font-extrabold text-2xl">{totalPrice + " £"}</span></p>
+          </div>
         </div>
-        <div>
-          <p className="text-gray-600 font-medium"><strong>Return Time:</strong></p>
-          <p className="text-gray-800">{data.returnTime}</p>
-        </div>
       </div>
-    )}
-{false && false && (
-    <div className="grid grid-cols-2 gap-4 py-2 border-b border-gray-200">
-      <div>
-        <p className="text-gray-600 font-medium"><strong>Luggage:</strong></p>
-        <p className="text-gray-800">2 Large Bags</p>
-      </div>
-      <div>
-        <p className="text-gray-600 font-medium"><strong>Hand Luggage:</strong></p>
-        <p className="text-gray-800">1 Carry-On Bag</p>
-      </div>
-    </div>)}
 
-    <div className="py-2 border-b border-gray-200">
-      <p className="text-gray-600 font-medium"><strong>Distance:</strong> {data.distance} ({data.
-estimatedTime
-})</p>
-    </div>
 
-    <div className="py-2  ">
-      <p className="text-gray-600 font-medium"><strong>Persons:</strong> 3</p>
-    </div>
-
-    <div className="py-2 border-t border-gray-300">
-      <p className="text-gray-800 text-xl font-extrabold"><strong>Total:</strong> <span className="text-purple-700 font-extrabold text-2xl">£{calculatePrice()}</span></p>
-    </div>
-  </div>
-</div>
-
+      
     </div>
   );
 };

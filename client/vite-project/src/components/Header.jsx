@@ -1,17 +1,18 @@
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { FaUser, FaSignInAlt, FaSignOutAlt, FaBars, FaTimes, FaUserCircle, FaTrashAlt, FaKey } from 'react-icons/fa';
 import { IoPersonAdd, IoKey, IoWarning, IoClose, IoLockClosed, IoShieldCheckmarkSharp, IoAlertCircleOutline, IoMail } from "react-icons/io5";
 import logo from './logo.png'; // Make sure to update the path to your actual logo image
-import { createAccount, signIn, changePassword, signOut, deleteUserAccount, verifyOTPFunc, forgetPaswordFunc,resetPasword } from "../Services/apis";
-
+import { createAccount, signIn, changePassword, signOut, deleteUserAccount,verifyTokenAtStart, verifyOTPFunc, forgetPaswordFunc,resetPasword } from "../Services/apis";
+import { AuthContext } from './contextProvider';
 
 
 
 function Header() {
-
+  
   const MySwal = withReactContent(Swal);
+ const { isSignedInFinal,  signInFinal, signOutFinal }=  useContext(AuthContext);
 
 
   const [showMenu, setShowMenu] = useState(false);
@@ -40,7 +41,24 @@ function Header() {
 
 
 
-
+  useEffect(()=>{
+    console.log("isSignedInFinal"+isSignedInFinal);
+    async function verifyT(){
+      try{
+        const res=  await verifyTokenAtStart();
+        setIsSignedIn(true);
+        signInFinal();
+        console.log("user is already sign in");
+      
+      }
+      catch(err){
+  console.log(err);
+  signOutFinal();
+  console.log("user is not sign in yet");
+      }
+    } 
+    verifyT();
+  },[])
 
 
   function handleForgetPasswordInSignIn() {
@@ -338,7 +356,7 @@ function Header() {
       try {
 
         const res = await signIn(signInData.username, signInData.password);
-
+        
 
         // Display success SweetAlert2 notification
         MySwal.fire({
@@ -348,7 +366,7 @@ function Header() {
           confirmButtonText: 'OK'
         });
 
-
+  signInFinal();
         setIsSignedIn(true);
         setShowSignInForm(false);
         setShowCreateAccountForm(false);
@@ -364,7 +382,7 @@ function Header() {
         setShowSignInForm(true);
         setShowCreateAccountForm(false);
         setShowMenu(true);
-
+     signOutFinal();
 
         MySwal.fire({
           title: 'Error!',
@@ -447,7 +465,7 @@ function Header() {
         icon: 'success',
         confirmButtonText: 'OK'
       });
-
+signOutFinal();
       setIsSignedIn(false);
       setShowSignInForm(false);
       setShowCreateAccountForm(false);

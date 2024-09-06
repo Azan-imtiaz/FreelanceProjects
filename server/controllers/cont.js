@@ -4,7 +4,29 @@ const nodemailer = require('nodemailer');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+async function verifyTokenAtStart(req, res) {
+    try {
+        // Retrieve the JWT from cookies
+        const token = req.cookies.token;
+  
+        // If no token is present, return unauthorized response
+        if (!token) {
+            return res.status(401).send({ st: 401, message: "No token, user not signed in" });
+        }
 
+        // Verify the token
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        // If token is valid, send back user information
+        if (decoded) {
+            const { email, id } = decoded;
+            return res.status(200).send({ st: 200, message: "User is signed in", email, id });
+        }
+    } catch (err) {
+        // If token is invalid or any error occurs
+        res.status(401).send({ st: 401, message: "Invalid token, user not signed in" });
+    }
+}
 
 
 // Generate random OTP
@@ -380,5 +402,5 @@ module.exports = {
     changePasswordFunc,
     deleteAccountFunc,
     signOutFunc,verifyOTPFunc
-    , forgetPaswordFunc,resetPasword
+    , forgetPaswordFunc,resetPasword,verifyTokenAtStart
 };

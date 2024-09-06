@@ -196,3 +196,30 @@ export const resetPasword = async (email,otp) => {
     throw error;
   }
 };
+
+
+
+
+
+export const verifyTokenAtStart = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/verifyTokenAtStart`, {
+      method: 'POST',credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({}),
+    });
+    if (!response.ok) {
+      const errorData = await response.json(); // Parse the error response JSON
+
+
+      throw new Error(errorData.message); // Use the server-provided message or a default message
+    }
+    return await response.json();
+
+  } catch (error) {
+    
+    throw error;
+  }
+};

@@ -1,9 +1,12 @@
+import Swal from 'sweetalert2';
 import React, { useState } from 'react';
 import { Autocomplete, DistanceMatrixService } from '@react-google-maps/api';
 import { FaLocationArrow, FaCalendarAlt, FaClock, FaTimes } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Spinner from 'react-bootstrap/Spinner';
+
 
 const libraries = ['places'];
 
@@ -11,6 +14,10 @@ const BookingForm = () => {
   const [selectedPickupDate, setSelectedPickupDate] = useState(null);
   const [selectedReturnDate, setSelectedReturnDate] = useState(null);
   const [showReturn, setShowReturn] = useState(false);
+  const [isSpin,setSpin]=useState(false);
+
+
+
   const [formData, setFormData] = useState({
     from: '',
     to: '',
@@ -70,6 +77,7 @@ const BookingForm = () => {
 
 const handleSubmit = async (event) => {
   event.preventDefault();
+  
 
   const validationErrors = validateForm();
   if (Object.keys(validationErrors).length > 0) {
@@ -78,6 +86,7 @@ const handleSubmit = async (event) => {
   }
 
   try {
+    setSpin(true);
       const { distanceText, distanceValue, durationText } = await calculateDistance();
       console.log(distanceText + "   " + distanceValue + "   " + durationText);
 
@@ -91,8 +100,10 @@ const handleSubmit = async (event) => {
       console.log(updatedFormData); // Log the updated formData
 
       // Navigate to the next page with updated formData
+      setSpin(false);
       navigate('/vehicle-selection', { state: { formData: updatedFormData } });
   } catch (error) {
+    setSpin(false);
       console.error('Error calculating distance:', error);
       setErrors((prevErrors) => ({ ...prevErrors, distance: 'Could not calculate distance',estimatedTime:"Could not calculate" }));
   }
@@ -184,7 +195,7 @@ const handleSubmit = async (event) => {
 
           {/* Pickup Date and Time */}
           <div className="flex flex-wrap md:flex-nowrap gap-4 mb-4">
-            <div className="flex-1 min-w-[150px]">
+            <div className="flex-1 min-w-[170px]">
               <label htmlFor="pickup-date" className="block text-gray-700 text-sm font-semibold mb-2">
                 Pickup Date
               </label>
@@ -204,7 +215,7 @@ const handleSubmit = async (event) => {
               {errors.pickupDate && <p className="text-red-500 text-sm">{errors.pickupDate}</p>}
             </div>
 
-            <div className="flex-1 min-w-[150px]">
+            <div className="flex-1 min-w-[170px]">
               <label htmlFor="pickupTime" className="block text-gray-700 text-sm font-semibold mb-2">
                 Pickup Time
               </label>
@@ -236,7 +247,7 @@ const handleSubmit = async (event) => {
                 </button>
               </div>
               <div className="flex flex-wrap gap-4">
-                <div className="flex-1 min-w-[150px]">
+                <div className="flex-1 min-w-[170px]">
                   <label htmlFor="return-date" className="block text-gray-700 text-sm font-semibold mb-2">
                     Return Date
                   </label>
@@ -256,12 +267,12 @@ const handleSubmit = async (event) => {
                   {errors.returnDate && <p className="text-red-500 text-sm">{errors.returnDate}</p>}
                 </div>
 
-                <div className="flex-1 min-w-[150px]">
+                <div className="flex-1 min-w-[170px]">
                   <label htmlFor="returnTime" className="block text-gray-700 text-sm font-semibold mb-2">
                     Return Time
                   </label>
                   <div className="flex items-center border border-gray-300 rounded-lg">
-                    <FaClock className="text-gray-500 ml-3" />
+                    <FaClock className="text-gray-500 ml-3 " />
                     <input
                       type="time"
                       id="returnTime"
@@ -295,6 +306,19 @@ const handleSubmit = async (event) => {
           {/* Error Message for Distance Calculation */}
           {errors.distance && <p className="text-red-500 text-sm mb-4">{errors.distance}</p>}
 
+
+          {
+  isSpin && (
+    <div>
+ 
+      <Spinner animation="border" variant="primary" />
+ 
+    </div>
+   
+  )
+}
+
+      
           {/* Submit Button */}
           <div className="flex justify-center lg:justify-end">
             <button
