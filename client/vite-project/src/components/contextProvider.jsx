@@ -7,7 +7,7 @@ const AuthProvider = ({ children }) => {
   const [isSignedInFinal, setIsSignedIn] = useState(false);
   const [userEmail, setUserEmail] = useState("");
 
-  const [popUp,setSignInPopUp]=useEffect(false);
+  const [popUp,setSignInPopUp]=useState(false);
 
 
 
@@ -18,7 +18,7 @@ const AuthProvider = ({ children }) => {
  const signInPopUpFalse=()=>{
   setSignInPopUp(false);
  }
-
+ 
 
   // Function to sign in
   const signInFinal = () => {
@@ -31,7 +31,7 @@ const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isSignedInFinal, signInFinal, signOutFinal,userEmail, setUserEmail }}>
+    <AuthContext.Provider value={{ isSignedInFinal, signInFinal, signOutFinal,userEmail, setUserEmail,popUp,signInPopUpFalse,signInPopUpTrue }}>
       {children}
     </AuthContext.Provider>
   );

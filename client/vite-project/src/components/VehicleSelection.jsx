@@ -22,7 +22,7 @@ import standardVan from "../assets/standardVan.jpg"
 
 
 const VehicleBookingSteps = () => {
-  const { isSignedInFinal, signInFinal, signOutFinal } = useContext(AuthContext);
+  const { isSignedInFinal, signInFinal, signOutFinal,popUp,signInPopUpFalse,signInPopUpTrue   } = useContext(AuthContext);
   const [finalObject,setFinalObject]=useState({
     persons: '',
     handLuggage: '',
@@ -112,14 +112,14 @@ const VehicleBookingSteps = () => {
   ];
 
   const vehicles = [
-    { id: 1, name: 'Economy', price: '€4.5', passengers: '4', image: `${economy}`, luggage: '2', handLuggage: '3' },
-    { id: 2, name: 'Standard', price: '€6.5', passengers: '4', image: `${standard}`, luggage: '2', handLuggage: '2' },
-    { id: 3, name: 'First Class', price: '€9.5', passengers: '3', image: `${firstClass}`, luggage: '2', handLuggage: '2' },
-    { id: 4, name: 'Mpv', price: '€6.2', passengers: '6', image: `${mpv}`, luggage: '4', handLuggage: '2' },
-    { id: 5, name: 'Standard Van', price: '€6.9', passengers: '7', image: `${standardVan}`, luggage: '7', handLuggage: '4' },
-    { id: 6, name: 'First Class Van', price: '€9.2', passengers: '5', image: `${firstClassVan}`, luggage: '5', handLuggage: '3' },
-    { id: 7, name: 'Minibus', price: '€11.8', passengers: '12', image: `${minibus1}`, luggage: '8', handLuggage: '4' },
-    { id: 8, name: 'Minibus', price: '€12.4', passengers: '14', image: `${minibus2}`, luggage: '10', handLuggage: '14' },
+    { id: 1, name: 'Economy', price: `£ ${(data.distance*4.5).toFixed(2)}`, passengers: '4', image: `${economy}`, luggage: '2', handLuggage: '3' },
+    { id: 2, name: 'Standard', price: `£ ${(data.distance * 6.5).toFixed(2)}`, passengers: '4', image: `${standard}`, luggage: '2', handLuggage: '2' },
+    { id: 3, name: 'First Class', price: `£ ${(data.distance * 9.5).toFixed(2)}`, passengers: '3', image: `${firstClass}`, luggage: '2', handLuggage: '2' },
+    { id: 4, name: 'Mpv', price: `£${(data.distance * 6.2).toFixed(2)}`, passengers: '6', image: `${mpv}`, luggage: '4', handLuggage: '2' },
+    { id: 5, name: 'Standard Van', price: `£ ${(data.distance * 6.9).toFixed(2)}`, passengers: '7', image: `${standardVan}`, luggage: '7', handLuggage: '4' },
+    { id: 6, name: 'First Class Van', price: `£ ${(data.distance * 9.2).toFixed(2)}`, passengers: '5', image: `${firstClassVan}`, luggage: '5', handLuggage: '3' },
+    { id: 7, name: 'Minibus', price: `£ ${(data.distance * 11.8).toFixed(2)}`, passengers: '12', image: `${minibus1}`, luggage: '8', handLuggage: '4' },
+    { id: 8, name: 'Minibus', price: `£ ${(data.distance * 12.4).toFixed(2)}`, passengers: '14', image: `${minibus2}`, luggage: '10', handLuggage: '14' },
 ];
 
 const selectVehicle = (vehicleId) => {
@@ -133,11 +133,12 @@ const selectVehicle = (vehicleId) => {
 
   // Find the vehicle based on its ID
   const selectedVehicle = vehicles.find(vehicle => vehicle.id === vehicleId);
+  const vehiclePrice = parseFloat(selectedVehicle.price.slice(1)); // Remove the currency symbol and convert to number
 
   if (selectedVehicle) {
     // Extract the currency symbol and numeric part
     currencySymbol = selectedVehicle.price.charAt(0); // Get the currency symbol (e.g., £)
-    const vehiclePrice = parseFloat(selectedVehicle.price.slice(1)); // Remove the currency symbol and convert to number
+    // const vehiclePrice = parseFloat(selectedVehicle.price.slice(1)); // Remove the currency symbol and convert to number
 
     // Update the count with the vehicle's price
     setCount(vehiclePrice);
@@ -161,13 +162,13 @@ const selectVehicle = (vehicleId) => {
   }
 
   // Calculate the total price based on distance
-  const finalPrice = (totalPrice * data.distance).toFixed(2);
+  // const finalPrice = (totalPrice * data.distance).toFixed(2);
   
   // Set the total price in the state
-  setTotalPrice(`${currencySymbol}${finalPrice}`);
+  setTotalPrice(`${currencySymbol}${vehiclePrice}`);
 
   // Log the total price
-  console.log("Total price:", finalPrice);
+  // console.log("Total price:", finalPrice);
 
   // Update passenger, hand luggage, and checked luggage details
   setPassenger(selectedVehicle.passengers);
@@ -242,12 +243,16 @@ const selectVehicle = (vehicleId) => {
       setActiveStep((prevStep) => (prevStep < 3 ? prevStep + 1 : prevStep));
     }
     else {
-      MySwal.fire({
-        title: 'Error!',
-        text: 'Please Login to proceed!',
-        icon: 'error',
-        confirmButtonText: 'OK'
-      });
+    
+    signInPopUpTrue();
+    console.log("pop =" + popUp)
+    
+      // MySwal.fire({
+      //   title: 'Error!',
+      //   text: 'Please Login to proceed!',
+      //   icon: 'error',
+      //   confirmButtonText: 'OK'
+      // });
     }
 
 
@@ -305,7 +310,7 @@ const selectVehicle = (vehicleId) => {
                   <img src={vehicle.image} alt={vehicle.name} className="w-24 lg:w-40 lg:h-36 h-16 object-cover rounded-lg mr-4" />
                   <div className="flex-grow">
                     <h3 className="text-lg font-semibold text-purple-800">{vehicle.name}</h3>
-                    <p className="text-sm text-yellow-600">Price: <span className="text-yellow-600">{vehicle.price+" per mile"}</span></p>
+                    <p className="text-sm text-yellow-600">Price: <span className="text-yellow-600">{vehicle.price}</span></p>
                     <div className="flex items-center mt-2 justify-between">
                       <div className="flex items-center">
                         <FaUser className="text-purple-800 mr-1 text-2xl" />
@@ -376,9 +381,7 @@ const selectVehicle = (vehicleId) => {
                   <option key={number} value={number}>{number}</option>
                 ))} */}
 
-{
-  console.log(parseInt(UserPassenger) + 1)
-}
+
 {
 Array.from({ length:( parseInt(UserPassenger) + 1) }, function (_, index) {
         return index; // Start from 0
@@ -409,7 +412,7 @@ Array.from({ length:( parseInt(UserPassenger) + 1) }, function (_, index) {
                     <option key={number} value={number}>{number}</option>
                   ))} */}
 
-{Array.from({ length:parseInt(UserLuggage) }, function (_, index) {
+{Array.from({ length:parseInt(UserLuggage)+1 }, function (_, index) {
         return index; // Start from 0
       }).map(function (number) {
         return (
@@ -435,7 +438,7 @@ Array.from({ length:( parseInt(UserPassenger) + 1) }, function (_, index) {
                     <option key={number} value={number}>{number}</option>
                   ))} */}
 
-{Array.from({ length: parseInt(UserCheckLugged) }, function (_, index) {
+{Array.from({ length: parseInt(UserCheckLugged)+1 }, function (_, index) {
         return index; // Start from 0
       }).map(function (number) {
         return (
@@ -672,12 +675,6 @@ Array.from({ length:( parseInt(UserPassenger) + 1) }, function (_, index) {
               <p className="text-gray-800"> { formData.persons}</p>
             </div>
           </div>
-{/* 
-          {true && true && (
-            <div className="py-2 border-b border-gray-200">
-              <p className="text-gray-600 font-medium"><strong>Persons:</strong> {" " + formData.persons}</p>
-            </div>
-          )} */}
 
           <div className="py-2">
             <p className="text-gray-800 text-xl font-extrabold"><strong>Total:</strong> <span className="text-purple-700 font-extrabold text-2xl">{totalPrice}</span></p>

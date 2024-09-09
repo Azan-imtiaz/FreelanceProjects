@@ -371,7 +371,7 @@ function Header() {
         setShowCreateAccountForm(false);
         setBookNowButtonActive(true);
         setShowMenu(false);
-
+       signInPopUpFalse();
         setSignInData({ username: '', password: '' })
       }
       catch (err) {
@@ -444,6 +444,7 @@ function Header() {
 
 
   const handleSignOut = async () => {
+
     setShowConfirmation(true);
   };
 
@@ -559,6 +560,9 @@ signOutFinal();
     setCreateAccountData({ newUsername: '', email: '', newpassword: '' })
 
     setShowChangePasswordForm(false);
+
+    signInPopUpFalse();
+    setSignInData({ username: '', password: '' })
 
   };
 
@@ -734,7 +738,7 @@ signOutFinal();
 
         {/* Right Side Buttons */}
         <div className="hidden lg:flex lg:items-center lg:gap-4">
-          {isSignedIn  ? (
+          {isSignedIn? (
             <>
               <div className="relative flex items-center">
                 <button onClick={() => setShowMenu(!showMenu)} className="flex items-center text-lg text-white">
@@ -835,7 +839,7 @@ signOutFinal();
         </nav>
       </header>
       {/* Sign In Form */}
-      {showSignInForm && (
+      {showSignInForm || popUp && (
         // <div className="fixed inset-0 flex items-center justify-center z-50 p-4 bg-gray-800 bg-opacity-75">
         //   <div className="relative bg-white p-6 md:p-8 rounded-lg shadow-xl w-full max-w-md">
         //     {/* Close Icon */}
