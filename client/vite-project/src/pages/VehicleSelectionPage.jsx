@@ -16,6 +16,11 @@ const VehicleSelectionPage = () => {
                <InfoBoxes />
                <VehicleShowcase />
                <HowItWorks />
+               <SectionBreak />
+               <CustomerService/>
+               <SectionBreak />
+               <Reviews />
+
              </main>
              <Footer />
            </div>

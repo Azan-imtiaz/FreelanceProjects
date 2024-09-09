@@ -144,7 +144,125 @@
 
 
 
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-scroll {
+  display: flex;
+  width: 100%;
+  animation: scroll 9s linear infinite;
+}
+
+.review-card {
+  min-width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+}
 
 
 
-  
+
+
+
+
+
+
+
+
+
+
+.customer-service-wrapper {
+  padding: 2rem;
+  background-color: #f9f9f9;
+  overflow: hidden; /* Hide any overflow during the animation */
+}
+
+.customer-service-title {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.customer-service-description {
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  color: #555;
+  text-align: center;
+}
+
+.customer-service-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.customer-service-options {
+  display: flex;
+  width: 200%; /* Width is double to accommodate the duplicate options */
+  animation: moveLeft 15s linear infinite; /* Animation for small screens */
+}
+
+.service-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 300px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.service-icon {
+  font-size: 2rem;
+  color: #6b46c1;
+  margin-bottom: 1rem;
+}
+
+h3 {
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+p {
+  font-size: 1rem;
+  color: #666;
+}
+
+/* Keyframe Animation */
+@keyframes moveLeft {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+  .customer-service-options {
+    animation: none; /* Disable animation on larger screens */
+    width: auto;
+    flex-direction: row;
+    overflow: visible;
+  }
+}
+
+
+
+
+
+
+
+

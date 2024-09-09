@@ -839,7 +839,7 @@ signOutFinal();
         </nav>
       </header>
       {/* Sign In Form */}
-      {showSignInForm || popUp && (
+      {(showSignInForm || popUp) && (
         // <div className="fixed inset-0 flex items-center justify-center z-50 p-4 bg-gray-800 bg-opacity-75">
         //   <div className="relative bg-white p-6 md:p-8 rounded-lg shadow-xl w-full max-w-md">
         //     {/* Close Icon */}

@@ -7,6 +7,7 @@ import VehicleShowcase from "../components/VehicleShowcase";
 import HowItWorks from "../components/HowItWorks";
 import SectionBreak from '../components/SectionBreak';
 import CustomerService from '../components/CustomerService';
+import Reviews from '../components/Feadback';
 
 
 const Main = () => {
@@ -24,6 +25,8 @@ const Main = () => {
                <HowItWorks />
                <SectionBreak />
                <CustomerService/>
+               <SectionBreak />
+               <Reviews />
              </main>
              <Footer />
            </div>

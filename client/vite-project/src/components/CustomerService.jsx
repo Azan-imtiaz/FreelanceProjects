@@ -1,14 +1,14 @@
 import React from 'react';
-import { FaPhoneAlt, FaEnvelope,FaClock } from 'react-icons/fa'; // Importing necessary icons
+import { FaPhoneAlt, FaEnvelope, FaClock } from 'react-icons/fa'; // Importing necessary icons
 
 function CustomerService() {
   return (
     <div className="customer-service-container">
-      <h2 className="customer-service-title">Customer Service</h2>
-      <p className="customer-service-description">
+      <h2 className="customer-service-title text-purple-700 text-center">Customer Service</h2>
+      <p className="customer-service-description text-center">
         We're here to help! Choose any of the options below to get in touch with our support team.
       </p>
-      
+
       <div className="customer-service-options">
         <div className="service-option">
           <FaPhoneAlt className="service-icon" />
@@ -21,18 +21,64 @@ function CustomerService() {
           <h3>Email Us</h3>
           <p>support@yourwebsite.com</p>
         </div>
+
         <div className="service-option">
           <FaClock className="service-icon" />
           <h3>Need Help?</h3>
           <p>Our support team is available 24/7.</p>
         </div>
-
       </div>
     </div>
   );
 }
 
 export default CustomerService;
+
+
+
+
+
+
+
+
+
+
+
+// import React from 'react';
+// import { FaPhoneAlt, FaEnvelope,FaClock } from 'react-icons/fa'; // Importing necessary icons
+
+// function CustomerService() {
+//   return (
+//     <div className="customer-service-container">
+//       <h2 className="customer-service-title text-purple-700">Customer Service</h2>
+//       <p className="customer-service-description">
+//         We're here to help! Choose any of the options below to get in touch with our support team.
+//       </p>
+      
+//       <div className="customer-service-options">
+//         <div className="service-option">
+//           <FaPhoneAlt className="service-icon" />
+//           <h3>Call Us</h3>
+//           <p>+1-800-123-4567</p>
+//         </div>
+
+//         <div className="service-option">
+//           <FaEnvelope className="service-icon" />
+//           <h3>Email Us</h3>
+//           <p>support@yourwebsite.com</p>
+//         </div>
+//         <div className="service-option">
+//           <FaClock className="service-icon" />
+//           <h3>Need Help?</h3>
+//           <p>Our support team is available 24/7.</p>
+//         </div>
+
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default CustomerService;
 
 
 
