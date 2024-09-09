@@ -10,7 +10,14 @@ import withReactContent from 'sweetalert2-react-content';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import PaymentComponent from "../components/PaymentComponent";
-
+import economy from "../assets/economy.jpg"
+import standard from "../assets/standard.jpg"
+import firstClass from "../assets/firstClass.jpg"
+import minibus1 from "../assets/minibus1.jpg"
+import minibus2 from "../assets/minibus2.jpg"
+import firstClassVan from "../assets/firstClassVan.jpg"
+import mpv from "../assets/mpv.jpg"
+import standardVan from "../assets/standardVan.jpg"
 
 
 
@@ -42,6 +49,11 @@ const VehicleBookingSteps = () => {
 
   const [activeStep, setActiveStep] = useState(1);
   const [totalPrice, setTotalPrice] = useState(0);
+
+  const [UserPassenger,setPassenger]=useState(0);
+  const [UserLuggage,setLuggage]=useState(0);
+  const [UserCheckLugged,setCheckedLuggage]=useState(0);
+
   const [count, setCount] = useState(0);
 
 
@@ -100,48 +112,77 @@ const VehicleBookingSteps = () => {
   ];
 
   const vehicles = [
-    { id: 1, name: 'Economy', price: '€4.5', passengers: '4', image: `${suv}`, luggage: '2', handLuggage: '3' },
-    { id: 2, name: 'Standard', price: '€6.5', passengers: '4', image: `${suv}`, luggage: '2', handLuggage: '2' },
-    { id: 3, name: 'First Class', price: '€9.5', passengers: '3', image: `${suv}`, luggage: '2', handLuggage: '2' },
-    { id: 4, name: 'Mpv', price: '€6.2', passengers: '6', image: `${suv}`, luggage: '4', handLuggage: '2' },
-    { id: 5, name: 'Standard Van', price: '€6.9', passengers: '7', image: `${suv}`, luggage: '7', handLuggage: '4' },
-    { id: 6, name: 'First Class Van', price: '€9.2', passengers: '5', image: `${suv}`, luggage: '5', handLuggage: '3' },
-    { id: 7, name: 'Minibus', price: '€11.8', passengers: '12', image: `${suv}`, luggage: '8', handLuggage: '4' },
-    { id: 8, name: 'Minibus', price: '€12.4', passengers: '14', image: `${suv}`, luggage: '10', handLuggage: '14' },
+    { id: 1, name: 'Economy', price: '€4.5', passengers: '4', image: `${economy}`, luggage: '2', handLuggage: '3' },
+    { id: 2, name: 'Standard', price: '€6.5', passengers: '4', image: `${standard}`, luggage: '2', handLuggage: '2' },
+    { id: 3, name: 'First Class', price: '€9.5', passengers: '3', image: `${firstClass}`, luggage: '2', handLuggage: '2' },
+    { id: 4, name: 'Mpv', price: '€6.2', passengers: '6', image: `${mpv}`, luggage: '4', handLuggage: '2' },
+    { id: 5, name: 'Standard Van', price: '€6.9', passengers: '7', image: `${standardVan}`, luggage: '7', handLuggage: '4' },
+    { id: 6, name: 'First Class Van', price: '€9.2', passengers: '5', image: `${firstClassVan}`, luggage: '5', handLuggage: '3' },
+    { id: 7, name: 'Minibus', price: '€11.8', passengers: '12', image: `${minibus1}`, luggage: '8', handLuggage: '4' },
+    { id: 8, name: 'Minibus', price: '€12.4', passengers: '14', image: `${minibus2}`, luggage: '10', handLuggage: '14' },
 ];
 
-  const selectVehicle = (vehicleId) => {
-    let totalPrice = 0;
-    let currencySymbol = '';
+const selectVehicle = (vehicleId) => {
+  // Reset passenger, luggage, and checked luggage to 0
+  setPassenger(0);
+  setLuggage(0);
+  setCheckedLuggage(0);
 
-    // Find the vehicle based on its ID
-    const selectedVehicle = vehicles.find(vehicle => vehicle.id === vehicleId);
+  let totalPrice = 0;
+  let currencySymbol = '';
 
-    if (selectedVehicle) {
-      // Extract the currency symbol and numeric part
-      currencySymbol = selectedVehicle.price.charAt(0); // Get the currency symbol (e.g., £)
-      const vehiclePrice = parseFloat(selectedVehicle.price.slice(1)); // Remove the currency symbol and convert to number
+  // Find the vehicle based on its ID
+  const selectedVehicle = vehicles.find(vehicle => vehicle.id === vehicleId);
 
-      setCount(vehiclePrice);
-      console.log("vehiclePrice" + vehiclePrice)
-      console.log(count);
-      // Set the base price to the vehicle's price
-      totalPrice += vehiclePrice;
+  if (selectedVehicle) {
+    // Extract the currency symbol and numeric part
+    currencySymbol = selectedVehicle.price.charAt(0); // Get the currency symbol (e.g., £)
+    const vehiclePrice = parseFloat(selectedVehicle.price.slice(1)); // Remove the currency symbol and convert to number
 
+    // Update the count with the vehicle's price
+    setCount(vehiclePrice);
 
-      // Add additional costs based on formData
-      if (formData.addOns.includes("childSeat")) totalPrice += 5;   // Add £5 for child seat
-      if (formData.addOns.includes("meetAndGreet")) totalPrice += 10; // Add £10 for meet and greet
-      console.log("formData.addOns.meetAndGreet" + formData.addOns.meetAndGreet)
-    }
+    // Log the vehicle price
+    console.log("Vehicle price:", vehiclePrice);
 
-    // Set the total price in the state 
-    setTotalPrice(`${(totalPrice*  data.distance).toFixed(2)}`);
-    console.log("totalPrice while next=" + totalPrice);
+    // Set the base price to the vehicle's price
+    totalPrice += vehiclePrice;
 
-    // Move to the next step
-    setActiveStep(2);
-  };
+    // Add additional costs based on formData
+    if (formData.addOns.includes("childSeat")) totalPrice += 5;   // Add £5 for child seat
+    if (formData.addOns.includes("meetAndGreet")) totalPrice += 10; // Add £10 for meet and greet
+
+    // Log add-ons costs
+    console.log("Add-ons costs:", formData.addOns);
+
+  } else {
+    console.error("Selected vehicle not found");
+    return; // Exit if the vehicle is not found
+  }
+
+  // Calculate the total price based on distance
+  const finalPrice = (totalPrice * data.distance).toFixed(2);
+  
+  // Set the total price in the state
+  setTotalPrice(`${currencySymbol}${finalPrice}`);
+
+  // Log the total price
+  console.log("Total price:", finalPrice);
+
+  // Update passenger, hand luggage, and checked luggage details
+  setPassenger(selectedVehicle.passengers);
+  setLuggage(selectedVehicle.handLuggage);
+  setCheckedLuggage(selectedVehicle.luggage);
+
+  // Log the vehicle details
+  console.log("Vehicle details - Passengers:", selectedVehicle.passengers, 
+              "Hand luggage:", selectedVehicle.handLuggage, 
+              "Checked luggage:", selectedVehicle.luggage);
+
+  // Move to the next step
+  setActiveStep(2);
+};
+
 
   const goBack = () => {
     //  setFormData({
@@ -159,22 +200,22 @@ const VehicleBookingSteps = () => {
 
   const goNext = () => {
     // Validate form data and set errors
-    // const newErrors = {
-    //   persons: formData.persons ? '' : 'Total persons is required.',
-    //   handLuggage: formData.handLuggage !== '' ? '' : 'Hand luggage quantity is required.',
-    //   checkedLuggage: formData.checkedLuggage !== '' ? '' : 'Checked luggage quantity is required.',
-    //   flightNumber: formData.flightNumber ? '' : 'Flight number is required.',
-    //   landingTime: formData.landingTime ? '' : 'Landing time is required.',
-    // };
+    const newErrors = {
+      persons: formData.persons ? '' : 'Total persons is required.',
+      handLuggage: formData.handLuggage !== '' ? '' : 'Hand luggage quantity is required.',
+      checkedLuggage: formData.checkedLuggage !== '' ? '' : 'Checked luggage quantity is required.',
+      flightNumber: formData.flightNumber ? '' : 'Flight number is required.',
+      landingTime: formData.landingTime ? '' : 'Landing time is required.',
+    };
 
-    // setErrors(newErrors);
+    setErrors(newErrors);
 
     // Check if there are any validation errors
-    // const hasErrors = Object.values(newErrors).some(error => error !== '');
+    const hasErrors = Object.values(newErrors).some(error => error !== '');
 
-    // if (hasErrors) {
-    //   return;
-    // }
+    if (hasErrors) {
+      return;
+    }
 
     // Compute the total price based on selected add-ons
     
@@ -310,8 +351,8 @@ const VehicleBookingSteps = () => {
           </button>
         </div>
       )}
-      {/* Booking Form */}
-      {activeStep === 2 && (
+ {/* Booking Form */}
+ {activeStep === 2 && (
         <div className="bg-gray-50 rounded-lg shadow-lg p-6 lg:p-8 mt-8 mx-auto w-full lg:max-w-4xl md:max-w-2xl sm:max-w-md transition-transform transform hover:scale-100">
           {/* Stylish Instruction */}
           <div className="text-center mb-6 p-4 bg-purple-100 rounded-md border border-purple-300 text-purple-800">
@@ -331,9 +372,24 @@ const VehicleBookingSteps = () => {
                 className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
               >
                 <option value="">Select number of persons</option>
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(number => (
+                {/* {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(number => (
                   <option key={number} value={number}>{number}</option>
-                ))}
+                ))} */}
+
+{
+  console.log(parseInt(UserPassenger) + 1)
+}
+{
+Array.from({ length:( parseInt(UserPassenger) + 1) }, function (_, index) {
+        return index; // Start from 0
+      }).map(function (number) {
+        return (
+          <option key={number} value={number}>
+            {number}
+          </option>
+        );
+      })}
+
               </select>
               {errors.persons && <p className="text-red-500 text-sm mt-1">{errors.persons}</p>}
             </div>
@@ -349,9 +405,20 @@ const VehicleBookingSteps = () => {
                   className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
                 >
                   <option value="">Select hand luggage quantity</option>
-                  {[0, 1, 2, 3, 4, 5].map(number => (
+                  {/* {[0, 1, 2, 3, 4, 5].map(number => (
                     <option key={number} value={number}>{number}</option>
-                  ))}
+                  ))} */}
+
+{Array.from({ length:parseInt(UserLuggage) }, function (_, index) {
+        return index; // Start from 0
+      }).map(function (number) {
+        return (
+          <option key={number} value={number}>
+            {number}
+          </option>
+        );
+      })}
+
                 </select>
                 {errors.handLuggage && <p className="text-red-500 text-sm mt-1">{errors.handLuggage}</p>}
               </div>
@@ -364,9 +431,19 @@ const VehicleBookingSteps = () => {
                   className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
                 >
                   <option value="">Select checked luggage quantity</option>
-                  {[0, 1, 2, 3, 4, 5].map(number => (
+                  {/* {[0, 1, 2, 3, 4, 5].map(number => (
                     <option key={number} value={number}>{number}</option>
-                  ))}
+                  ))} */}
+
+{Array.from({ length: parseInt(UserCheckLugged) }, function (_, index) {
+        return index; // Start from 0
+      }).map(function (number) {
+        return (
+          <option key={number} value={number}>
+            {number}
+          </option>
+        );
+      })}
                 </select>
                 {errors.checkedLuggage && <p className="text-red-500 text-sm mt-1">{errors.checkedLuggage}</p>}
               </div>
@@ -458,9 +535,7 @@ const VehicleBookingSteps = () => {
             </div>
           </form>
         </div>
-      )}
-
- 
+      )} 
 
 
       {/* Payment Form */}
@@ -605,7 +680,7 @@ const VehicleBookingSteps = () => {
           )} */}
 
           <div className="py-2">
-            <p className="text-gray-800 text-xl font-extrabold"><strong>Total:</strong> <span className="text-purple-700 font-extrabold text-2xl">{totalPrice + " £"}</span></p>
+            <p className="text-gray-800 text-xl font-extrabold"><strong>Total:</strong> <span className="text-purple-700 font-extrabold text-2xl">{totalPrice}</span></p>
           </div>
         </div>
       </div>

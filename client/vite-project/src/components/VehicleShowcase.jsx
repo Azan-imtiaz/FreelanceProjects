@@ -2,37 +2,65 @@ import React from 'react';
 import { FaCheckCircle, FaArrowRight } from 'react-icons/fa';
 
 // Import images from the assets folder
-import sedanImage from '../assets/sedan.jpg';
-import suvImage from '../assets/suv.jpg';
-import minivanImage from '../assets/minivan.jpg';
-import vanImage from '../assets/van.jpg';
+import economy from "../assets/economy.jpg"
+import standard from "../assets/standard.jpg"
+import firstClass from "../assets/firstClass.jpg"
+import minibus1 from "../assets/minibus1.jpg"
+import minibus2 from "../assets/minibus2.jpg"
+import firstClassVan from "../assets/firstClassVan.jpg"
+import mpv from "../assets/mpv.jpg"
+import standardVan from "../assets/standardVan.jpg"
+
+
+
 
 function VehicleShowcase() {
   const vehicles = [
     {
-      image: sedanImage,
-      name: 'Luxury Sedan',
+      image: economy,
+      name: 'Economy',
       capacity: '4 Passengers',
       description: 'Licensed Vehicle & Professional Drivers',
     },
     {
-      image: suvImage,
-      name: 'Comfort SUV',
+      image:standard,
+      name: 'Standard',
+      capacity: '4 Passengers',
+      description: 'Licensed Vehicle & Professional Drivers',
+    },
+    {
+      image: firstClass,
+      name: 'First Class',
+      capacity: '3 Passengers',
+      description: 'Licensed Vehicle & Professional Drivers',
+    },
+    {
+      image: mpv,
+      name: 'MPV ',
       capacity: '6 Passengers',
       description: 'Licensed Vehicle & Professional Drivers',
     },
     {
-      image: minivanImage,
-      name: 'Spacious Minivan',
-      capacity: '8 Passengers',
+      image: standardVan ,
+      name: 'Standard Van',
+      capacity: '7 Passengers',
       description: 'Licensed Vehicle & Professional Drivers',
-    },
-    {
-      image: vanImage,
-      name: 'Executive Van',
+    },{
+      image: firstClassVan ,
+      name: 'First class van',
+      capacity: '6 Passengers',
+      description: 'Licensed Vehicle & Professional Drivers',
+    },{
+      image: minibus1,
+      name: 'Mini bus  ',
       capacity: '12 Passengers',
       description: 'Licensed Vehicle & Professional Drivers',
-    },
+    },{
+      image: minibus2,
+      name: 'Mini bus  ',
+      capacity: '14 Passengers',
+      description: 'Licensed Vehicle & Professional Drivers',
+    }
   ];
 
   return (

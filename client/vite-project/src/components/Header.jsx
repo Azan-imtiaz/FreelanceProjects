@@ -12,7 +12,7 @@ import Cookies from 'js-cookie';
 function Header() {
   
   const MySwal = withReactContent(Swal);
- const { isSignedInFinal,  signInFinal, signOutFinal,userEmail, setUserEmail }=  useContext(AuthContext);
+ const { isSignedInFinal,  signInFinal, signOutFinal,userEmail, setUserEmail,popUp,signInPopUpFalse,signInPopUpTrue  }=  useContext(AuthContext);
 
   const [showMenu, setShowMenu] = useState(false);
   const [showSignInForm, setShowSignInForm] = useState(false);
@@ -445,11 +445,6 @@ function Header() {
 
   const handleSignOut = async () => {
     setShowConfirmation(true);
-
-
-
-
-
   };
 
   const confirmSignOut = async () => {
@@ -733,13 +728,13 @@ signOutFinal();
     <>
       <header className="bg-purple-700 text-white p-2 flex items-center justify-between lg:justify-between shadow-md fixed top-0 w-full z-50 mb-10">
         {/* Logo */}
-        <div className="flex-1 lg:flex-none">
+        <div className="flex-1 lg:flex-none lg:ml-10 sm:ml-5">
           <img src={logo} alt="Logo" className="h-16" /> {/* Adjust the height as needed */}
         </div>
 
         {/* Right Side Buttons */}
         <div className="hidden lg:flex lg:items-center lg:gap-4">
-          {isSignedIn ? (
+          {isSignedIn  ? (
             <>
               <div className="relative flex items-center">
                 <button onClick={() => setShowMenu(!showMenu)} className="flex items-center text-lg text-white">

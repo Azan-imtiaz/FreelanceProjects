@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 
 // Create the context
 const AuthContext = createContext();
@@ -6,6 +6,18 @@ const AuthContext = createContext();
 const AuthProvider = ({ children }) => {
   const [isSignedInFinal, setIsSignedIn] = useState(false);
   const [userEmail, setUserEmail] = useState("");
+
+  const [popUp,setSignInPopUp]=useEffect(false);
+
+
+
+ const signInPopUpTrue=()=>{
+ setSignInPopUp(true);
+ }
+
+ const signInPopUpFalse=()=>{
+  setSignInPopUp(false);
+ }
 
 
   // Function to sign in
