@@ -5,6 +5,8 @@ const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const [isSignedInFinal, setIsSignedIn] = useState(false);
+  const [userEmail, setUserEmail] = useState("");
+
 
   // Function to sign in
   const signInFinal = () => {
@@ -17,7 +19,7 @@ const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isSignedInFinal, signInFinal, signOutFinal }}>
+    <AuthContext.Provider value={{ isSignedInFinal, signInFinal, signOutFinal,userEmail, setUserEmail }}>
       {children}
     </AuthContext.Provider>
   );

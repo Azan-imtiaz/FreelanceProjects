@@ -147,28 +147,4 @@
 
 
 
-  /* Toggle Switch */
-  .slider {
-    transition: .3s;
-  }
-  
-  .slider:before {
-    content: "";
-    position: absolute;
-    height: 22px;
-    width: 22px;
-    border-radius: 50%;
-    transition: .3s;
-    left: 2px;
-    top: 2px;
-    background-color: white;
-  }
-  
-  input:checked + .slider {
-    background-color: #4CAF50;
-  }
-  
-  input:checked + .slider:before {
-    transform: translateX(26px);
-  }
   

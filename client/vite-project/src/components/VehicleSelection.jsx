@@ -7,31 +7,43 @@ import {
 import { AuthContext } from './contextProvider';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
-
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import PaymentComponent from "../components/PaymentComponent";
 
 
 
 
 const VehicleBookingSteps = () => {
   const { isSignedInFinal, signInFinal, signOutFinal } = useContext(AuthContext);
+  const [finalObject,setFinalObject]=useState({
+    persons: '',
+    handLuggage: '',
+    checkedLuggage: '',
+    flightNumber: '',
+    landingTime: '',
+  
+    driverNote: '',
+    addOns: [], // Initialize as an empty array
 
+ from: '',
+    to: '',
+    pickupDate: '',
+    pickupTime: '',
+    returnDate: '',
+    returnTime: '',
+    distance: '',estimatedTime:''
+
+  })
   const MySwal = withReactContent(Swal);
+
+  const stripePromise = loadStripe('');
+
 
   const [activeStep, setActiveStep] = useState(1);
   const [totalPrice, setTotalPrice] = useState(0);
   const [count, setCount] = useState(0);
 
-  // const [formData, setFormData] = useState({
-  //   persons: 1,
-  //   handLuggage: 0,
-  //   checkedLuggage: 0,
-  //   childSeat: false,
-  //   meetAndGreet: false,
-  //   paymentMethod: 'credit',
-  //   cardNumber: '',
-  //   cardExpiry: '',
-  //   cardCVC: '',
-  // });
 
 
   const [formData, setFormData] = useState({
@@ -40,6 +52,7 @@ const VehicleBookingSteps = () => {
     checkedLuggage: '',
     flightNumber: '',
     landingTime: '',
+  
     driverNote: '',
     addOns: [], // Initialize as an empty array
   });
@@ -49,6 +62,7 @@ const VehicleBookingSteps = () => {
     checkedLuggage: '',
     flightNumber: '',
     landingTime: '',
+ 
   });
 
 
@@ -76,6 +90,9 @@ const VehicleBookingSteps = () => {
   const data = location.state?.formData;
   console.log(data.to)
 
+  
+  
+
   const steps = [
     { id: 1, name: 'Select Vehicle', icon: <FaCar /> },
     { id: 2, name: 'Booking', icon: <FaClipboardList /> },
@@ -83,12 +100,15 @@ const VehicleBookingSteps = () => {
   ];
 
   const vehicles = [
-    { id: 1, name: 'Sedan', price: '$50', passengers: 'x4', image: `${suv}`, luggage: 'x2', handLuggage: 'x3' },
-    { id: 2, name: 'SUV', price: '$80', passengers: 'x4', image: `${suv}`, luggage: 'x2', handLuggage: 'x3' },
-    { id: 3, name: 'SUV', price: '$80', passengers: 'x4', image: `${suv}`, luggage: 'x2', handLuggage: 'x3' },
-    { id: 4, name: 'SUV', price: '$80', passengers: 'x4', image: `${suv}`, luggage: 'x2', handLuggage: 'x3' },
-    { id: 5, name: 'SUV', price: '$80', passengers: 'x4', image: `${suv}`, luggage: 'x2', handLuggage: 'x3' },
-  ];
+    { id: 1, name: 'Economy', price: '€4.5', passengers: '4', image: `${suv}`, luggage: '2', handLuggage: '3' },
+    { id: 2, name: 'Standard', price: '€6.5', passengers: '4', image: `${suv}`, luggage: '2', handLuggage: '2' },
+    { id: 3, name: 'First Class', price: '€9.5', passengers: '3', image: `${suv}`, luggage: '2', handLuggage: '2' },
+    { id: 4, name: 'Mpv', price: '€6.2', passengers: '6', image: `${suv}`, luggage: '4', handLuggage: '2' },
+    { id: 5, name: 'Standard Van', price: '€6.9', passengers: '7', image: `${suv}`, luggage: '7', handLuggage: '4' },
+    { id: 6, name: 'First Class Van', price: '€9.2', passengers: '5', image: `${suv}`, luggage: '5', handLuggage: '3' },
+    { id: 7, name: 'Minibus', price: '€11.8', passengers: '12', image: `${suv}`, luggage: '8', handLuggage: '4' },
+    { id: 8, name: 'Minibus', price: '€12.4', passengers: '14', image: `${suv}`, luggage: '10', handLuggage: '14' },
+];
 
   const selectVehicle = (vehicleId) => {
     let totalPrice = 0;
@@ -116,7 +136,7 @@ const VehicleBookingSteps = () => {
     }
 
     // Set the total price in the state 
-    setTotalPrice(`${totalPrice}`);
+    setTotalPrice(`${(totalPrice*  data.distance).toFixed(2)}`);
     console.log("totalPrice while next=" + totalPrice);
 
     // Move to the next step
@@ -139,26 +159,25 @@ const VehicleBookingSteps = () => {
 
   const goNext = () => {
     // Validate form data and set errors
-    const newErrors = {
-      persons: formData.persons ? '' : 'Total persons is required.',
-      handLuggage: formData.handLuggage !== '' ? '' : 'Hand luggage quantity is required.',
-      checkedLuggage: formData.checkedLuggage !== '' ? '' : 'Checked luggage quantity is required.',
-      flightNumber: formData.flightNumber ? '' : 'Flight number is required.',
+    // const newErrors = {
+    //   persons: formData.persons ? '' : 'Total persons is required.',
+    //   handLuggage: formData.handLuggage !== '' ? '' : 'Hand luggage quantity is required.',
+    //   checkedLuggage: formData.checkedLuggage !== '' ? '' : 'Checked luggage quantity is required.',
+    //   flightNumber: formData.flightNumber ? '' : 'Flight number is required.',
+    //   landingTime: formData.landingTime ? '' : 'Landing time is required.',
+    // };
 
-      landingTime: formData.landingTime ? '' : 'Landing time is required.',
-    };
-
-    setErrors(newErrors);
+    // setErrors(newErrors);
 
     // Check if there are any validation errors
-    const hasErrors = Object.values(newErrors).some(error => error !== '');
+    // const hasErrors = Object.values(newErrors).some(error => error !== '');
 
-    if (hasErrors) {
-      return;
-    }
+    // if (hasErrors) {
+    //   return;
+    // }
 
     // Compute the total price based on selected add-ons
-    console.log("count=" + count)
+    
     let calculatedPrice = count;
 
     if (formData.addOns.includes('childSeat')) {
@@ -174,9 +193,12 @@ const VehicleBookingSteps = () => {
     if (isSignedInFinal) {
       // Debug output // Set the updated total price
       setTotalPrice(calculatedPrice);
+      const finalObject={...formData,...data};
+      setFinalObject({...formData,...data});
+      console.log(finalObject)
 
       // Proceed to the next step if there are no errors
-      // setActiveStep((prevStep) => (prevStep < 3 ? prevStep + 1 : prevStep));
+      setActiveStep((prevStep) => (prevStep < 3 ? prevStep + 1 : prevStep));
     }
     else {
       MySwal.fire({
@@ -186,7 +208,6 @@ const VehicleBookingSteps = () => {
         confirmButtonText: 'OK'
       });
     }
-
 
 
 
@@ -243,7 +264,7 @@ const VehicleBookingSteps = () => {
                   <img src={vehicle.image} alt={vehicle.name} className="w-24 lg:w-40 lg:h-36 h-16 object-cover rounded-lg mr-4" />
                   <div className="flex-grow">
                     <h3 className="text-lg font-semibold text-purple-800">{vehicle.name}</h3>
-                    <p className="text-sm text-yellow-600">Price: <span className="text-yellow-600">{vehicle.price}</span></p>
+                    <p className="text-sm text-yellow-600">Price: <span className="text-yellow-600">{vehicle.price+" per mile"}</span></p>
                     <div className="flex items-center mt-2 justify-between">
                       <div className="flex items-center">
                         <FaUser className="text-purple-800 mr-1 text-2xl" />
@@ -385,18 +406,7 @@ const VehicleBookingSteps = () => {
               />
               {errors.flightNumber && <p className="text-red-500 text-sm mt-1">{errors.flightNumber}</p>}
             </div>
-            <div className="flex flex-col mb-6">
-              <label className="text-sm font-semibold text-gray-700 mb-2">Email Address</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="Enter your email address"
-                className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-500"
-              />
-              {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
-            </div>
+           
             <div className="flex flex-col mb-6">
               <label className="text-sm font-semibold text-gray-700 mb-2">Landing Time</label>
               <input
@@ -450,148 +460,29 @@ const VehicleBookingSteps = () => {
         </div>
       )}
 
+ 
+
 
       {/* Payment Form */}
 
       {activeStep === 3 && (
-        <div>
-          <h2 className="text-2xl font-bold mb-4 text-purple-700">Payment Details</h2>
-          <form className="space-y-4">
-            {/* Payment Method Selection */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Payment Method</label>
-              <select
-                name="paymentMethod"
-                value={formData.paymentMethod}
-                onChange={handleChange}
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-              >
-                <option value="credit">Credit Card</option>
-                <option value="paypal">PayPal</option>
-                {/* Add more payment options if needed */}
-              </select>
-            </div>
+         <div>
+        {   activeStep === 3 && <PaymentComponent totalPrice={totalPrice}    finalObject={finalObject}   />   }
+       </div>) }
 
-            {/* Credit Card Details */}
-            {formData.paymentMethod === 'credit' && (
-              <>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Card Number</label>
-                  <input
-                    type="text"
-                    name="cardNumber"
-                    value={formData.cardNumber}
-                    onChange={handleChange}
-                    className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-                    placeholder="1234 5678 9012 3456"
-                    required
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Expiry Date</label>
-                    <input
-                      type="text"
-                      name="cardExpiry"
-                      value={formData.cardExpiry}
-                      onChange={handleChange}
-                      className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-                      placeholder="MM/YY"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">CVC</label>
-                    <input
-                      type="text"
-                      name="cardCVC"
-                      value={formData.cardCVC}
-                      onChange={handleChange}
-                      className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-                      placeholder="123"
-                      required
-                    />
-                  </div>
-                </div>
-              </>
-            )}
-
-            {/* Billing Address */}
-            {formData.paymentMethod === 'credit' && (
-              <>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Billing Address</label>
-                  <input
-                    type="text"
-                    name="billingAddress"
-                    value={formData.billingAddress}
-                    onChange={handleChange}
-                    className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-                    placeholder="123 Main St, City, Country"
-                    required
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">City</label>
-                    <input
-                      type="text"
-                      name="billingCity"
-                      value={formData.billingCity}
-                      onChange={handleChange}
-                      className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-                      placeholder="City"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Postal Code</label>
-                    <input
-                      type="text"
-                      name="billingPostalCode"
-                      value={formData.billingPostalCode}
-                      onChange={handleChange}
-                      className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-                      placeholder="Postal Code"
-                      required
-                    />
-                  </div>
-                </div>
-              </>
-            )}
-
-            {/* PayPal Details */}
-            {formData.paymentMethod === 'paypal' && (
-              <div>
-                <p className="text-sm font-medium text-gray-700">You will be redirected to PayPal for payment.</p>
+       <div className="flex flex-col sm:flex-row justify-between mt-6 gap-4">
+              {activeStep > 1 && activeStep === 3 && (
+                <button
+                  type="button"
+                  onClick={goBack}
+                  className="bg-purple-100 text-purple-700 px-6 py-3 rounded-lg flex items-center"
+                >
+                  <FaArrowLeft className="mr-2" />
+                  Back
+                </button>
+              )}
               </div>
-            )}
 
-            {/* Error Handling */}
-            <div id="error-message" className="text-red-500 text-sm mt-2">
-              {/* Show error messages if any */}
-            </div>
-
-            {/* Navigation Buttons */}
-            <div className="flex justify-between mt-4">
-              <button
-                type="button"
-                onClick={goBack}
-                className="bg-purple-100 text-purple-700 px-4 py-2 rounded-lg hover:bg-purple-200 focus:outline-none"
-              >
-                <FaArrowLeft className="mr-2" />
-                Back
-              </button>
-              <button
-                type="submit"
-                className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 focus:outline-none"
-              >
-                Confirm Booking
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
       {/* Trip Details Sidebar */}
       {/* Trip Details Sidebar */}
       <div className="bg-gradient-to-r from-white via-gray-50 to-gray-100 rounded-lg shadow-lg p-4 lg:p-6 mt-6 mx-auto border border-gray-300 w-full lg:max-w-2xl md:max-w-lg sm:max-w-md">
@@ -692,15 +583,26 @@ const VehicleBookingSteps = () => {
 
             </div>
             <div>
-              <p className="text-gray-800"> {data.distance} ({data.estimatedTime})</p>
+              <p className="text-gray-800"> {data.distance+" miles "}  ({data.estimatedTime})</p>
             </div>
           </div>
 
+
+          <div className="grid grid-cols-2 gap-4 py-2 border-b border-gray-200">
+            <div>
+              <p className="text-gray-600 font-medium"><strong>Passengers: </strong></p>
+
+            </div>
+            <div>
+              <p className="text-gray-800"> { formData.persons}</p>
+            </div>
+          </div>
+{/* 
           {true && true && (
             <div className="py-2 border-b border-gray-200">
               <p className="text-gray-600 font-medium"><strong>Persons:</strong> {" " + formData.persons}</p>
             </div>
-          )}
+          )} */}
 
           <div className="py-2">
             <p className="text-gray-800 text-xl font-extrabold"><strong>Total:</strong> <span className="text-purple-700 font-extrabold text-2xl">{totalPrice + " £"}</span></p>

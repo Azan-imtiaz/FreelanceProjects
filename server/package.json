@@ -9,6 +9,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.5.3",
     "nodemailer": "^6.9.14",
-    "npm": "^10.8.2"
+    "npm": "^10.8.2",
+    "stripe": "^16.10.0"
   }
 }

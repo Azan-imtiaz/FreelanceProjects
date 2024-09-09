@@ -31,7 +31,7 @@ function InfoBoxes() {
             <p className="text-gray-700 text-sm lg:text-base">Book your ride quickly and easily through our user-friendly booking system, available on all devices.</p>
           </div>
         </div>
-        <div className="text-center mt-8">
+        {/* <div className="text-center mt-8">
           <a
             href="/learn-more"
             className="inline-flex items-center text-purple-700 font-semibold hover:text-purple-900"
@@ -39,7 +39,7 @@ function InfoBoxes() {
             Learn More
             <FaArrowRight className="ml-2" />
           </a>
-        </div>
+        </div> */}
       </div>
     </section>
   );

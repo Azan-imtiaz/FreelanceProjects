@@ -6,14 +6,13 @@ import { IoPersonAdd, IoKey, IoWarning, IoClose, IoLockClosed, IoShieldCheckmark
 import logo from './logo.png'; // Make sure to update the path to your actual logo image
 import { createAccount, signIn, changePassword, signOut, deleteUserAccount,verifyTokenAtStart, verifyOTPFunc, forgetPaswordFunc,resetPasword } from "../Services/apis";
 import { AuthContext } from './contextProvider';
-
+import Cookies from 'js-cookie';
 
 
 function Header() {
   
   const MySwal = withReactContent(Swal);
- const { isSignedInFinal,  signInFinal, signOutFinal }=  useContext(AuthContext);
-
+ const { isSignedInFinal,  signInFinal, signOutFinal,userEmail, setUserEmail }=  useContext(AuthContext);
 
   const [showMenu, setShowMenu] = useState(false);
   const [showSignInForm, setShowSignInForm] = useState(false);
@@ -465,6 +464,8 @@ function Header() {
         icon: 'success',
         confirmButtonText: 'OK'
       });
+      Cookies.remove('token', { path: '/' });
+
 signOutFinal();
       setIsSignedIn(false);
       setShowSignInForm(false);

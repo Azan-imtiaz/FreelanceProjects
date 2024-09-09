@@ -63,10 +63,12 @@ const BookingForm = () => {
             (response, status) => {
                 if (status === 'OK') {
                     const element = response.rows[0].elements[0];
-                    const distanceText = element.distance.text;
-                    const distanceValue = element.distance.value; // in meters
+                    const distanceValueInMeters = element.distance.value; // distance in meters
+                    const distanceValueInMiles = distanceValueInMeters * 0.000621371; // convert meters to miles
+                    const distanceTextInMiles = distanceValueInMiles.toFixed(2) + ' miles'; // formatted distance
+                    const distanceTextInMeters = element.distance.text; // original distance text (in km or meters)
                     const durationText = element.duration.text; // estimated travel time
-                    resolve({ distanceText, distanceValue, durationText });
+                    resolve({ distanceTextInMiles, distanceTextInMeters, distanceValueInMiles, durationText });
                 } else {
                     reject('Error calculating distance');
                 }
@@ -74,6 +76,7 @@ const BookingForm = () => {
         );
     });
 };
+
 
 const handleSubmit = async (event) => {
   event.preventDefault();
@@ -87,13 +90,13 @@ const handleSubmit = async (event) => {
 
   try {
     setSpin(true);
-      const { distanceText, distanceValue, durationText } = await calculateDistance();
-      console.log(distanceText + "   " + distanceValue + "   " + durationText);
+      const { distanceTextInMiles, distanceTextInMeters, distanceValueInMiles, durationText  } = await calculateDistance();
+      console.log(distanceTextInMiles, distanceTextInMeters, distanceValueInMiles, durationText );
 
       // Update formData with the distance and estimated time
       const updatedFormData = {
           ...formData,
-          distance: distanceText,
+          distance:  distanceValueInMiles.toFixed(2),
           estimatedTime: durationText, // Add this line
       };
 
