@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { FaStar } from 'react-icons/fa';
 
@@ -36,11 +35,11 @@ function Reviews() {
       <div className="container mx-auto px-6 lg:px-8">
         <h2 className="text-3xl font-bold text-purple-700 text-center mb-8">Customer Reviews</h2>
         <div className="relative overflow-hidden">
-          <div className="flex animate-scroll">
+          <div className="flex animate-scroll gap-10 p-3">
             {reviews.map((review, index) => (
               <div
                 key={index}
-                className="bg-white p-6 rounded-lg shadow-lg border-2 border-purple-300 min-w-full lg:min-w-[50%] transition-all duration-300 ease-in-out"
+                className="bg-white p-8 rounded-lg shadow-lg border-2 border-purple-300 min-w-full lg:min-w-[50%] min-h-[250px] transition-all duration-300 ease-in-out"
               >
                 <div className="flex items-center mb-2">
                   <h3 className="text-xl font-semibold text-purple-800">{review.name}</h3>
@@ -65,12 +64,3 @@ function Reviews() {
 }
 
 export default Reviews;
-
-
-
-
-
-
-
-
-

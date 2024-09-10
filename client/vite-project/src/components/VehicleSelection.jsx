@@ -16,7 +16,7 @@ import firstClass from "../assets/firstClass.jpg"
 import minibus1 from "../assets/minibus1.jpg"
 import minibus2 from "../assets/minibus2.jpg"
 import firstClassVan from "../assets/firstClassVan.jpg"
-import mpv from "../assets/mpv.jpg"
+import suvs from "../assets/suv.jpg"
 import standardVan from "../assets/standardVan.jpg"
 
 
@@ -39,7 +39,14 @@ const VehicleBookingSteps = () => {
     pickupTime: '',
     returnDate: '',
     returnTime: '',
-    distance: '',estimatedTime:''
+    distance: '',estimatedTime:'',
+      // New fields for validation
+      bookingForSomeoneElse: false, // Checkbox initial value
+ 
+  someoneElseName: '', // Error for name for someone else
+  someoneElseEmail: '', // Error for email for someone else
+
+
 
   })
   const MySwal = withReactContent(Swal);
@@ -56,27 +63,34 @@ const VehicleBookingSteps = () => {
 
   const [count, setCount] = useState(0);
 
+// Updated formData with new fields for 'Booking for someone else'
+const [formData, setFormData] = useState({
+  persons: '',
+  handLuggage: '',
+  checkedLuggage: '',
+  flightNumber: '',
+  landingTime: '',
+  driverNote: '',
+  addOns: [], // Initialize as an empty array
 
+  // New fields for booking for someone else
+  bookingForSomeoneElse: false, // Checkbox initial value
+  someoneElseName: '', // Name for someone else
+  someoneElseEmail: '', // Email for someone else
+});
 
-  const [formData, setFormData] = useState({
-    persons: '',
-    handLuggage: '',
-    checkedLuggage: '',
-    flightNumber: '',
-    landingTime: '',
-  
-    driverNote: '',
-    addOns: [], // Initialize as an empty array
-  });
-  const [errors, setErrors] = useState({
-    persons: '',
-    handLuggage: '',
-    checkedLuggage: '',
-    flightNumber: '',
-    landingTime: '',
- 
-  });
+// Updated errors state with validation for new fields
+const [errors, setErrors] = useState({
+  persons: '',
+  handLuggage: '',
+  checkedLuggage: '',
+  flightNumber: '',
+  landingTime: '',
 
+  // New fields for validation
+  someoneElseName: '', // Error for name for someone else
+  someoneElseEmail: '', // Error for email for someone else
+});
 
 
   const handleChange = (e) => {
@@ -115,7 +129,7 @@ const VehicleBookingSteps = () => {
     { id: 1, name: 'Economy', price: `£ ${(data.distance*4.5).toFixed(2)}`, passengers: '4', image: `${economy}`, luggage: '2', handLuggage: '3' },
     { id: 2, name: 'Standard', price: `£ ${(data.distance * 6.5).toFixed(2)}`, passengers: '4', image: `${standard}`, luggage: '2', handLuggage: '2' },
     { id: 3, name: 'First Class', price: `£ ${(data.distance * 9.5).toFixed(2)}`, passengers: '3', image: `${firstClass}`, luggage: '2', handLuggage: '2' },
-    { id: 4, name: 'Mpv', price: `£${(data.distance * 6.2).toFixed(2)}`, passengers: '6', image: `${mpv}`, luggage: '4', handLuggage: '2' },
+    { id: 4, name: 'Mpv', price: `£${(data.distance * 6.2).toFixed(2)}`, passengers: '6', image: `${suvs}`, luggage: '4', handLuggage: '2' },
     { id: 5, name: 'Standard Van', price: `£ ${(data.distance * 6.9).toFixed(2)}`, passengers: '7', image: `${standardVan}`, luggage: '7', handLuggage: '4' },
     { id: 6, name: 'First Class Van', price: `£ ${(data.distance * 9.2).toFixed(2)}`, passengers: '5', image: `${firstClassVan}`, luggage: '5', handLuggage: '3' },
     { id: 7, name: 'Minibus', price: `£ ${(data.distance * 11.8).toFixed(2)}`, passengers: '12', image: `${minibus1}`, luggage: '8', handLuggage: '4' },
@@ -175,10 +189,6 @@ const selectVehicle = (vehicleId) => {
   setLuggage(selectedVehicle.handLuggage);
   setCheckedLuggage(selectedVehicle.luggage);
 
-  // Log the vehicle details
-  console.log("Vehicle details - Passengers:", selectedVehicle.passengers, 
-              "Hand luggage:", selectedVehicle.handLuggage, 
-              "Checked luggage:", selectedVehicle.luggage);
 
   // Move to the next step
   setActiveStep(2);
@@ -199,6 +209,8 @@ const selectVehicle = (vehicleId) => {
     setActiveStep((prevStep) => (prevStep > 1 ? prevStep - 1 : prevStep));
   };
 
+
+
   const goNext = () => {
     // Validate form data and set errors
     const newErrors = {
@@ -208,57 +220,52 @@ const selectVehicle = (vehicleId) => {
       flightNumber: formData.flightNumber ? '' : 'Flight number is required.',
       landingTime: formData.landingTime ? '' : 'Landing time is required.',
     };
-
+  
+    // If "Booking for someone else" is checked, validate name and email fields
+    if (formData.bookingForSomeoneElse) {
+      newErrors.someoneElseName = formData.someoneElseName ? '' : 'Name for someone else is required.';
+      newErrors.someoneElseEmail = formData.someoneElseEmail ? '' : 'Email for someone else is required.';
+    }
+  
     setErrors(newErrors);
-
+  
     // Check if there are any validation errors
     const hasErrors = Object.values(newErrors).some(error => error !== '');
-
+  
     if (hasErrors) {
-      return;
+      return; // Stop here if there are validation errors
     }
-
+  
     // Compute the total price based on selected add-ons
-    
     let calculatedPrice = count;
-
+  
     if (formData.addOns.includes('childSeat')) {
       calculatedPrice += 5;
     }
     if (formData.addOns.includes('meetAndGreet')) {
       calculatedPrice += 10;
     }
-
+  
     // Set the updated total price
     setTotalPrice(calculatedPrice);
-
+    console.log(finalObject);
+  
     if (isSignedInFinal) {
-      // Debug output // Set the updated total price
-      setTotalPrice(calculatedPrice);
-      const finalObject={...formData,...data};
-      setFinalObject({...formData,...data});
-      console.log(finalObject)
-
+      // Prepare the final object with all form data
+      const finalObject = { ...formData, ...data };
+  
+      setFinalObject(finalObject);
+      
+  
       // Proceed to the next step if there are no errors
       setActiveStep((prevStep) => (prevStep < 3 ? prevStep + 1 : prevStep));
+    } else {
+      signInPopUpTrue();
+      console.log("pop =" + popUp);
+  
     }
-    else {
-    
-    signInPopUpTrue();
-    console.log("pop =" + popUp)
-    
-      // MySwal.fire({
-      //   title: 'Error!',
-      //   text: 'Please Login to proceed!',
-      //   icon: 'error',
-      //   confirmButtonText: 'OK'
-      // });
-    }
-
-
-
   };
-
+  
 
   const calculatePrice = () => {
     let totalPrice = 0;
@@ -266,6 +273,23 @@ const selectVehicle = (vehicleId) => {
     if (formData.meetAndGreet) totalPrice += 10;
     return totalPrice;
   };
+
+
+
+// Function to handle checkbox toggle
+const handleCheckboxChange = (e) => {
+  const { name, checked } = e.target;
+  setFormData((prevData) => ({
+    ...prevData,
+    [name]: checked,
+    // Reset the fields if the checkbox is unchecked
+    someoneElseName: checked ? prevData.someoneElseName : '',
+    someoneElseEmail: checked ? prevData.someoneElseEmail : '',
+  }));
+};
+
+
+
 
 
 
@@ -509,7 +533,57 @@ Array.from({ length:( parseInt(UserPassenger) + 1) }, function (_, index) {
               />
             </div>
 
-            {/* Action Buttons */}
+
+  {/* Checkbox for booking for someone else */}
+  <div className="flex flex-col mb-4">
+        <label className="text-sm font-semibold text-gray-700 mb-2">
+          <input
+            type="checkbox"
+            name="bookingForSomeoneElse"
+            checked={formData.bookingForSomeoneElse}
+            onChange={handleCheckboxChange}
+            className="mr-2"
+          />
+          Booking for Someone Else
+        </label>
+      </div>
+
+ {/* Conditionally rendered fields for someone else */}
+ {formData.bookingForSomeoneElse && (
+        <>
+          <div className="flex flex-col mb-4">
+            <label className="text-sm font-semibold text-gray-700 mb-2">Name of the Person</label>
+            <input
+              type="text"
+              name="someoneElseName"
+              value={formData.someoneElseName}
+              onChange={handleChange}
+              placeholder="Enter their name"
+              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
+            />
+            {errors.someoneElseName && <p className="text-red-500 text-sm mt-1">{errors.someoneElseName}</p>}
+          </div>
+
+          <div className="flex flex-col mb-4">
+            <label className="text-sm font-semibold text-gray-700 mb-2">Email of the Person</label>
+            <input
+              type="email"
+              name="someoneElseEmail"
+              value={formData.someoneElseEmail}
+              onChange={handleChange}
+              placeholder="Enter their email"
+              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
+            />
+            {errors.someoneElseEmail && <p className="text-red-500 text-sm mt-1">{errors.someoneElseEmail}</p>}
+          </div>
+        </>
+      )}
+
+
+
+
+
+        {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row justify-between mt-6 gap-4">
               {activeStep > 1 && (
                 <button
@@ -539,7 +613,7 @@ Array.from({ length:( parseInt(UserPassenger) + 1) }, function (_, index) {
           </form>
         </div>
       )} 
-
+          
 
       {/* Payment Form */}
 

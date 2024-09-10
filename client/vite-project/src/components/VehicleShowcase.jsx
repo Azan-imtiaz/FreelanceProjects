@@ -8,7 +8,7 @@ import firstClass from "../assets/firstClass.jpg"
 import minibus1 from "../assets/minibus1.jpg"
 import minibus2 from "../assets/minibus2.jpg"
 import firstClassVan from "../assets/firstClassVan.jpg"
-import mpv from "../assets/mpv.jpg"
+import suv from "../assets/suv.jpg"
 import standardVan from "../assets/standardVan.jpg"
 
 
@@ -35,8 +35,8 @@ function VehicleShowcase() {
       description: 'Licensed Vehicle & Professional Drivers',
     },
     {
-      image: mpv,
-      name: 'MPV ',
+      image: suv,
+      name: 'SUV ',
       capacity: '6 Passengers',
       description: 'Licensed Vehicle & Professional Drivers',
     },
@@ -83,7 +83,7 @@ function VehicleShowcase() {
             </div>
           ))}
         </div>
-        <div className="text-center mt-6">
+        {/* <div className="text-center mt-6">
           <a
             href="/learn-more"
             className="inline-flex items-center text-purple-700 font-semibold hover:text-purple-900"
@@ -91,7 +91,7 @@ function VehicleShowcase() {
             Learn More
             <FaArrowRight className="ml-2" />
           </a>
-        </div>
+        </div> */}
       </div>
     </section>
   );

@@ -27,7 +27,7 @@ function App() {
     setIsMapsLoaded(true);
   };
 
-  const apiKey = "AIzaSyCvk5dpmYOKgdZsurxTmczh8pIQnPPcg1o"; // Replace with your actual API key
+  const apiKey = "AIzaSyAe0J9mB1B3KS1RfZbA8fYlhA_j0ZAWPx8"; // Replace with your actual API key
   const libraries = ['places','geometry'];
 
   return (

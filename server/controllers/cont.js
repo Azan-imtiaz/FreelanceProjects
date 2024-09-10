@@ -4,20 +4,24 @@ const nodemailer = require('nodemailer');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const stripe = require('stripe')('sk_test_51PwHSsEG3HGCzHQO3ObeOhobkg5kHhTnlW2Om4RjShTnghh3enuDPLUIREobOqUlkM48j95Dj4XuGJagQO6vpVyn00ddo6E8HK'); // Use your actual Stripe Secret Key
 
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 // Send email function
+let bookingId = generateOTP();
+
 async function sendEmail(email, metadata, receiptUrl) {
     const transporter = nodemailer.createTransport({
-        service: 'gmail', // or your email service
+        host: 'smtp.hostinger.com', // Hostinger SMTP server
+        port: 465, // Port for secure connection
+        secure: true, // Use SSL
         auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS
+            user: process.env.HOSTINGER_EMAIL_USER, // Your Hostinger email
+            pass: process.env.HOSTINGER_EMAIL_PASS // Your Hostinger email password
         }
     });
 
     const mailOptions = {
-        from: process.env.EMAIL_USER, // Use the environment variable for sender email
+        from: process.env.HOSTINGER_EMAIL_USER, // Sender email from Hostinger
         to: email,
         subject: 'Your Booking Confirmation and Receipt',
         text: `
@@ -29,6 +33,7 @@ Thank you for your payment! We’re pleased to confirm that your booking has bee
 
 Booking Details:
 
+-Booking Id:#${bookingId}
 - Number of Persons: ${metadata.persons}
 - Hand Luggage: ${metadata.handLuggage}
 - Checked Luggage: ${metadata.checkedLuggage}
@@ -42,12 +47,13 @@ Booking Details:
 - Pickup Time: ${metadata.pickupTime}
 - Distance: ${metadata.distance}
 - Estimated Travel Time: ${metadata.estimatedTime}
+${metadata.bookingForSomeoneElse ? `- Booking for: ${metadata.someoneElseName}` : ''}
 
 ---
 
-Receipt:
+Receipt link:
 
-You can view and download your payment receipt using the following link:
+You can see the reciept using the following link:
 
 ${receiptUrl}
 
@@ -68,45 +74,28 @@ Comfort Trips
     }
 }
 
-// Endpoint to handle payment and send receipt
-async function createCheckout(req, res) {
-    try {
-        // Get the JWT token from cookies
-        const token = req.cookies.token; // Assuming the cookie name is 'token'
-        
-        // Decode the JWT token
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        
-        // Extract the email from the decoded token
-        const email = decoded.email;
-        
-        // Destructure other data from request body
-        const { tokens, amount, finalObject } = req.body;
-        
-        // Create a Stripe charge
-        const charge = await stripe.charges.create({
-            amount: amount, // Amount in pence
-            currency: 'gbp',
-            description: 'Booking Payment',
-            source: tokens,
-        });
-
-        // Check if the charge was successful
-        if (charge.status === 'succeeded') {
-            // Send an email with the receipt URL
-            const receiptUrl = charge.receipt_url;
-            await sendEmail(email, finalObject, receiptUrl);
-            res.status(200).json({ success: true });
-        } else {
-            res.status(400).json({ success: false, error: 'Charge was not successful' });
+// Send OTP to user's email
+async function sendOTPEmail(email, otp) {
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.hostinger.com', // Hostinger SMTP server
+        port: 465, // Port for secure connection
+        secure: true, // Use SSL
+        auth: {
+            user: process.env.HOSTINGER_EMAIL_USER, // Your Hostinger email
+            pass: process.env.HOSTINGER_EMAIL_PASS // Your Hostinger email password
         }
-    } catch (error) {
-        console.error('Error processing payment:', error);
-        res.status(400).json({ success: false, error: error.message });
-    }
+    });
+    const mailOptions = {
+        from: process.env.HOSTINGER_EMAIL_USER,
+        to: email,
+        subject: 'Your OTP Code',
+        text: `Your OTP code is ${otp}. It will expire in 10 minutes.`
+    };
+
+    await transporter.sendMail(mailOptions);
 }
-
-
+// // Send email function
+// let bookingId=generateOTP();
 // async function sendEmail(email, metadata, receiptUrl) {
 //     const transporter = nodemailer.createTransport({
 //         service: 'gmail', // or your email service
@@ -119,14 +108,47 @@ async function createCheckout(req, res) {
 //     const mailOptions = {
 //         from: process.env.EMAIL_USER, // Use the environment variable for sender email
 //         to: email,
-//         subject: 'Booking Confirmed',
-//         text: `Payment was successful. Here is your booking information:
+//         subject: 'Your Booking Confirmation and Receipt',
+//         text: `
+// Dear Customer,
 
-//         Booking Details: ${JSON.stringify(metadata)}
+// Thank you for your payment! We’re pleased to confirm that your booking has been successfully processed. Below are the details of your booking:
 
-//         Receipt URL: ${receiptUrl}
+// ---
 
-//         Thank you for your purchase!`
+// Booking Details:
+
+// -Booking Id:#${bookingId}
+// - Number of Persons: ${metadata.persons}
+// - Hand Luggage: ${metadata.handLuggage}
+// - Checked Luggage: ${metadata.checkedLuggage}
+// - Flight Number: ${metadata.flightNumber}
+// - Landing Time: ${new Date(metadata.landingTime).toLocaleString()}
+// - Driver Note: ${metadata.driverNote}
+// - Add-Ons: ${metadata.addOns.join(', ')}
+// - Pickup Location: ${metadata.from}
+// - Destination: ${metadata.to}
+// - Pickup Date: ${new Date(metadata.pickupDate).toLocaleDateString()}
+// - Pickup Time: ${metadata.pickupTime}
+// - Distance: ${metadata.distance}
+// - Estimated Travel Time: ${metadata.estimatedTime}
+// ${metadata.bookingForSomeoneElse ? `- Booking for: ${metadata.someoneElseName}` : ''}
+
+// ---
+
+// Receipt:
+
+// You can view and download your payment receipt using the following link:
+
+// ${receiptUrl}
+
+// If you have any questions or need further assistance, feel free to contact us.
+
+// Thank you for choosing our service!
+
+// Best regards,
+// Comfort Trips
+// `
 //     };
 
 //     try {
@@ -138,68 +160,52 @@ async function createCheckout(req, res) {
 // }
 
 // // Endpoint to handle payment and send receipt
-// async function createCheckout(req, res) {
-//     try {
-//         // Get the JWT token from cookies
-//         const token = req.cookies.token; // Assuming the cookie name is 'token'
+async function createCheckout(req, res) {
+    try {
+        // Get the JWT token from cookies
+        console.log("Stripe Secret Key: " + process.env.STRIPE_SECRET_KEY);
+        const token = req.cookies.token; // Assuming the cookie name is 'token'
+        
+        // Decode the JWT token
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        
+        // Extract the email from the decoded token
+        const email = decoded.email;
+        
+        // Destructure other data from request body
+        const { tokens, amount, finalObject } = req.body;
 
-//         // Decode the JWT token
-//         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        // Ensure the amount is an integer
+        const amountInPence = Math.round(amount); // Convert to integer
 
-//         // Extract the email from the decoded token
-//         const email = decoded.email;
+        console.log("Amount in pence: " + amountInPence);
+        
+        // Create a Stripe charge
+        const charge = await stripe.charges.create({
+            amount: amountInPence, // Amount in pence
+            currency: 'gbp',
+            description: 'Booking Payment',
+            source: tokens,
+        });
 
-//         // Destructure other data from request body
-//         const { tokens, amount, finalObject } = req.body;
-
-//         // Create a Stripe charge
-//         const charge = await stripe.charges.create({
-//             amount: amount, // Amount in pence
-//             currency: 'gbp',
-//             description: 'Booking Payment',
-//             source: tokens,
-//         });
-
-//         // Check if the charge was successful
-//         if (charge.status === 'succeeded') {
-//             // Send an email with the receipt URL
-//             const receiptUrl = charge.receipt_url;
-//             await sendEmail(email, finalObject, receiptUrl);
-//             res.status(200).json({ success: true });
-//         } else {
-//             res.status(400).json({ success: false, error: 'Charge was not successful' });
-//         }
-//     } catch (error) {
-//         console.error('Error processing payment:', error);
-//         res.status(400).json({ success: false, error: error.message });
-//     }
-// }
-
-// // Endpoint to create a Stripe Checkout session
-// async function createCheckout (req, res)  {
-//     try {
-//         const { token, amount,finalObject } = req.body;
-//     console.log(finalObject)
-
-//     const charge = await stripe.charges.create({
-//           amount: amount, // Amount in pence
-//           currency: 'gbp',
-//           description: 'Booking Payment',
-//           source: token,
-
-//         });
-
-//         // console.log(charge);
-//         await sendEmail(email,finalObject);
-
-//         res.status(200).json({ success: true });
-//       } catch (error) {
-//         console.error(error.message);
-//         res.status(400).json({ success: false, error: error.message });
-//       }
-// };
-
-
+        // Check if the charge was successful
+        if (charge.status === 'succeeded') {
+            // Send an email with the receipt URL
+            const receiptUrl = charge.receipt_url;
+            await sendEmail(email, finalObject, receiptUrl);
+            console.log("Booking for someone else: " + finalObject.bookingForSomeoneElse);
+            if (finalObject.bookingForSomeoneElse) {
+                await sendEmail(finalObject.someoneElseEmail, finalObject, receiptUrl);
+            }
+            res.status(200).json({ success: true });
+        } else {
+            res.status(400).json({ success: false, error: 'Charge was not successful' });
+        }
+    } catch (error) {
+        console.error('Error processing payment:', error);
+        res.status(400).json({ success: false, error: error.message });
+    }
+}
 
 
 
@@ -233,24 +239,24 @@ function generateOTP() {
     return Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
 }
 
-// Send OTP to user's email
-async function sendOTPEmail(email, otp) {
-    const transporter = nodemailer.createTransport({
-        service: 'gmail', // or your email service
-        auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS
-        }
-    });
-    const mailOptions = {
-        from: 'testazan123@gmail.com',
-        to: email,
-        subject: 'Your OTP Code',
-        text: `Your OTP code is ${otp},It will be Expired in 10 minutes.`
-    };
+// // Send OTP to user's email
+// async function sendOTPEmail(email, otp) {
+//     const transporter = nodemailer.createTransport({
+//         service: 'gmail', // or your email service
+//         auth: {
+//             user: process.env.EMAIL_USER,
+//             pass: process.env.EMAIL_PASS
+//         }
+//     });
+//     const mailOptions = {
+//         from: 'testazan123@gmail.com',
+//         to: email,
+//         subject: 'Your OTP Code',
+//         text: `Your OTP code is ${otp},It will be Expired in 10 minutes.`
+//     };
 
-    await transporter.sendMail(mailOptions);
-}
+//     await transporter.sendMail(mailOptions);
+// }
 
 // Register endpoint
 async function registerFunc(req, res) {
