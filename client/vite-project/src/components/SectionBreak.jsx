@@ -1,6 +1,6 @@
 import React from 'react';
 import { FaStar } from 'react-icons/fa'; 
-import breaker from "../assets/Breaker.png";
+import breaker from "../assets/breaker.png";
 
 function SectionBreak() {
   return (

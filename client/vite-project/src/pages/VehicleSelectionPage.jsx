@@ -9,6 +9,7 @@ import SectionBreak from '../components/SectionBreak';
 import CustomerService from '../components/CustomerService';
 import Reviews from '../components/Feadback';
 
+
 const VehicleSelectionPage = () => {
   return (
     <div className="App ">
@@ -16,9 +17,13 @@ const VehicleSelectionPage = () => {
             
              <main className="custom-scrollbar  container mx-auto  p-[0.5px] lg:p-4 pt-16 mt-8 ">
                <VehicleSelection />
+               <SectionBreak /> 
                <InfoBoxes />
+               <SectionBreak /> 
                <VehicleShowcase />
+               <SectionBreak /> 
                <HowItWorks />
+               
                <SectionBreak />
                <CustomerService/>
                <SectionBreak />
