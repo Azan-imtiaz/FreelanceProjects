@@ -10,7 +10,8 @@ const cors = require("cors");
 
 // Configure CORS with specific origin and credentials
 app.use(cors({
-  origin: 'http://localhost:5173', // Replace this with your React app's actual URL
+  // origin: 'http://localhost:5173', // Replace this with your React app's actual URL
+  origin:'https://comingsoon.comforttrips.co.uk/',
   credentials: true, // Allow credentials (cookies) to be sent
 }));
 
