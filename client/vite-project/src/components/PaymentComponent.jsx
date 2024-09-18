@@ -101,6 +101,7 @@ const PaymentForm = ({ totalPrice,finalObject }) => {
   const elements = useElements();
   const [error, setError] = useState(null);
   const [processing, setProcessing] = useState(false);
+  const [processing2, setProcessing2] = useState("Pay With Cash");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -138,25 +139,127 @@ const PaymentForm = ({ totalPrice,finalObject }) => {
     }
     setProcessing(false);
   };
+  async  function handlePayWithCash(){
+   try{
+    setProcessing2("Processing...")
+    const response = await fetch('http://localhost:3000/api/payOnCash', {
+      method: 'POST',  credentials: 'include',  // This ensures cookies are sent
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount: totalPrice ,finalObject }) // Convert pounds to pence
+    });
 
+    const data = await response.json();
+    setProcessing2("Pay With Cash")
+    
+    if (data.success) {
+      MySwal.fire({
+        title: 'Booking Confirmed!',
+        text: 'Your car has been successfully booked. A confirmation email with all the details has been sent to you.',
+        icon: 'success',
+        confirmButtonText: 'Great!'
+      });
+    } else {
+      MySwal.fire({
+        title: 'Something Went Wrong!',
+        text: 'Something Went Wrong.Try again later',
+        icon: 'error',
+        confirmButtonText: 'Ok!'
+      });
+    }
+   }
+   catch(err){
+    setProcessing2("Pay With Cash")
+    
+    MySwal.fire({
+      title: 'Something Went Wrong!',
+      text: 'Try again later',
+      icon: 'error',
+      confirmButtonText: 'Ok!'
+    });
+  
+   }
+   
+    
+  }
   return (
-    <div className="max-w-lg mx-auto mt-10 p-8 bg-gray-50 rounded-lg shadow-lg">
-      <h1 className="text-2xl font-semibold mb-6 text-gray-800">Complete Your Payment</h1>
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <CardSection />
-        <div className="text-lg font-medium mb-4">
-          <p>Total Amount: <span className="text-blue-600">{totalPrice.toFixed(2)} £</span></p>
-        </div>
-        <button 
-          type="submit" 
-          disabled={processing} 
-          className={`w-full py-3 px-6 bg-blue-600 text-white rounded-lg shadow-md ${processing ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'}`}
-        >
-          {processing ? 'Processing...' : 'Pay Now'}
+    <div className="max-w-lg mx-auto mt-10 p-8 bg-gray-50 rounded-lg shadow-lg"> 
+    <h1 className="text-2xl font-semibold mb-6 text-gray-800">Complete Your Payment</h1>
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <CardSection />
+      <div className="text-lg font-medium mb-4">
+        <p>Total Amount: <span className="text-blue-600">{totalPrice.toFixed(2)} £</span></p>
+      </div>
+      <button 
+        type="submit" 
+        disabled={processing} 
+        className={`w-full py-3 px-6 bg-blue-600 text-white rounded-lg shadow-md ${processing ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'}`}
+      >
+        {processing ? 'Processing...' : 'Pay Now'}
+      </button>
+      {error && <div className="text-red-500 mt-2 text-sm">{error}</div>}
+  
+      {/* Additional payment method */}
+      <div className="mt-6 text-center">
+        <p className="text-lg font-semibold text-gray-700 mb-4">Or you can pay with cash:</p>
+        <button
+          type="button"
+          className="w-full py-3 px-6 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition duration-300"
+        onClick={handlePayWithCash}
+       >
+         {processing2}
         </button>
-        {error && <div className="text-red-500 mt-2 text-sm">{error}</div>}
-      </form>
-    </div>
+      </div>
+    </form>
+  </div>
+  
+  
+    //   <div className="max-w-lg mx-auto mt-10 p-8 bg-gray-50 rounded-lg shadow-lg"> 
+  //   <h1 className="text-2xl font-semibold mb-6 text-gray-800">Complete Your Payment</h1>
+  //   <form onSubmit={handleSubmit} className="space-y-6">
+  //     <CardSection />
+  //     <div className="text-lg font-medium mb-4">
+  //       <p>Total Amount: <span className="text-blue-600">{totalPrice.toFixed(2)} £</span></p>
+  //     </div>
+  //     <button 
+  //       type="submit" 
+  //       disabled={processing} 
+  //       className={`w-full py-3 px-6 bg-blue-600 text-white rounded-lg shadow-md ${processing ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'}`}
+  //     >
+  //       {processing ? 'Processing...' : 'Pay Now'}
+  //     </button>
+  //     {error && <div className="text-red-500 mt-2 text-sm">{error}</div>}
+  
+  //     {/* Pay with Cash Button */}
+  //     <div className="mt-4 text-center">
+  //       <button
+  //         type="button"
+  //         className="w-full py-3 px-6 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition duration-300"
+  //       >
+  //         Pay with Cash
+  //       </button>
+  //     </div>
+  //   </form>
+  // </div>
+
+  
+  
+    // <div className="max-w-lg mx-auto mt-10 p-8 bg-gray-50 rounded-lg shadow-lg">
+    //   <h1 className="text-2xl font-semibold mb-6 text-gray-800">Complete Your Payment</h1>
+    //   <form onSubmit={handleSubmit} className="space-y-6">
+    //     <CardSection />
+    //     <div className="text-lg font-medium mb-4">
+    //       <p>Total Amount: <span className="text-blue-600">{totalPrice.toFixed(2)} £</span></p>
+    //     </div>
+    //     <button 
+    //       type="submit" 
+    //       disabled={processing} 
+    //       className={`w-full py-3 px-6 bg-blue-600 text-white rounded-lg shadow-md ${processing ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'}`}
+    //     >
+    //       {processing ? 'Processing...' : 'Pay Now'}
+    //     </button>
+    //     {error && <div className="text-red-500 mt-2 text-sm">{error}</div>}
+    //   </form>
+    // </div>
   );
 };
 

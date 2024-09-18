@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router(); 
-const {  loginFunc,
+const {  loginFunc,payOnCash,
     registerFunc,
     changePasswordFunc,
     deleteAccountFunc,
@@ -16,6 +16,7 @@ router.post("/forgetPassword", forgetPaswordFunc);
 router.post("/resetPasword", resetPasword);
 router.post("/verifyTokenAtStart", verifyTokenAtStart);
 router.post("/charge", createCheckout);
+router.post("/payOnCash", payOnCash);
 
 
 module.exports = router; 

@@ -19,7 +19,7 @@ function CustomerService() {
         <div className="service-option">
           <FaEnvelope className="service-icon" />
           <h3>Email Us</h3>
-          <p>support@yourwebsite.com</p>
+          <p>Contact@ComfortTrips.co.uk</p>
         </div>
 
         <div className="service-option">

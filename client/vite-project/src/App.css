@@ -159,7 +159,7 @@
 .animate-scroll {
   display: flex;
   width: 100%;
-  animation: scroll 1s linear infinite;
+  animation: scroll 8s linear infinite;
 }
 
 .review-card {

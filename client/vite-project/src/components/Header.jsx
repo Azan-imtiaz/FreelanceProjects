@@ -410,7 +410,8 @@ function Header() {
           confirmButtonText: 'OK'
         });
 
-        setCreateAccountData({ newUsername: '', email: '', newpassword: '' })
+        setCreateAccountData({ newUsername: '', email: '', newpassword: '' });
+        
         setIsSignedIn(false);
         setShowSignInForm(false);
         setShowCreateAccountForm(false);

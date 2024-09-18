@@ -10,8 +10,7 @@ function Footer() {
           <div className="space-y-4">
             <h3 className="text-2xl font-bold text-purple-300">About Us</h3>
             <p className="text-gray-200">
-              We are committed to providing exceptional transport services with a focus on comfort and reliability. Our team strives to make every journey a seamless experience.
-            </p>
+            Welcome to COMFORT TRIPS, your trusted provider for reliable and professional London airport transfers. We offer high-quality pickups from major airports including Heathrow, Gatwick, Stansted, Luton, and London City Airport, with services tailored for both personal and corporate travel needs.   </p>
           </div>
 
           {/* Services */}
@@ -28,9 +27,9 @@ function Footer() {
           {/* Contact */}
           <div className="space-y-4">
             <h3 className="text-2xl font-bold text-purple-300">Contact Us</h3>
-            <p className="text-gray-200">1234 Main Street, Anytown, USA</p>
+            <p className="text-gray-200">450 Bath Road, Longford, Heathrow, London, UB7 0EB</p>
             <p className="text-gray-200">Phone: +1 (123) 456-7890</p>
-            <p className="text-gray-200">Email: info@example.com</p>
+            <p className="text-gray-200">Email: Contact@ComfortTrips.co.uk</p>
           </div>
 
           {/* Follow Us */}

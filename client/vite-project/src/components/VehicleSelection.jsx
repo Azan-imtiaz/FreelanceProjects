@@ -509,19 +509,28 @@ Array.from({ length:( parseInt(UserPassenger) + 1) }, function (_, index) {
                 className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-500"
               />
               {errors.flightNumber && <p className="text-red-500 text-sm mt-1">{errors.flightNumber}</p>}
+            
             </div>
            
             <div className="flex flex-col mb-6">
-              <label className="text-sm font-semibold text-gray-700 mb-2">Landing Time</label>
+              
+              <label className="text-sm font-semibold text-gray-700 mb-2">Landing Date/Time</label>
               <input
+
                 type="datetime-local"
                 name="landingTime"
                 value={formData.landingTime}
                 onChange={handleChange}
                 className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+              
+
+
               />
+              
               {errors.landingTime && <p className="text-red-500 text-sm mt-1">{errors.landingTime}</p>}
+            
             </div>
+          
             <div className="flex flex-col mb-6">
               <label className="text-sm font-semibold text-gray-700 mb-2">Comment or Note for Drivers</label>
               <textarea
@@ -531,6 +540,7 @@ Array.from({ length:( parseInt(UserPassenger) + 1) }, function (_, index) {
                 placeholder="Enter any comments or notes for the drivers"
                 className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 h-32"
               />
+          
             </div>
 
 
@@ -617,10 +627,21 @@ Array.from({ length:( parseInt(UserPassenger) + 1) }, function (_, index) {
 
       {/* Payment Form */}
 
+
+      {/* {activeStep === 3 && (
+  <div>
+    <Button>Add Cash</Button>
+    <PaymentComponent totalPrice={totalPrice} finalObject={finalObject} />
+  </div>
+)} */}
+
+
+
+
       {activeStep === 3 && (
          <div>
-        {   activeStep === 3 && <PaymentComponent totalPrice={totalPrice}    finalObject={finalObject}   />   }
-       </div>) }
+        {   activeStep === 3 &&  <PaymentComponent totalPrice={totalPrice}    finalObject={finalObject}   />   }
+       </div> ) }
 
        <div className="flex flex-col sm:flex-row justify-between mt-6 gap-4">
               {activeStep > 1 && activeStep === 3 && (
@@ -636,8 +657,7 @@ Array.from({ length:( parseInt(UserPassenger) + 1) }, function (_, index) {
               </div>
 
       {/* Trip Details Sidebar */}
-      {/* Trip Details Sidebar */}
-      <div className="bg-gradient-to-r from-white via-gray-50 to-gray-100 rounded-lg shadow-lg p-4 lg:p-6 mt-6 mx-auto border border-gray-300 w-full lg:max-w-2xl md:max-w-lg sm:max-w-md">
+            <div className="bg-gradient-to-r from-white via-gray-50 to-gray-100 rounded-lg shadow-lg p-4 lg:p-6 mt-6 mx-auto border border-gray-300 w-full lg:max-w-2xl md:max-w-lg sm:max-w-md">
         <h3 className="text-xl lg:text-2xl font-semibold mb-4 text-purple-800 border-b border-purple-300 pb-2">Trip Details</h3>
 
         <div className="space-y-4">

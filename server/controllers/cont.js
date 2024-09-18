@@ -3,9 +3,70 @@ const nodemailer = require('nodemailer');
 
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
-
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+
+
+async function sendEmailWithoutPayment(email, metadata,amount) {
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.hostinger.com', // Hostinger SMTP server
+        port: 465, // Port for secure connection
+        secure: true, // Use SSL
+        auth: {
+            user: process.env.HOSTINGER_EMAIL_USER, // Your Hostinger email
+            pass: process.env.HOSTINGER_EMAIL_PASS // Your Hostinger email password
+        }
+    });
+
+    const mailOptions = {
+        from: process.env.HOSTINGER_EMAIL_USER, // Sender email from Hostinger
+        to: email,
+        subject: 'Your Booking Confirmation and Receipt',
+        text: `
+Dear Customer,
+
+Thank you for your payment! We’re pleased to confirm that your booking has been successfully processed. Below are the details of your booking:
+
+---
+
+Booking Details:
+
+-Booking Id:#${bookingId}
+- Number of Persons: ${metadata.persons}
+- Hand Luggage: ${metadata.handLuggage}
+- Checked Luggage: ${metadata.checkedLuggage}
+- Flight Number: ${metadata.flightNumber}
+- Landing Time: ${new Date(metadata.landingTime).toLocaleString()}
+- Driver Note: ${metadata.driverNote}
+- Add-Ons: ${metadata.addOns.join(', ')}
+- Pickup Location: ${metadata.from}
+- Destination: ${metadata.to}
+- Pickup Date: ${new Date(metadata.pickupDate).toLocaleDateString()}
+- Pickup Time: ${metadata.pickupTime}
+- Distance: ${metadata.distance}
+- Estimated Travel Time: ${metadata.estimatedTime}
+- Payment Will be cash: ${amount} Pounds
+${metadata.bookingForSomeoneElse ? `- Booking for: ${metadata.someoneElseName}` : ''}
+
+---
+
+If you have any questions or need further assistance, feel free to contact us.
+
+Thank you for choosing our service!
+
+Best regards,
+Comfort Trips
+`
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log('Email sent successfully.');
+    } catch (error) {
+        console.error('Error sending email:', error);
+    }
+}
+
+
 // Send email function
 let bookingId = generateOTP();
 
@@ -193,7 +254,8 @@ async function createCheckout(req, res) {
             // Send an email with the receipt URL
             const receiptUrl = charge.receipt_url;
             await sendEmail(email, finalObject, receiptUrl);
-            console.log("Booking for someone else: " + finalObject.bookingForSomeoneElse);
+            await sendEmail("Bookings@ComfortTrips.co.uk",finalObject,receiptUrl);
+     
             if (finalObject.bookingForSomeoneElse) {
                 await sendEmail(finalObject.someoneElseEmail, finalObject, receiptUrl);
             }
@@ -602,11 +664,49 @@ async function resetPasword(req, res) {
 };
 
 
+
+
+async function payOnCash(req, res) {
+    try {
+      console.log("hello world")
+      
+        const token = req.cookies.token; // Assuming the cookie name is 'token'
+        
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        
+        const email = decoded.email;
+        
+        const { amount, finalObject } = req.body;
+
+        
+        
+           
+            await sendEmailWithoutPayment(email, finalObject,amount);
+            await sendEmailWithoutPayment("Bookings@ComfortTrips.co.uk",finalObject,amount);
+     
+            if (finalObject.bookingForSomeoneElse) {
+                await sendEmail(finalObject.someoneElseEmail, finalObject, receiptUrl);
+            }
+            res.status(200).json({ success: true });
+        
+    } catch (error) {
+        console.error('Error processing payment:', error);
+        res.status(400).json({ success: false, error: error.message });
+    }
+}
+
+
+
+
+
+
+
+
 module.exports = {
     loginFunc,
     registerFunc,
     changePasswordFunc,
     deleteAccountFunc,
-    signOutFunc, verifyOTPFunc
+    signOutFunc, verifyOTPFunc,payOnCash
     , forgetPaswordFunc, resetPasword, verifyTokenAtStart, createCheckout
 };

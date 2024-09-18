@@ -79,7 +79,10 @@ import React from 'react';
 import standardVan from "../assets/standardVan.jpg";
  import EasyBooking from "../assets/EasyBooking.jpg";
  import support from "../assets/support.jpg";
- import ReliableTransfer from "../assets/ReliableTransfer.jpg";
+//  import ReliableTransfer from "../assets/ReliableTransfer.jpg";
+
+ import services2 from "../assets/services.jpg";
+
  import comfort from "../assets/comfort.jpg";
 
 function InfoBoxes() {
@@ -89,7 +92,7 @@ function InfoBoxes() {
       description: `We offer dependable transfer services, ensuring timely arrival to your destination. Our drivers are 
       highly trained professionals with years of experience. Whether you're heading to the airport or an important event, 
       we've got you covered with smooth, on-time transfers and personalized service.`,
-      imageUrl: ReliableTransfer,
+      imageUrl: services2,
     },
     {
       title: 'Comfortable Rides',
