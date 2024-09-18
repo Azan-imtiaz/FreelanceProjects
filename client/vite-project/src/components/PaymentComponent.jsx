@@ -120,7 +120,8 @@ const PaymentForm = ({ totalPrice,finalObject }) => {
       return;
     }
 
-    const response = await fetch('http://localhost:3000/api/charge', {
+    // const response = await fetch('http://localhost:3000/api/charge', {
+    const response = await fetch('https://comforttrips.co.uk:3004/api/charge', {
       method: 'POST',  credentials: 'include',  // This ensures cookies are sent
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ tokens: token.id, amount: totalPrice * 100,finalObject }) // Convert pounds to pence
@@ -142,7 +143,8 @@ const PaymentForm = ({ totalPrice,finalObject }) => {
   async  function handlePayWithCash(){
    try{
     setProcessing2("Processing...")
-    const response = await fetch('http://localhost:3000/api/payOnCash', {
+    // const response = await fetch('http://localhost:3000/api/payOnCash', {
+    const response = await fetch('https://comforttrips.co.uk:3004/api/payOnCash', {
       method: 'POST',  credentials: 'include',  // This ensures cookies are sent
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ amount: totalPrice ,finalObject }) // Convert pounds to pence
