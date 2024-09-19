@@ -306,7 +306,7 @@ const BookingForm = () => {
               className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               disabled={isSpin}
             >
-              {isSpin ? <Spinner animation="border" size="sm" /> : 'Book Now'}
+              {isSpin ? <Spinner animation="border" size="sm" /> : 'Search'}
             </button>
           </div>
         </form>
