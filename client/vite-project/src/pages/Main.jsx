@@ -8,6 +8,7 @@ import HowItWorks from "../components/HowItWorks";
 import SectionBreak from '../components/SectionBreak';
 import CustomerService from '../components/CustomerService';
 import Reviews from '../components/Feadback';
+import AboutUs from "../components/AboutUs";
 
 
 const Main = () => {
@@ -24,6 +25,8 @@ const Main = () => {
                <SectionBreak />
                <HowItWorks />
                <SectionBreak />
+              <AboutUs />
+              <SectionBreak />
                <CustomerService/>
                <SectionBreak />
                <Reviews />

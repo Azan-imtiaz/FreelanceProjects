@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import suv from "../assets/suv.jpg";
+
 import {
   FaCheckCircle, FaCar, FaClipboardList, FaCreditCard, FaArrowLeft, FaArrowRight, FaUser, FaSuitcase, FaBriefcase
 } from 'react-icons/fa';
@@ -126,14 +127,14 @@ const [errors, setErrors] = useState({
   ];
 
   const vehicles = [
-    { id: 1, name: 'Economy', price: `£ ${(data.distance*4.5).toFixed(2)}`, passengers: '4', image: `${economy}`, luggage: '2', handLuggage: '3' },
-    { id: 2, name: 'Standard', price: `£ ${(data.distance * 6.5).toFixed(2)}`, passengers: '4', image: `${standard}`, luggage: '2', handLuggage: '2' },
-    { id: 3, name: 'First Class', price: `£ ${(data.distance * 9.5).toFixed(2)}`, passengers: '3', image: `${firstClass}`, luggage: '2', handLuggage: '2' },
-    { id: 4, name: 'Mpv', price: `£${(data.distance * 6.2).toFixed(2)}`, passengers: '6', image: `${suvs}`, luggage: '4', handLuggage: '2' },
-    { id: 5, name: 'Standard Van', price: `£ ${(data.distance * 6.9).toFixed(2)}`, passengers: '7', image: `${standardVan}`, luggage: '7', handLuggage: '4' },
-    { id: 6, name: 'First Class Van', price: `£ ${(data.distance * 9.2).toFixed(2)}`, passengers: '5', image: `${firstClassVan}`, luggage: '5', handLuggage: '3' },
-    { id: 7, name: 'Minibus', price: `£ ${(data.distance * 11.8).toFixed(2)}`, passengers: '12', image: `${minibus1}`, luggage: '8', handLuggage: '4' },
-    { id: 8, name: 'Minibus', price: `£ ${(data.distance * 12.4).toFixed(2)}`, passengers: '14', image: `${minibus2}`, luggage: '10', handLuggage: '14' },
+    { id: 1, name: 'Vw jatta or similar', price: `£ ${(data.distance*4.5).toFixed(2)}`, passengers: '3', image: `${economy}`, luggage: '2', handLuggage: '2' },
+    { id: 2, name: 'Kia niro or similar', price: `£ ${(data.distance * 6.5).toFixed(2)}`, passengers: '4', image: `${standard}`, luggage: '2', handLuggage: '2' },
+    { id: 3, name: 'Mercedes e class or similar', price: `£ ${(data.distance * 9.5).toFixed(2)}`, passengers: '3', image: `${firstClass}`, luggage: '2', handLuggage: '2' },
+    { id: 4, name: 'Toyota voxy or similar', price: `£${(data.distance * 6.2).toFixed(2)}`, passengers: '5', image: `${suvs}`, luggage: '3', handLuggage: '3' },
+    { id: 5, name: 'Mercedes v class or similar', price: `£ ${(data.distance * 6.9).toFixed(2)}`, passengers: '6', image: `${standardVan}`, luggage: '5', handLuggage: '3' },
+    { id: 6, name: 'Vw transporter, ford tourneo or similar', price: `£ ${(data.distance * 9.2).toFixed(2)}`, passengers: '8', image: `${firstClassVan}`, luggage: '8', handLuggage: '8' },
+    // { id: 7, name: 'Vw transporter, ford tourneo or similar', price: `£ ${(data.distance * 11.8).toFixed(2)}`, passengers: '12', image: `${minibus1}`, luggage: '8', handLuggage: '4' },
+    { id: 8, name: 'Renauld traffic sport, vw transporter or similar', price: `£ ${(data.distance * 12.4).toFixed(2)}`, passengers: '14', image: `${minibus2}`, luggage: '14', handLuggage: '10' },
 ];
 
 const selectVehicle = (vehicleId) => {

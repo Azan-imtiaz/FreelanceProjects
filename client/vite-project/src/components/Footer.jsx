@@ -29,6 +29,7 @@ function Footer() {
             <h3 className="text-2xl font-bold text-purple-300">Contact Us</h3>
             <p className="text-gray-200">450 Bath Road, Longford, Heathrow, London, UB7 0EB</p>
             <p className="text-gray-200">Phone: +1 (123) 456-7890</p>
+            <p className="text-gray-200">Phone: +447474687168</p>
             <p className="text-gray-200">Email: Contact@ComfortTrips.co.uk</p>
           </div>
 

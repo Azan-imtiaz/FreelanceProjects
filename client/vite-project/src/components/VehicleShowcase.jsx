@@ -18,46 +18,41 @@ function VehicleShowcase() {
   const vehicles = [
     {
       image: economy,
-      name: 'Economy',
-      capacity: '4 Passengers',
+      name: 'Vw jatta or similar',
+      capacity: '3 Passengers',
       description: 'Licensed Vehicle & Professional Drivers',
     },
     {
       image:standard,
-      name: 'Standard',
+      name: 'Kia niro or similar',
       capacity: '4 Passengers',
       description: 'Licensed Vehicle & Professional Drivers',
     },
     {
       image: firstClass,
-      name: 'First Class',
+      name: 'Mercedes e class or similar',
       capacity: '3 Passengers',
       description: 'Licensed Vehicle & Professional Drivers',
     },
     {
       image: suv,
-      name: 'SUV ',
-      capacity: '6 Passengers',
+      name: 'Toyota voxy or similar ',
+      capacity: '5 Passengers',
       description: 'Licensed Vehicle & Professional Drivers',
     },
     {
       image: standardVan ,
-      name: 'Standard Van',
-      capacity: '7 Passengers',
-      description: 'Licensed Vehicle & Professional Drivers',
-    },{
-      image: firstClassVan ,
-      name: 'First class van',
+      name: 'Mercedes v class or similar',
       capacity: '6 Passengers',
       description: 'Licensed Vehicle & Professional Drivers',
     },{
-      image: minibus1,
-      name: 'Mini bus  ',
-      capacity: '12 Passengers',
+      image: firstClassVan ,
+      name: 'Vw transporter, ford tourneo or similar',
+      capacity: '8 Passengers',
       description: 'Licensed Vehicle & Professional Drivers',
     },{
-      image: minibus2,
-      name: 'Mini bus  ',
+      image: minibus1,
+      name: 'Renauld traffic sport, vw transporter or similar ',
       capacity: '14 Passengers',
       description: 'Licensed Vehicle & Professional Drivers',
     }
