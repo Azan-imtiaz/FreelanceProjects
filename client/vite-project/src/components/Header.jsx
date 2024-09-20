@@ -41,6 +41,9 @@ function Header() {
 
 
   useEffect(()=>{
+   
+   console.log("hello world"+ import.meta.env.VITE_API_BASE_URL);
+   
     console.log("isSignedInFinal"+isSignedInFinal);
     async function verifyT(){
       try{
