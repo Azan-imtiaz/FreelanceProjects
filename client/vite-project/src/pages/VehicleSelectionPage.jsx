@@ -28,7 +28,7 @@ const VehicleSelectionPage = () => {
                <SectionBreak />
               
                <CustomerService/>
-               <SectionBreak />
+              
                <Reviews />
 
              </main>

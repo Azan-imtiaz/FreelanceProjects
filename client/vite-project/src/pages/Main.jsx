@@ -28,7 +28,7 @@ const Main = () => {
               <AboutUs />
               <SectionBreak />
                <CustomerService/>
-               <SectionBreak />
+               
                <Reviews />
              </main>
              <Footer />
