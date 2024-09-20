@@ -19,7 +19,7 @@ const Main = () => {
                <BookingForm />
              
                <SectionBreak />
-               {/* <InfoBoxes />
+               <InfoBoxes />
                <SectionBreak />
                <VehicleShowcase />
                <SectionBreak />
@@ -29,7 +29,7 @@ const Main = () => {
               <SectionBreak />
                <CustomerService/>
                <SectionBreak />
-               <Reviews /> */}
+               <Reviews />
              </main>
              <Footer />
            </div>
