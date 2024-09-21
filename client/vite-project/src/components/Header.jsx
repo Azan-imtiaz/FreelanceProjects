@@ -941,7 +941,7 @@ signOutFinal();
             >
               {/* Username Input */}
               <label htmlFor="username" className="block mb-2 text-gray-700 font-medium">
-                Username:
+                Email:
               </label>
               <input
                 type="text"
@@ -949,10 +949,10 @@ signOutFinal();
                 value={signInData.username}
                 onChange={handleInputChange}
                 className="w-full mb-4 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none"
-                placeholder="Enter your username"
+                placeholder="Enter your Email"
               />
               {signInErrors.username && (
-                <p className="text-red-500 text-sm mb-2">Username is required</p>
+                <p className="text-red-500 text-sm mb-2">Email is required</p>
               )}
 
               {/* Password Input */}

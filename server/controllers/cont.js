@@ -31,6 +31,8 @@ Thank you for your payment! We’re pleased to confirm that your booking has bee
 Booking Details:
 
 -Booking Id:#${bookingId}
+- Name: ${metadata.name}
+- Phone No: ${metadata. phoneNumber}
 - Number of Persons: ${metadata.persons}
 - Hand Luggage: ${metadata.handLuggage}
 - Checked Luggage: ${metadata.checkedLuggage}
@@ -46,6 +48,8 @@ Booking Details:
 - Estimated Travel Time: ${metadata.estimatedTime}
 - Payment Will be cash: ${amount} Pounds
 ${metadata.bookingForSomeoneElse ? `- Booking for: ${metadata.someoneElseName}` : ''}
+${metadata.bookingForSomeoneElse ? `- Name: ${metadata.someoneElseEmail}` : ''}
+${metadata.someoneElsePhone ? `- Phone No: ${metadata.someoneElsePhone}` : ''}
 
 ---
 
@@ -95,6 +99,8 @@ Thank you for your payment! We’re pleased to confirm that your booking has bee
 Booking Details:
 
 -Booking Id:#${bookingId}
+- Name: ${metadata.name}
+- Phone No: ${metadata.phoneNumber}
 - Number of Persons: ${metadata.persons}
 - Hand Luggage: ${metadata.handLuggage}
 - Checked Luggage: ${metadata.checkedLuggage}
@@ -109,6 +115,8 @@ Booking Details:
 - Distance: ${metadata.distance}
 - Estimated Travel Time: ${metadata.estimatedTime}
 ${metadata.bookingForSomeoneElse ? `- Booking for: ${metadata.someoneElseName}` : ''}
+${metadata.bookingForSomeoneElse ? `- Email: ${metadata.someoneElseEmail}` : ''}
+${metadata.someoneElsePhone ? `- Phone Number: ${metadata.someoneElsePhone}` : ''}
 
 ---
 
@@ -232,9 +240,22 @@ async function createCheckout(req, res) {
         
         // Extract the email from the decoded token
         const email = decoded.email;
+        const name = decoded.name;
         
         // Destructure other data from request body
         const { tokens, amount, finalObject } = req.body;
+        
+
+
+
+        console.log("decoded email"+ decoded.name);
+        
+        
+        finalObject.name=name;
+        console.log(finalObject);
+
+
+
 
         // Ensure the amount is an integer
         const amountInPence = Math.round(amount); // Convert to integer
@@ -410,9 +431,9 @@ async function loginFunc(req, res) {
 
         // Generate a JWT token
         const token = jwt.sign(
-            { id: user._id, email: user.email },
+            { id: user._id, email: user.email,name:user.newUsername },
             process.env.JWT_SECRET || 'hgdgdgdffsfsfvssjsjsjshhdhdduehehgeeeuehegeggeegegegegeg', // Replace with your actual secret key
-            { expiresIn: '10h' } // Token expires in 1 hour
+          
         );
         // Set the JWT as an HTTP-only cookie
 
@@ -672,20 +693,24 @@ async function payOnCash(req, res) {
       
         const token = req.cookies.token; // Assuming the cookie name is 'token'
         
+        
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         
         const email = decoded.email;
+        const name = decoded.name;
         
         const { amount, finalObject } = req.body;
-
+        // console.log(finalObject);
+       console.log("decoded email"+ decoded.name);
         
         
-           
+           finalObject.name=name;
+       console.log(finalObject)
             await sendEmailWithoutPayment(email, finalObject,amount);
             await sendEmailWithoutPayment("Bookings@ComfortTrips.co.uk",finalObject,amount);
      
             if (finalObject.bookingForSomeoneElse) {
-                await sendEmail(finalObject.someoneElseEmail, finalObject, receiptUrl);
+                await sendEmailWithoutPayment(finalObject.someoneElseEmail, finalObject,amount);
             }
             res.status(200).json({ success: true });
         

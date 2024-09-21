@@ -25,7 +25,9 @@ import standardVan from "../assets/standardVan.jpg"
 const VehicleBookingSteps = () => {
   const { isSignedInFinal, signInFinal, signOutFinal,popUp,signInPopUpFalse,signInPopUpTrue   } = useContext(AuthContext);
   const [finalObject,setFinalObject]=useState({
+    someoneElsePhone:'',
     persons: '',
+    phoneNumber:'',
     handLuggage: '',
     checkedLuggage: '',
     flightNumber: '',
@@ -66,8 +68,11 @@ const VehicleBookingSteps = () => {
 
 // Updated formData with new fields for 'Booking for someone else'
 const [formData, setFormData] = useState({
+  someoneElsePhone:'',
+  phoneNumber:'',
   persons: '',
   handLuggage: '',
+  
   checkedLuggage: '',
   flightNumber: '',
   landingTime: '',
@@ -82,6 +87,9 @@ const [formData, setFormData] = useState({
 
 // Updated errors state with validation for new fields
 const [errors, setErrors] = useState({
+  someoneElsePhone:'',
+  phoneNumber:'',
+ 
   persons: '',
   handLuggage: '',
   checkedLuggage: '',
@@ -220,10 +228,12 @@ const selectVehicle = (vehicleId) => {
       checkedLuggage: formData.checkedLuggage !== '' ? '' : 'Checked luggage quantity is required.',
       flightNumber: formData.flightNumber ? '' : 'Flight number is required.',
       landingTime: formData.landingTime ? '' : 'Landing time is required.',
-    };
+      phoneNumber: formData.phoneNumber ? '' : 'Mobile no required.',
+     };
   
     // If "Booking for someone else" is checked, validate name and email fields
     if (formData.bookingForSomeoneElse) {
+      newErrors.someoneElsePhone  =formData.someoneElsePhone? '': 'Mobile no required',
       newErrors.someoneElseName = formData.someoneElseName ? '' : 'Name for someone else is required.';
       newErrors.someoneElseEmail = formData.someoneElseEmail ? '' : 'Email for someone else is required.';
     }
@@ -256,7 +266,9 @@ const selectVehicle = (vehicleId) => {
       const finalObject = { ...formData, ...data };
   
       setFinalObject(finalObject);
+      console.log(finalObject);
       
+          
   
       // Proceed to the next step if there are no errors
       setActiveStep((prevStep) => (prevStep < 3 ? prevStep + 1 : prevStep));
@@ -286,6 +298,7 @@ const handleCheckboxChange = (e) => {
     // Reset the fields if the checkbox is unchecked
     someoneElseName: checked ? prevData.someoneElseName : '',
     someoneElseEmail: checked ? prevData.someoneElseEmail : '',
+    someoneElsePhone: checked ? prevData.someoneElsePhone : '',
   }));
 };
 
@@ -383,47 +396,61 @@ const handleCheckboxChange = (e) => {
       )}
  {/* Booking Form */}
  {activeStep === 2 && (
-        <div className="bg-gray-50 rounded-lg shadow-lg p-6 lg:p-8 mt-8 mx-auto w-full lg:max-w-4xl md:max-w-2xl sm:max-w-md transition-transform transform hover:scale-100">
-          {/* Stylish Instruction */}
-          <div className="text-center mb-6 p-4 bg-purple-100 rounded-md border border-purple-300 text-purple-800">
-            <h2 className="text-xl font-bold">Please Log In to Proceed</h2>
-            <p className="text-sm">To continue with your booking, you need to be logged in.</p>
-          </div>
+  <div className="bg-gray-50 rounded-lg shadow-lg p-6 lg:p-8 mt-8 mx-auto w-full lg:max-w-4xl md:max-w-2xl sm:max-w-md transition-transform transform hover:scale-100">
+    {/* Stylish Instruction */}
+    <div className="text-center mb-6 p-4 bg-purple-100 rounded-md border border-purple-300 text-purple-800">
+      <h2 className="text-xl font-bold">Please Log In to Proceed</h2>
+      <p className="text-sm">To continue with your booking, you need to be logged in.</p>
+    </div>
 
-          <h2 className="text-3xl font-extrabold mb-6 text-purple-800">Booking Details</h2>
-          <form className="space-y-6">
-            {/* Total Persons */}
-            <div className="flex flex-col mb-4">
-              <label className="text-sm font-semibold text-gray-700 mb-2">Total Persons</label>
-              <select
-                name="persons"
-                value={formData.persons}
-                onChange={handleChange}
-                className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
-              >
-                <option value="">Select number of persons</option>
-                {/* {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(number => (
-                  <option key={number} value={number}>{number}</option>
-                ))} */}
+    <h2 className="text-3xl font-extrabold mb-6 text-purple-800">Booking Details</h2>
+    <form className="space-y-6">
 
+{/* Phone Number */}
+<div className="flex flex-col mb-4">
+  <label className="text-sm font-semibold text-gray-700 mb-2">Phone Number</label>
+  <input
+    type="tel"
+    name="phoneNumber"
+    value={formData.phoneNumber} 
+    onChange={handleChange}
+    placeholder="Enter your phone number"
+    pattern="[0-9]*" // Enforces numeric input
+    onKeyPress={(e) => {
+      if (!/[0-9]/.test(e.key)) {
+        e.preventDefault(); // Prevent non-numeric input
+      }
+    }}
+    className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white placeholder-gray-500"
+  />
+  {errors.phoneNumber && <p className="text-red-500 text-sm mt-1">{errors.phoneNumber}</p>}
+</div>
 
-{
-Array.from({ length:( parseInt(UserPassenger) + 1) }, function (_, index) {
-        return index; // Start from 0
-      }).map(function (number) {
-        return (
-          <option key={number} value={number}>
-            {number}
-          </option>
-        );
-      })}
+      
+     
+      {/* Total Persons */}
+      <div className="flex flex-col mb-4">
+        <label className="text-sm font-semibold text-gray-700 mb-2">Total Persons</label>
+        <select
+          name="persons"
+          value={formData.persons}
+          onChange={handleChange}
+          className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
+        >
+          <option value="">Select number of persons</option>
+          {
+            Array.from({ length: (parseInt(UserPassenger) + 1) }, (_, index) => (
+              <option key={index} value={index}>{index}</option>
+            ))
+          }
+        </select>
+        {errors.persons && <p className="text-red-500 text-sm mt-1">{errors.persons}</p>}
+      </div>
 
-              </select>
-              {errors.persons && <p className="text-red-500 text-sm mt-1">{errors.persons}</p>}
-            </div>
-
-            {/* Luggage Information */}
-            <div className="flex flex-col md:flex-row gap-4 mb-4">
+      {/* Additional Fields */}
+      
+                  {/* Luggage Information */}
+                  <div className="flex flex-col md:flex-row gap-4 mb-4">
               <div className="flex flex-col w-full md:w-1/2">
                 <label className="text-sm font-semibold text-gray-700 mb-2">Hand Luggage</label>
                 <select
@@ -544,9 +571,14 @@ Array.from({ length:( parseInt(UserPassenger) + 1) }, function (_, index) {
           
             </div>
 
+      
+      {/* Your existing fields here */}
 
-  {/* Checkbox for booking for someone else */}
-  <div className="flex flex-col mb-4">
+
+
+
+      {/* Checkbox for booking for someone else */}
+      <div className="flex flex-col mb-4">
         <label className="text-sm font-semibold text-gray-700 mb-2">
           <input
             type="checkbox"
@@ -559,8 +591,8 @@ Array.from({ length:( parseInt(UserPassenger) + 1) }, function (_, index) {
         </label>
       </div>
 
- {/* Conditionally rendered fields for someone else */}
- {formData.bookingForSomeoneElse && (
+      {/* Conditionally rendered fields for someone else */}
+      {formData.bookingForSomeoneElse && (
         <>
           <div className="flex flex-col mb-4">
             <label className="text-sm font-semibold text-gray-700 mb-2">Name of the Person</label>
@@ -587,12 +619,23 @@ Array.from({ length:( parseInt(UserPassenger) + 1) }, function (_, index) {
             />
             {errors.someoneElseEmail && <p className="text-red-500 text-sm mt-1">{errors.someoneElseEmail}</p>}
           </div>
+
+          {/* Phone Number for Someone Else */}
+          <div className="flex flex-col mb-4">
+            <label className="text-sm font-semibold text-gray-700 mb-2">Phone Number of the Person</label>
+            <input
+              type="tel"
+              name="someoneElsePhone"
+              value={formData.someoneElsePhone}
+              onChange={handleChange}
+              placeholder="Enter their phone number"
+              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
+            />
+            {errors.someoneElsePhone && <p className="text-red-500 text-sm mt-1">{errors.someoneElsePhone}</p>}
+          </div>
         </>
       )}
-
-
-
-
+   
 
         {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row justify-between mt-6 gap-4">
@@ -735,7 +778,7 @@ Array.from({ length:( parseInt(UserPassenger) + 1) }, function (_, index) {
 
           )}
 
-          {false && false && (
+          {true && true && (
             <div className="grid grid-cols-2 gap-4 py-2 border-b border-gray-200">
               <div>
                 <p className="text-gray-600 font-medium"><strong>Luggage:</strong></p>
@@ -759,6 +802,9 @@ Array.from({ length:( parseInt(UserPassenger) + 1) }, function (_, index) {
               <p className="text-gray-800"> {data.distance+" miles "}  ({data.estimatedTime})</p>
             </div>
           </div>
+
+
+    
 
 
           <div className="grid grid-cols-2 gap-4 py-2 border-b border-gray-200">
