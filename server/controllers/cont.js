@@ -20,11 +20,11 @@ async function sendEmailWithoutPayment(email, metadata,amount) {
     const mailOptions = {
         from: process.env.HOSTINGER_EMAIL_USER, // Sender email from Hostinger
         to: email,
-        subject: 'Your Booking Confirmation and Receipt',
+        subject: 'Your Booking Confirmation',
         text: `
 Dear Customer,
 
-Thank you for your payment! We’re pleased to confirm that your booking has been successfully processed. Below are the details of your booking:
+We’re pleased to confirm that your booking has been successfully processed. Below are the details of your booking:
 
 ---
 
