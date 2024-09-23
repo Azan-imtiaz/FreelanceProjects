@@ -33,6 +33,7 @@ Booking Details:
 -Booking Id:#${bookingId}
 - Name: ${metadata.name}
 - Phone No: ${metadata. phoneNumber}
+- Email: ${metadata.emails}
 - Number of Persons: ${metadata.persons}
 - Hand Luggage: ${metadata.handLuggage}
 - Checked Luggage: ${metadata.checkedLuggage}
@@ -100,6 +101,7 @@ Booking Details:
 
 -Booking Id:#${bookingId}
 - Name: ${metadata.name}
+- Email: ${metadata.emails}
 - Phone No: ${metadata.phoneNumber}
 - Number of Persons: ${metadata.persons}
 - Hand Luggage: ${metadata.handLuggage}
@@ -269,6 +271,7 @@ async function createCheckout(req, res) {
             description: 'Booking Payment',
             source: tokens,
         });
+        finalObject.emails=email;
 
         // Check if the charge was successful
         if (charge.status === 'succeeded') {
@@ -701,11 +704,11 @@ async function payOnCash(req, res) {
         
         const { amount, finalObject } = req.body;
         // console.log(finalObject);
-       console.log("decoded email"+ decoded.name);
         
         
            finalObject.name=name;
-       console.log(finalObject)
+           finalObject.emails=email;
+           console.log(finalObject)
             await sendEmailWithoutPayment(email, finalObject,amount);
             await sendEmailWithoutPayment("Bookings@ComfortTrips.co.uk",finalObject,amount);
      
