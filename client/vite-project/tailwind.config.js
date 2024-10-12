@@ -6,7 +6,9 @@ module.exports = {
     extend: {
       colors: {
         primary: '#6B46C1', // Purple shade
-        secondary: '#FFFFFF', // White
+        secondary: '#FFFFFF', // 
+        'custom-purple': '#652f8f',
+        'custom-gold': '#f9b442',
       },
     },
   },

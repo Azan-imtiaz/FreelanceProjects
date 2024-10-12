@@ -6,7 +6,7 @@ const AboutUs = () => {
   return (
     <div className="about-us-container p-8 bg-white shadow-lg rounded-lg relative overflow-hidden">
       <motion.h2
-        className="about-us-title text-purple-700 text-center text-4xl font-bold mb-6"
+        className="about-us-title text-custom-purple  font-sans text-center text-4xl font-bold mb-6"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -15,7 +15,7 @@ const AboutUs = () => {
       </motion.h2>
 
       <motion.p
-        className="about-us-description text-center text-gray-700 mb-8 text-lg"
+        className="about-us-description text-center text-gray-700 mb-8 text-lg font-sans "
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -25,59 +25,59 @@ const AboutUs = () => {
 
       <div className="services-grid grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
         <motion.div
-          className="service-card bg-purple-50 p-6 rounded-lg shadow-lg transform transition-all hover:scale-105 relative z-10"
+          className="service-card bg-purple-50  font-sans  p-6 rounded-lg shadow-lg transform transition-all hover:scale-105 relative z-10"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
         >
-          <FaPlaneDeparture className="service-icon text-purple-700 mb-2 text-5xl" />
-          <h3 className="font-semibold text-xl">Airport Transfers</h3>
-          <p className="text-gray-600">Hassle-free transfers to and from major London airports.</p>
+          <FaPlaneDeparture className="service-icon text-custom-purple  font-sans  mb-2 text-5xl" />
+          <h3 className="font-semibold text-xl font-sans">Airport Transfers</h3>
+          <p className="text-gray-600 font-sans">Hassle-free transfers to and from major London airports.</p>
         </motion.div>
 
         <motion.div
-          className="service-card bg-purple-50 p-6 rounded-lg shadow-lg transform transition-all hover:scale-105 relative z-10"
+          className="service-card bg-purple-50 p-6  font-sans  rounded-lg shadow-lg transform transition-all hover:scale-105 relative z-10"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
         >
-          <FaCar className="service-icon text-purple-700 mb-2 text-5xl" />
-          <h3 className="font-semibold text-xl">Chauffeur Services</h3>
-          <p className="text-gray-600">Enjoy the luxury of a private driver at your convenience.</p>
+          <FaCar className="service-icon text-custom-purple  font-sans  mb-2 text-5xl" />
+          <h3 className="font-semibold text-xl  font-sans ">Chauffeur Services</h3>
+          <p className="text-gray-600font-sans ">Enjoy the luxury of a private driver at your convenience.</p>
         </motion.div>
 
         <motion.div
-          className="service-card bg-purple-50 p-6 rounded-lg shadow-lg transform transition-all hover:scale-105 relative z-10"
+          className="service-card bg-purple-50 p-6 font-sans  rounded-lg shadow-lg transform transition-all hover:scale-105 relative z-10"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
         >
-          <FaMap className="service-icon text-purple-700 mb-2 text-5xl" />
-          <h3 className="font-semibold text-xl">Day Trips</h3>
-          <p className="text-gray-600">Customized trips to explore iconic sights around London.</p>
+          <FaMap className="service-icon  mb-2 text-5xl text-custom-purple  font-sans " />
+          <h3 className="font-semibold text-xl font-sans ">Day Trips</h3>
+          <p className="text-gray-600  font-sans ">Customized trips to explore iconic sights around London.</p>
         </motion.div>
 
         <motion.div
-          className="service-card bg-purple-50 p-6 rounded-lg shadow-lg transform transition-all hover:scale-105 relative z-10"
+          className="service-card bg-purple-50 font-sans  p-6 rounded-lg shadow-lg transform transition-all hover:scale-105 relative z-10"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
         >
-          <FaPlaneDeparture className="service-icon text-purple-700 mb-2 text-5xl" />
-          <h3 className="font-semibold text-xl">City-to-City Connections</h3>
-          <p className="text-gray-600">Efficient transportation between cities for business or leisure.</p>
+          <FaPlaneDeparture className="service-icon text-custom-purple  font-sans  mb-2 text-5xl" />
+          <h3 className="font-semibold text-xl  font-sans ">City-to-City Connections</h3>
+          <p className="text-gray-600 font-sans ">Efficient transportation between cities for business or leisure.</p>
         </motion.div>
       </div>
 
       <motion.h3
-        className="why-choose-title text-purple-800 text-3xl font-bold mt-6 mb-3 text-center"
+        className="why-choose-title   text-custom-purple   text-3xl font-bold mt-6 mb-3 text-center font-sans "
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
       >
         Why Choose COMFORT TRIPS?
       </motion.h3>
-      <ul className="text-gray-700 text-lg list-disc list-inside mb-4 text-center">
+      <ul className="text-gray-700    font-sans text-lg list-disc list-inside mb-4 text-center">
         <li>Experienced Drivers: Skilled, courteous, and attentive to your needs.</li>
         <li>24/7 Customer Support: Assistance available around the clock.</li>
         <li>Competitive Prices: Transparent pricing with no hidden fees.</li>

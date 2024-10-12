@@ -14,4 +14,4 @@ export default defineConfig({
      'process.env.VITE_API_BASE_URL':JSON.stringify(process.env.VITE_API_BASE_URL),
      'process.env.VITE_API_KEY':JSON.stringify(process.env.VITE_API_KEY),
   }
-})
+}) 

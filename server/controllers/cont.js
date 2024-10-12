@@ -37,24 +37,22 @@ Booking Details:
 - Number of Persons: ${metadata.persons}
 - Hand Luggage: ${metadata.handLuggage}
 - Checked Luggage: ${metadata.checkedLuggage}
-- Flight Number: ${metadata.flightNumber}
-- Landing Time: ${new Date(metadata.landingTime).toLocaleString()}
-- Driver Note: ${metadata.driverNote}
+${metadata.hour ? `- Duration: ${metadata.hour} Hours` : ''}
+${metadata.flightNumber ? `- Flight Number: ${metadata.flightNumber}` : ''}
+${metadata.landingTime ? `-  Landing Time: ${new Date(metadata.landingTime).toLocaleString()}` : ''}
 - Add-Ons: ${metadata.addOns.join(', ')}
 - Pickup Location: ${metadata.from}
-- Destination: ${metadata.to}
+${metadata.to ? `-Destination: ${metadata.to}` : ''}
 - Pickup Date: ${new Date(metadata.pickupDate).toLocaleDateString()}
 - Pickup Time: ${metadata.pickupTime}
-- Distance: ${metadata.distance}
-- Estimated Travel Time: ${metadata.estimatedTime}
-- Payment Will be cash: ${amount} Pounds
+${metadata.distance ? `- Distance: ${metadata.distance}` : ''}
+${metadata.estimatedTime ? `- Estimated Travel Time: ${metadata.estimatedTime}` : ''}
+${metadata.driverNote ? `- Driver Note:${metadata.driverNote}` : ''}
 ${metadata.bookingForSomeoneElse ? `- Booking for: ${metadata.someoneElseName}` : ''}
 ${metadata.bookingForSomeoneElse ? `- Name: ${metadata.someoneElseEmail}` : ''}
 ${metadata.someoneElsePhone ? `- Phone No: ${metadata.someoneElsePhone}` : ''}
-
+- Payment Will be cash: ${amount} Pounds
 ---
-
-If you have any questions or need further assistance, feel free to contact us.
 
 Thank you for choosing our service!
 
@@ -106,20 +104,20 @@ Booking Details:
 - Number of Persons: ${metadata.persons}
 - Hand Luggage: ${metadata.handLuggage}
 - Checked Luggage: ${metadata.checkedLuggage}
-- Flight Number: ${metadata.flightNumber}
-- Landing Time: ${new Date(metadata.landingTime).toLocaleString()}
-- Driver Note: ${metadata.driverNote}
+${metadata.hour ? `- Duration: ${metadata.hour} Hours ` : ''}
+${metadata.flightNumber ? `- Flight Number: ${metadata.flightNumber}` : ''}
+${metadata.landingTime ? `-  Landing Time: ${new Date(metadata.landingTime).toLocaleString()}` : ''}
 - Add-Ons: ${metadata.addOns.join(', ')}
 - Pickup Location: ${metadata.from}
-- Destination: ${metadata.to}
+${metadata.to ? `-Destination: ${metadata.to}` : ''}
 - Pickup Date: ${new Date(metadata.pickupDate).toLocaleDateString()}
 - Pickup Time: ${metadata.pickupTime}
-- Distance: ${metadata.distance}
-- Estimated Travel Time: ${metadata.estimatedTime}
+${metadata.distance ? `- Distance: ${metadata.distance}` : ''}
+${metadata.estimatedTime ? `- Estimated Travel Time: ${metadata.estimatedTime}` : ''}
 ${metadata.bookingForSomeoneElse ? `- Booking for: ${metadata.someoneElseName}` : ''}
 ${metadata.bookingForSomeoneElse ? `- Email: ${metadata.someoneElseEmail}` : ''}
 ${metadata.someoneElsePhone ? `- Phone Number: ${metadata.someoneElsePhone}` : ''}
-
+${metadata.driverNote ? `- Driver Note:${metadata.driverNote}` : ''}
 ---
 
 Receipt link:
@@ -127,8 +125,6 @@ Receipt link:
 You can see the reciept using the following link:
 
 ${receiptUrl}
-
-If you have any questions or need further assistance, feel free to contact us.
 
 Thank you for choosing our service!
 
@@ -577,55 +573,62 @@ async function deleteAccountFunc(req, res) {
 // Sign out (delete JWT cookie)
 async function signOutFunc(req, res) {
     try {
-
         const { password } = req.body;
-
-        // const { email, password } = req.body;
         const token = req.cookies.token;
+
+        // Check if token exists
+        if (!token) {
+            return res.status(400).send({ st: 400, message: "No token provided. You need to log in first." });
+        }
 
         // Verify the JWT token to get the email
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-
         if (decoded) {
             const email = decoded.email;
+
             // Find the user by email
             const user = await userModel.findOne({ email });
-
             if (!user) {
+                // Clear cookie if no user found
                 res.cookie('token', '', {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === 'production',
                     maxAge: 0,
                     path: '/', // Ensure this matches the original path
                 });
-                
-                return res.status(400).send({ st: 400, message: "You nead to login  in first" });
-            }
-            const check = await bcrypt.compare(password, user.newpassword);
 
-            if (!check) {
-                return res.status(400).send({ st: 400, message: "Enter the correct password" });
+                return res.status(400).send({ st: 400, message: "You need to log in first." });
             }
-            res.status(200).send({ st: 200, message: "Signed out successfully" });
+
+            // Verify password
+            const check = await bcrypt.compare(password, user.newpassword);
+            if (!check) {
+                return res.status(400).send({ st: 400, message: "Incorrect password." });
+            }
+
+            // Successful sign out, clear cookie
+            res.cookie('token', '', {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                maxAge: 0,
+                path: '/', // Clear token for entire site
+            });
+
+            return res.status(200).send({ st: 200, message: "Signed out successfully." });
         }
 
-
-
-
-
-
     } catch (err) {
-
-
+        // On error, clear the cookie to ensure the user is logged out
         res.cookie('token', '', {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            maxAge: 0
+            maxAge: 0,
+            path: '/', // Ensure token is removed site-wide
         });
 
-
-        res.status(500).send({ st: 500, message: "You nead to login  in first" });
+        // Send error response
+        return res.status(500).send({ st: 500, message: "Something went wrong, please try again." });
     }
 }
 

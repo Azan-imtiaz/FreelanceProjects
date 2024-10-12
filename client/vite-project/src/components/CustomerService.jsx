@@ -21,7 +21,7 @@ function FloatingContact() {
       
       <button
         onClick={toggleContact}
-        className="bg-gradient-to-r from-purple-500 to-pink-500 text-white p-4 rounded-full shadow-lg focus:outline-none hover:bg-gradient-to-r hover:from-purple-600 hover:to-pink-600 transition duration-300"
+        className="bg-gradient-to-r  from-purple-500 to-pink-500 text-white p-3 lg:p-3 rounded-full shadow-lg focus:outline-none hover:bg-gradient-to-r hover:from-purple-600 hover:to-pink-600 transition duration-300"
         aria-label="Contact Us"
       >
         {isOpen ? <FaTimes size={24} /> : 'Contact Us'}

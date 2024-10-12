@@ -1,12 +1,13 @@
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import React, { useContext, useEffect, useState } from 'react';
-import { FaUser, FaSignInAlt, FaSignOutAlt, FaBars, FaTimes, FaUserCircle, FaTrashAlt, FaKey } from 'react-icons/fa';
+import { FaUser, FaSignInAlt, FaSignOutAlt, FaBars, FaTimes, FaUserCircle, FaTrashAlt, FaKey,FaCar, FaCity } from 'react-icons/fa';
 import { IoPersonAdd, IoKey, IoWarning, IoClose, IoLockClosed, IoShieldCheckmarkSharp, IoAlertCircleOutline, IoMail } from "react-icons/io5";
-import logo from './logo.png'; // Make sure to update the path to your actual logo image
+import logo from '../assets/ICON.jpg'; 
 import { createAccount, signIn, changePassword, signOut, deleteUserAccount,verifyTokenAtStart, verifyOTPFunc, forgetPaswordFunc,resetPasword } from "../Services/apis";
 import { AuthContext } from './contextProvider';
 import Cookies from 'js-cookie';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 
 function Header() {
@@ -38,7 +39,7 @@ function Header() {
   const [createAccountErrors, setCreateAccountErrors] = useState({ newUsername: false, email: false, newpassword: false });
   const [changePasswordErrors, setChangePasswordErrors] = useState({ newPassword: false, confirmPassword: false, oldPassword: false });
 
-
+  const navigate = useNavigate();
 
   useEffect(()=>{
    
@@ -726,38 +727,58 @@ signOutFinal();
       }
     }
 
+
+
+
+    
   }
 
+  
+  const handleLogoClick=()=>{
+    window.location.reload();
+    
+  }
 
 
 
 
   return (
     <>
-      <header className="bg-purple-700 text-white p-2 flex items-center justify-between lg:justify-between shadow-md fixed top-0 w-full z-50 mb-10">
+      <header className="bg-white text-white p-2 flex items-center justify-between lg:justify-between shadow-md fixed top-0 w-full z-50 mb-10">
         {/* Logo */}
-        <div className="flex-1 lg:flex-none lg:ml-10 sm:ml-5">
-          <img src={logo} alt="Logo" className="h-16" /> {/* Adjust the height as needed */}
+        <div className="flex-1 lg:flex-none lg:ml-24 sm:ml-5">
+          <img src={logo} alt="Logo" className="h-16 lg:h-20 cursor-pointer"  onClick={handleLogoClick}/> {/* Adjust the height as needed */}
         </div>
 
         {/* Right Side Buttons */}
         <div className="hidden lg:flex lg:items-center lg:gap-4">
           {isSignedIn? (
             <>
-              <div className="relative flex items-center">
-                <button onClick={() => setShowMenu(!showMenu)} className="flex items-center text-lg text-white">
+              <div className="relative flex items-center gap-4">
+                
+       
+<button className="flex items-center text-lg text-black font-sans border-b-4 border-transparent hover:border-black hover:border-b-4 hover:translate-y-1 transition duration-300">
+  <FaCar className="mr-2" /> Airport Rides
+</button>
+
+<button className="flex items-center text-lg text-black font-sans border-b-4 border-transparent hover:border-black hover:border-b-4 hover:translate-y-1 transition duration-300">
+  <FaCity className="mr-2" /> City Rides
+</button>         
+                
+                
+                <button onClick={() => setShowMenu(!showMenu)} className="flex items-center text-lg text-black font-sans">
                   <FaUserCircle className="mr-2" />
                   <span>Profile</span>
                 </button>
                 {showMenu && (
                   <div className="absolute right-0 top-8 bg-white text-black p-4  lg:w-64 rounded-lg shadow-lg">
-                    <button onClick={handleDeleteAccount} className="block text-red-600 hover:bg-red-100 px-4 py-2 rounded-lg flex items-center">
+                    <button onClick={handleDeleteAccount} className="block text-red-600 hover:bg-red-100 px-4 py-2 rounded-lg flex items-center font-sans">
                       <FaTrashAlt className="mr-2" /> Delete Account
                     </button>
-                    <button onClick={handleSignOut} className="block text-gray-800 hover:bg-gray-100 px-4 py-2 rounded-lg flex items-center">
+                    <button onClick={handleSignOut} className="block text-gray-800 hover:bg-gray-100 px-4 py-2 rounded-lg flex items-center font-sans">
                       <FaSignOutAlt className="mr-2" /> Sign Out
                     </button>
-                    <button onClick={toggleChangePasswordForm} className="block text-gray-800 hover:bg-gray-100 px-4 py-2 rounded-lg flex items-center">
+                    <button onClick={toggleChangePasswordForm} className="block text-gray-800 hover:bg-gray-100 px-4 py-2 rounded-lg flex items-center font-sans">
                       <FaKey className="mr-2" /> Change Password
                     </button>
                   </div>
@@ -765,17 +786,29 @@ signOutFinal();
               </div>
               <button
                 onClick={handleBookNowClick}
-                className={`px-4 py-2 rounded-lg font-semibold ${bookNowButtonActive ? 'bg-yellow-600 text-white' : 'bg-yellow-400 text-purple-700'}`}
+                className={`px-4 py-2 rounded-lg font-sans ${bookNowButtonActive ? 'bg-yellow-600 text-white' : 'bg-yellow-400 text-white'}`}
               >
                 Book Now
               </button>
             </>
           ) : (
             <>
-              <button onClick={toggleSignInForm} className="flex items-center text-lg text-white">
+
+
+
+<button className="flex items-center text-lg text-black font-sans border-b-4 border-transparent hover:border-black hover:border-b-4 hover:translate-y-1 transition duration-300">
+  <FaCar className="mr-2" /> Airport Rides
+</button>
+
+<button className="flex items-center text-lg text-black font-sans border-b-4 border-transparent hover:border-black hover:border-b-4 hover:translate-y-1 transition duration-300">
+  <FaCity className="mr-2" /> City Rides
+</button>
+
+
+              <button onClick={toggleSignInForm} className="flex items-center text-lg text-black font-sans border-b-4 border-transparent hover:border-black hover:border-b-4 hover:translate-y-1 transition duration-300">
                 <FaSignInAlt className="mr-2" /> Sign In
               </button>
-              <button onClick={toggleCreateAccountForm} className="flex items-center text-lg text-white">
+              <button onClick={toggleCreateAccountForm} className="flex items-center text-lg text-black font-sans border-b-4 border-transparent hover:border-black hover:border-b-4 hover:translate-y-1 transition duration-300">
                 <FaUser className="mr-2" /> Create Account
               </button>
               <button
@@ -792,14 +825,14 @@ signOutFinal();
         <div className="lg:hidden flex items-center">
           <button
             onClick={() => setShowMenu(!showMenu)}
-            className="text-white text-2xl"
+            className="text-black text-2xl"
           >
             {showMenu ? <FaTimes /> : <FaBars />}
           </button>
         </div>
 
         {/* Mobile Menu */}
-        <nav className={`lg:hidden fixed inset-0 flex flex-col items-start bg-purple-700 bg-opacity-90 z-50 ${showMenu ? 'block' : 'hidden'} p-4`}>
+        <nav className={`lg:hidden fixed inset-0 flex flex-col items-start bg-white bg-opacity-90 z-50 ${showMenu ? 'block' : 'hidden'} p-4`}>
           <div className="flex flex-col w-full gap-4 mt-4">
             {isSignedIn ? (
               <>
@@ -807,33 +840,53 @@ signOutFinal();
                   <FaUserCircle className="mr-2" />
                   <span>Profile</span>
                 </div> */}
-                <button onClick={handleDeleteAccount} className="flex items-center text-red-600 text-lg">
+          
+            
+<button  onClick={handleBookNowClick} className="flex items-center text-lg text-black font-sans border-b-4 border-transparent hover:border-black w-36 hover:border-b-4 hover:translate-y-1 transition duration-300">
+  <FaCar className="mr-2" /> Airport Rides
+</button>
+
+<button  onClick={handleBookNowClick} className="flex items-center text-lg text-black font-sans border-b-4 border-transparent w-36 hover:border-black hover:border-b-4 hover:translate-y-1 transition duration-300">
+  <FaCity className="mr-2" /> City Rides
+</button>            
+           
+                <button onClick={handleDeleteAccount} className="flex items-center text-red-600 text-lg font-sans border-b-4 border-transparent w-40 hover:border-black hover:border-b-4 hover:translate-y-1 transition duration-300">
                   <FaTrashAlt className="mr-2" /> Delete Account
                 </button>
-                <button onClick={handleSignOut} className="flex items-center text-white text-lg">
+                <button onClick={handleSignOut} className="flex items-center text-black text-lg font-sans border-b-4 border-transparent w-36 hover:border-black hover:border-b-4 hover:translate-y-1 transition duration-300">
                   <FaSignOutAlt className="mr-2" /> Sign Out
                 </button>
-                <button onClick={toggleChangePasswordForm} className="flex items-center text-white text-lg">
+                <button onClick={toggleChangePasswordForm} className="flex items-center text-black text-lg font-sans border-b-4 border-transparent w-44 hover:border-black hover:border-b-4 hover:translate-y-1 transition duration-300">
                   <FaKey className="mr-2" /> Change Password
                 </button>
                 <button
                   onClick={handleBookNowClick}
-                  className={`px-4 py-2 rounded-lg font-semibold ${bookNowButtonActive ? 'bg-yellow-600 text-white' : 'bg-yellow-400 text-purple-700'}`}
+                  className={`px-4 py-2 rounded-lg font-semibold font-sans ${bookNowButtonActive ? 'bg-yellow-600 text-black font-sans' : 'bg-yellow-400 font-sans text-black' }`}
                 >
                   Book Now
                 </button>
               </>
             ) : (
               <>
-                <button onClick={toggleSignInForm} className="flex items-center text-white text-lg">
+              
+            
+<button  onClick={handleBookNowClick} className="flex items-center text-lg text-black font-sans border-b-4 border-transparent hover:border-black w-36 hover:border-b-4 hover:translate-y-1 transition duration-300">
+  <FaCar className="mr-2" /> Airport Rides
+</button>
+
+<button  onClick={handleBookNowClick} className="flex items-center text-lg text-black font-sans border-b-4 border-transparent w-36 hover:border-black hover:border-b-4 hover:translate-y-1 transition duration-300">
+  <FaCity className="mr-2" /> City Rides
+</button>         
+           
+                <button onClick={toggleSignInForm} className="flex items-center text-black text-lg font-sans border-b-4 border-transparent w-36 hover:border-black hover:border-b-4 hover:translate-y-1 transition duration-300">
                   <FaSignInAlt className="mr-2" /> Sign In
                 </button>
-                <button onClick={toggleCreateAccountForm} className="flex items-center text-white text-lg">
+                <button onClick={toggleCreateAccountForm} className="flex items-center text-black text-lg font-sans border-b-4 border-transparent w-44 hover:border-black hover:border-b-4 hover:translate-y-1 transition duration-300">
                   <FaUser className="mr-2" /> Create Account
                 </button>
                 <button
                   onClick={handleBookNowClick}
-                  className={`px-4 py-2 rounded-lg font-semibold ${bookNowButtonActive ? 'bg-yellow-600 text-white' : 'bg-yellow-400 text-purple-700'}`}
+                  className={`px-4 py-2 font-sans  rounded-lg font-semibold ${bookNowButtonActive ? 'bg-yellow-600 text-white  font-sans'  : 'bg-yellow-400 text-purple-700'}`}
                 >
                   Book Now
                 </button>
@@ -844,78 +897,9 @@ signOutFinal();
       </header>
       {/* Sign In Form */}
       {(showSignInForm || popUp) && (
-        // <div className="fixed inset-0 flex items-center justify-center z-50 p-4 bg-gray-800 bg-opacity-75">
-        //   <div className="relative bg-white p-6 md:p-8 rounded-lg shadow-xl w-full max-w-md">
-        //     {/* Close Icon */}
-        //     <button
-        //       onClick={handleCloseForm}
-        //       className="absolute top-2 right-2 text-gray-600 hover:text-black"
-        //     >
-        //       <IoClose size={24} />
-        //     </button>
 
-        //     {/* Icon and Header */}
-        //     <div className="flex flex-col items-center mb-6">
-        //       {/* Add a lock icon at the top for visual appeal */}
-        //       <IoLockClosed size={40} className="text-purple-700 mb-3" />
-        //       <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-800">
-        //         Sign In
-        //       </h2>
-        //     </div>
-
-        //     <form
-        //       onSubmit={(e) => {
-        //         e.preventDefault();
-        //         handleSignIn();
-        //       }}
-        //     >
-        //       {/* Username Input */}
-        //       <label htmlFor="username" className="block mb-2 text-gray-700 font-medium">
-        //         Username:
-        //       </label>
-        //       <input
-        //         type="text"
-        //         id="username"
-        //         value={signInData.username}
-        //         onChange={handleInputChange}
-        //         className="w-full mb-4 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none"
-        //         placeholder="Enter your username"
-        //       />
-        //       {signInErrors.username && (
-        //         <p className="text-red-500 text-sm mb-2">Username is required</p>
-        //       )}
-
-        //       {/* Password Input */}
-        //       <label htmlFor="password" className="block mb-2 text-gray-700 font-medium">
-        //         Password:
-        //       </label>
-        //       <input
-        //         type="password"
-        //         id="password"
-        //         value={signInData.password}
-        //         onChange={handleInputChange}
-        //         className="w-full mb-4 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none"
-        //         placeholder="Enter your password"
-        //       />
-        //       {signInErrors.password && (
-        //         <p className="text-red-500 text-sm mb-2">Password is required</p>
-        //       )}
-
-        //       {/* Sign-In Button */}
-        //       <div className="w-full flex justify-center">
-        //         <button
-        //           type="submit"
-        //           className="w-full md:w-auto px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:ring-4 focus:ring-purple-300 transition duration-300"
-        //         >
-        //           Sign In
-        //         </button>
-        //       </div>
-        //     </form>
-        //   </div>
-        // </div>
-
-        <div className="fixed inset-0 flex items-center justify-center z-50 p-4 bg-gray-800 bg-opacity-75">
-          <div className="relative bg-white p-6 md:p-8 rounded-lg shadow-xl w-full max-w-md">
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4 font-sans bg-gray-800 bg-opacity-75">
+          <div className="relative bg-white p-6 md:p-8 rounded-lg shadow-xl w-full max-w-md font-sans">
             {/* Close Icon */}
             <button
               onClick={handleCloseForm}
@@ -927,8 +911,8 @@ signOutFinal();
             {/* Icon and Header */}
             <div className="flex flex-col items-center mb-6">
               {/* Add a lock icon at the top for visual appeal */}
-              <IoLockClosed size={40} className="text-purple-700 mb-3" />
-              <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-800">
+              <IoLockClosed size={40} className="text-custom-purple font-sans mb-3" />
+              <h2 className="text-2xl md:text-3xl font-bold text-center text-custom-purple font-sans">
                 Sign In
               </h2>
             </div>
@@ -940,7 +924,7 @@ signOutFinal();
               }}
             >
               {/* Username Input */}
-              <label htmlFor="username" className="block mb-2 text-gray-700 font-medium">
+              <label htmlFor="username" className="block mb-2 font-sans text-gray-700 font-medium">
                 Email:
               </label>
               <input
@@ -948,15 +932,15 @@ signOutFinal();
                 id="username"
                 value={signInData.username}
                 onChange={handleInputChange}
-                className="w-full mb-4 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                className="w-full mb-4 p-3 border border-gray-300 font-sans rounded-lg focus:ring-2 focus:ring-custom-purple focus:outline-none"
                 placeholder="Enter your Email"
               />
               {signInErrors.username && (
-                <p className="text-red-500 text-sm mb-2">Email is required</p>
+                <p className="text-red-500 text-sm mb-2 font-sans">Email is required</p>
               )}
 
               {/* Password Input */}
-              <label htmlFor="password" className="block mb-2 text-gray-700 font-medium">
+              <label htmlFor="password" className="block mb-2 font-sans text-gray-700 font-medium">
                 Password:
               </label>
               <input
@@ -964,11 +948,11 @@ signOutFinal();
                 id="password"
                 value={signInData.password}
                 onChange={handleInputChange}
-                className="w-full mb-4 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                className="w-full mb-4 p-3 border border-gray-300 rounded-lg focus:ring-2 font-sans focus:ring-custom-purple focus:outline-none"
                 placeholder="Enter your password"
               />
               {signInErrors.password && (
-                <p className="text-red-500 text-sm mb-2">Password is required</p>
+                <p className="text-red-500 text-sm mb-2 font-sans">Password is required</p>
               )}
 
               {/* Forgot Password Link */}
@@ -976,7 +960,7 @@ signOutFinal();
                 <button
                   type="button"
                   onClick={handleForgetPasswordInSignIn}
-                  className="text-purple-600 hover:text-purple-800 text-sm focus:outline-none"
+                  className="text-custom-purple hover:ring-custom-purple text-sm focus:outline-none font-sans"
                 >
                   Forgot Password?
                 </button>
@@ -986,7 +970,7 @@ signOutFinal();
               <div className="w-full flex justify-center">
                 <button
                   type="submit"
-                  className="w-full md:w-auto px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:ring-4 focus:ring-purple-300 transition duration-300"
+                  className="w-full md:w-auto px-6 py-3 bg-custom-purple text-white rounded-lg hover:bg-custom-purple  font-sans focus:ring-4 focus:ring-purple-300 transition duration-300 font-sans"
                 >
                   Sign In
                 </button>
@@ -999,12 +983,12 @@ signOutFinal();
 
       {/* Create Account Form */}
       {showCreateAccountForm && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 p-4 bg-gray-800 bg-opacity-75">
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4 font-sans bg-gray-800  bg-opacity-75">
           <div className="relative bg-white p-6 md:p-8 rounded-lg shadow-xl w-full max-w-md">
             {/* Close Icon */}
             <button
               onClick={handleCloseForm}
-              className="absolute top-2 right-2 text-gray-600 hover:text-black"
+              className="absolute top-2 right-2 text-gray-600 hover:text-black font-sans"
             >
               <IoClose size={24} />
             </button>
@@ -1012,8 +996,8 @@ signOutFinal();
             {/* Icon and Header */}
             <div className="flex flex-col items-center mb-6">
               {/* Add a user-plus icon for visual appeal */}
-              <IoPersonAdd size={40} className="text-purple-700 mb-3" />
-              <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-800">
+              <IoPersonAdd size={40} className="text-custom-purple mb-3 font-sans" />
+              <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-800 font-sans">
                 Create Account
               </h2>
             </div>
@@ -1025,7 +1009,7 @@ signOutFinal();
               }}
             >
               {/* Username Input */}
-              <label htmlFor="newUsername" className="block mb-2 text-gray-700 font-medium">
+              <label htmlFor="newUsername" className="block mb-2 text-gray-700  font-sans">
                 Username:
               </label>
               <input
@@ -1033,15 +1017,15 @@ signOutFinal();
                 id="newUsername"
                 value={createAccountData.newUsername}
                 onChange={handleInputChange}
-                className="w-full mb-4 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                className="w-full mb-4 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-purple focus:outline-none font-sans"
                 placeholder="Enter your username"
               />
               {createAccountErrors.newUsername && (
-                <p className="text-red-500 text-sm mb-2">Username is required</p>
+                <p className="text-red-500 text-sm mb-2 font-sans">Username is required</p>
               )}
 
               {/* Email Input */}
-              <label htmlFor="email" className="block mb-2 text-gray-700 font-medium">
+              <label htmlFor="email" className="block mb-2 text-gray-700 font-medium font-sans">
                 Email:
               </label>
               <input
@@ -1049,15 +1033,15 @@ signOutFinal();
                 id="email"
                 value={createAccountData.email}
                 onChange={handleInputChange}
-                className="w-full mb-4 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                className="w-full mb-4 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-purple font-sans focus:outline-none"
                 placeholder="Enter your email"
               />
               {createAccountErrors.email && (
-                <p className="text-red-500 text-sm mb-2">Email is required</p>
+                <p className="text-red-500 text-sm mb-2 font-sans">Email is required</p>
               )}
 
               {/* Password Input */}
-              <label htmlFor="newpassword" className="block mb-2 text-gray-700 font-medium">
+              <label htmlFor="newpassword" className="block mb-2 text-gray-700 font-medium font-sans">
                 Password:
               </label>
               <input
@@ -1065,11 +1049,11 @@ signOutFinal();
                 id="newpassword"
                 value={createAccountData.newpassword}
                 onChange={handleInputChange}
-                className="w-full mb-4 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                className="w-full mb-4 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-purple font-sans focus:outline-none"
                 placeholder="Enter a password"
               />
               {createAccountErrors.newpassword && (
-                <p className="text-red-500 text-sm mb-2">
+                <p className="text-red-500 text-sm mb-2 font-sans">
                   Password must be at least 8 characters
                 </p>
               )}
@@ -1078,7 +1062,7 @@ signOutFinal();
               <div className="w-full flex justify-center">
                 <button
                   type="submit"
-                  className="w-full md:w-auto px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:ring-4 focus:ring-purple-300 transition duration-300"
+                  className="w-full md:w-auto px-6 py-3 bg-custom-purple font-sans text-white rounded-lg hover:bg-purple-700 focus:ring-4 focus:ring-purple-300 transition duration-300"
                 >
                   Create Account
                 </button>
@@ -1089,12 +1073,12 @@ signOutFinal();
       )}
       {/* Change Password Form */}
       {showChangePasswordForm && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 p-4 bg-gray-800 bg-opacity-75">
-          <div className="relative bg-white p-6 md:p-8 rounded-lg shadow-xl w-full max-w-md">
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4 bg-gray-800 bg-opacity-75 font-sans">
+          <div className="relative bg-white p-6 md:p-8 rounded-lg shadow-xl w-full max-w-md font-sans">
             {/* Close Icon */}
             <button
               onClick={handleCloseForm}
-              className="absolute top-2 right-2 text-gray-600 hover:text-black"
+              className="absolute top-2 right-2 text-gray-600 hover:text-black font-sans"
             >
               <IoClose size={24} />
             </button>
@@ -1102,8 +1086,8 @@ signOutFinal();
             {/* Icon and Header */}
             <div className="flex flex-col items-center mb-6">
               {/* Add a key icon for visual appeal */}
-              <IoKey size={40} className="text-purple-700 mb-3" />
-              <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-800">
+              <IoKey size={40} className="text-purple mb-3" />
+              <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-800 font-sans">
                 Change Password
               </h2>
             </div>
@@ -1115,7 +1099,7 @@ signOutFinal();
               }}
             >
               {/* Old Password Input */}
-              <label htmlFor="oldPassword" className="block mb-2 text-gray-700 font-medium">
+              <label htmlFor="oldPassword" className="block mb-2 text-gray-700 font-medium font-sans">
                 Old Password:
               </label>
               <input
@@ -1123,15 +1107,15 @@ signOutFinal();
                 id="oldPassword"
                 value={changePasswordData.oldPassword}
                 onChange={handleInputChange}
-                className="w-full mb-4 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                className="w-full mb-4 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-purple focus:outline-none"
                 placeholder="Enter old password"
               />
               {changePasswordErrors.oldPassword && (
-                <p className="text-red-500 text-sm mb-2">Enter old password</p>
+                <p className="text-red-500 text-sm mb-2 font-sans">Enter old password</p>
               )}
 
               {/* New Password Input */}
-              <label htmlFor="newPassword" className="block mb-2 text-gray-700 font-medium">
+              <label htmlFor="newPassword" className="block mb-2 text-gray-700 font-medium font-sans ">
                 New Password:
               </label>
               <input
@@ -1139,17 +1123,17 @@ signOutFinal();
                 id="newPassword"
                 value={changePasswordData.newPassword}
                 onChange={handleInputChange}
-                className="w-full mb-4 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                className="w-full mb-4 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-purple focus:outline-none font-sans"
                 placeholder="Enter new password"
               />
               {changePasswordErrors.newPassword && (
-                <p className="text-red-500 text-sm mb-2">
+                <p className="text-red-500 text-sm mb-2 font-sans">
                   New password must be at least 8 characters
                 </p>
               )}
 
               {/* Confirm Password Input */}
-              <label htmlFor="confirmPassword" className="block mb-2 text-gray-700 font-medium">
+              <label htmlFor="confirmPassword" className="block mb-2 font-sans  text-gray-700 font-medium">
                 Confirm Password:
               </label>
               <input
@@ -1157,18 +1141,18 @@ signOutFinal();
                 id="confirmPassword"
                 value={changePasswordData.confirmPassword}
                 onChange={handleInputChange}
-                className="w-full mb-4 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                className="w-full mb-4 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-purple focus:outline-none font-sans"
                 placeholder="Confirm new password"
               />
               {changePasswordErrors.confirmPassword && (
-                <p className="text-red-500 text-sm mb-2">Passwords do not match</p>
+                <p className="text-red-500 text-sm mb-2 font-sans">Passwords do not match</p>
               )}
 
               {/* Change Password Button */}
-              <div className="w-full flex justify-center">
+              <div className="w-full flex justify-center font-sans">
                 <button
                   type="submit"
-                  className="w-full md:w-auto px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:ring-4 focus:ring-purple-300 transition duration-300"
+                  className="w-full md:w-auto px-6 py-3 bg-custom-purple text-white rounded-lg hover:bg-purple-700 font-sans focus:ring-4 focus:ring-purple-300 transition duration-300"
                 >
                   Change Password
                 </button>
@@ -1182,28 +1166,28 @@ signOutFinal();
 
       {/*  Confirmation Popup  */}
       {showConfirmation && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
-          <div className="relative bg-white p-4 md:p-6 lg:p-8 rounded-lg shadow-lg w-full max-w-md">
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4 font-sans">
+          <div className="relative bg-white p-4 md:p-6 lg:p-8 rounded-lg shadow-lg w-full max-w-md font-sans">
             {/* Close Icon */}
             <button
               onClick={cancelSignOut}
-              className="absolute top-2 right-2 text-gray-600 hover:text-black"
+              className="absolute top-2 right-2 text-gray-600 hover:text-black font-sans"
             >
               <IoClose size={24} />
             </button>
             {/* Icon and Are You Sure Text */}
-            <div className="flex items-center mb-4">
+            <div className="flex items-center mb-4 font-sans">
               {/* Add an icon next to the text */}
-              <IoAlertCircleOutline size={28} className="text-red-600 mr-2" />
-              <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800">
+              <IoAlertCircleOutline size={28} className="text-red-600 mr-2 font-sans" />
+              <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 font-sans">
                 Are you sure?
               </h2>
             </div>
             <p className="mb-4 text-gray-600">This action will sign you out.</p>
             <div className="flex flex-col gap-4 md:flex-row md:items-center">
-              <div className="w-full md:flex-1">
+              <div className="w-full md:flex-1 font-sans">
                 {/* Updated Label Styling */}
-                <label htmlFor="password" className="block mb-2 text-lg font-semibold text-black">
+                <label htmlFor="password" className="block mb-2 text-lg font-semibold text-black font-sans">
                   Enter Password:
                 </label>
                 <input
@@ -1212,13 +1196,13 @@ signOutFinal();
                   value={passwordDeleteAccount.password}
                   onChange={handleConfirmPasswordChange}
                   placeholder="Enter your password"
-                  className="w-full p-3 border border-gray-300 rounded-lg"
+                  className="w-full p-3 border border-gray-300 rounded-lg font-sans"
                 />
               </div>
-              <div className="w-full md:w-auto mt-4 md:ml-4 lg:mt-8 md:mt-8 flex-shrink-0">
+              <div className="w-full md:w-auto mt-4 md:ml-4 lg:mt-8 md:mt-8 flex-shrink-0 font-sans">
                 <button
                   onClick={confirmSignOut}
-                  className="w-full md:w-auto px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                  className="w-full md:w-auto px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-sans"
                 >
                   Confirm
                 </button>
@@ -1232,23 +1216,23 @@ signOutFinal();
       {/* Delete Confirmation Popup */}
       {/* Delete Confirmation Popup */}
       {showDeleteConfirmation && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 p-4 bg-gray-900 bg-opacity-50">
-          <div className="relative bg-white p-6 md:p-8 rounded-lg shadow-lg w-full max-w-md">
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4 bg-gray-900 bg-opacity-50 font-sans">
+          <div className="relative bg-white p-6 md:p-8 rounded-lg shadow-lg w-full max-w-md font-sans">
             {/* Close Icon */}
             <button
               onClick={cancelDelete}
-              className="absolute top-3 right-3 text-gray-600 hover:text-black transition-colors duration-200"
+              className="absolute top-3 right-3 text-gray-600 hover:text-black transition-colors duration-200 font-sans"
             >
               <IoClose size={24} />
             </button>
 
             {/* Warning Section */}
             <div className="text-center mb-6 flex items-center justify-center">
-              <IoWarning size={40} className="text-red-600 mr-3" />
+              <IoWarning size={40} className="text-red-600 mr-3 font-sans" />
               <div>
-                <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Confirm Deletion</h2>
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2 font-sans">Confirm Deletion</h2>
                 <p className="text-lg text-gray-700">
-                  This action will <strong className="text-red-600">permanently delete</strong> your account and all associated data.
+                  This action will <strong className="text-red-600 font-sans">permanently delete</strong> your account and all associated data.
                 </p>
               </div>
             </div>
@@ -1261,7 +1245,7 @@ signOutFinal();
               }}
             >
               <div className="mb-6">
-                <label htmlFor="password" className="block text-gray-700 font-medium mb-2">
+                <label htmlFor="password" className="block text-gray-700 font-medium mb-2 font-sans">
                   Enter Password:
                 </label>
                 <input
@@ -1270,7 +1254,7 @@ signOutFinal();
                   name="password"
                   value={passwordDeleteAccount.password}
                   onChange={handleConfirmPasswordChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-red-500 focus:outline-none"
+                  className="w-full p-3 border border-gray-300 rounded-lg font-sans shadow-sm focus:ring-2 focus:ring-red-500 focus:outline-none"
                   placeholder="Enter your password"
                 />
               </div>
@@ -1278,10 +1262,10 @@ signOutFinal();
               <div className="flex justify-center">
                 <button
                   type="submit"
-                  className="w-full md:w-auto px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 flex items-center justify-center gap-2"
+                  className="w-full md:w-auto px-4 py-2 bg-red-600 font-sans text-white rounded-lg hover:bg-red-700 transition-colors duration-200 flex items-center justify-center gap-2"
                 >
                   <IoShieldCheckmarkSharp size={20} />
-                  <span className="font-semibold">Confirm</span>
+                  <span className="font-semibold font-sans">Confirm</span>
                 </button>
               </div>
             </form>
@@ -1291,51 +1275,51 @@ signOutFinal();
 
       {/* OTP Verification Popup */}
       {showOtpVerification  && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
-          <div className="relative bg-white p-4 md:p-6 lg:p-8 rounded-lg shadow-lg w-full max-w-md">
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4 font-sans">
+          <div className="relative bg-white p-4 md:p-6 lg:p-8 rounded-lg shadow-lg w-full max-w-md font-sans">
 
             {/* Close Icon */}
             <button
               onClick={cancelOtpVerification}
-              className="absolute top-2 right-2 text-gray-600 hover:text-black"
+              className="absolute top-2 right-2 text-gray-600 hover:text-black font-sans"
             >
               <IoClose size={24} />
             </button>
 
             {/* Header with Icon */}
             <div className="flex items-center justify-center mb-4">
-              <IoShieldCheckmarkSharp size={48} className="text-green-500 mr-2" />
-              <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center text-gray-800" style={{ fontFamily: 'Arial, sans-serif' }}>
+              <IoShieldCheckmarkSharp size={48} className="text-green-500 mr-2 font-sans" />
+              <h2 className="text-2xl font-sans md:text-3xl lg:text-4xl font-bold text-center text-gray-800" style={{ fontFamily: 'Arial, sans-serif' }}>
                 OTP Verification
               </h2>
             </div>
 
-            <p className="text-center text-gray-700 mb-4">
+            <p className="text-center text-gray-700 mb-4 font-sans">
               Please check your email and enter the OTP below.
             </p>
 
             {/* Email Input */}
-            <div className="mb-4">
-              <label htmlFor="email" className="block mb-2 text-gray-700 font-medium">Email:</label>
+            <div className="mb-4 font-sans">
+              <label htmlFor="email" className="block mb-2 font-sans text-gray-700 font-medium">Email:</label>
               <input
                 type="email"
                 name="email"
                 value={otpInp.email}
                 onChange={handleOtpChange}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-700 focus:outline-none"
+                className="w-full p-2 border border-gray-300 rounded-lg font-sans focus:ring-2 focus:ring-custom-purple focus:outline-none"
                 placeholder="Enter your email"
               />
             </div>
 
             {/* OTP Input */}
             <div className="mb-4">
-              <label htmlFor="otp" className="block mb-2 text-gray-700 font-medium">OTP:</label>
+              <label htmlFor="otp" className="block mb-2 text-gray-700 font-medium font-sans">OTP:</label>
               <input
                 type="text"
                 name="otp"
                 value={otpInp.otp}
                 onChange={handleOtpChange}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-700 focus:outline-none"
+                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-custom-purple font-sans focus:outline-none"
                 placeholder="Enter the OTP"
               />
             </div>
@@ -1344,7 +1328,7 @@ signOutFinal();
             <div className="w-full flex justify-center mt-6">
               <button
                 onClick={handleOtpSubmit}
-                className="w-full md:w-auto px-6 py-3 bg-gradient-to-r bg-purple-700  text-white rounded-lg hover:bg-purple-700 focus:ring-4 focus:ring-blue-300 transition duration-300"
+                className="w-full md:w-auto px-6 py-3 bg-gradient-to-r bg-custom-purple  text-white rounded-lg hover:bg-purple-700 focus:ring-4 focus:ring-blue-300 transition duration-300"
               >
                 Submit
               </button>
@@ -1357,51 +1341,51 @@ signOutFinal();
 
       {/* OTP Verification Popup */}
       {showForgotOtpVerification && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
-          <div className="relative bg-white p-4 md:p-6 lg:p-8 rounded-lg shadow-lg w-full max-w-md">
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4 font-sans">
+          <div className="relative bg-white p-4 md:p-6 lg:p-8 rounded-lg shadow-lg w-full max-w-md font-sans">
 
             {/* Close Icon */}
             <button
               onClick={cancelOtpVerification}
-              className="absolute top-2 right-2 text-gray-600 hover:text-black"
+              className="absolute top-2 right-2 text-gray-600 hover:text-black font-sans"
             >
               <IoClose size={24} />
             </button>
 
             {/* Header with Icon */}
-            <div className="flex items-center justify-center mb-4">
-              <IoShieldCheckmarkSharp size={48} className="text-green-500 mr-2" />
-              <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center text-gray-800" style={{ fontFamily: 'Arial, sans-serif' }}>
+            <div className="flex items-center justify-center mb-4 font-sans">
+              <IoShieldCheckmarkSharp size={48} className="text-green-500 mr-2 font-sans" />
+              <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center text-gray-800 font-sans" style={{ fontFamily: 'Arial, sans-serif' }}>
                 OTP Verification
               </h2>
             </div>
 
-            <p className="text-center text-gray-700 mb-4">
+            <p className="text-center text-gray-700 mb-4 font-sans">
               Please check your email and enter the OTP below.
             </p>
 
             {/* Email Input */}
             <div className="mb-4">
-              <label htmlFor="email" className="block mb-2 text-gray-700 font-medium">Email:</label>
+              <label htmlFor="email" className="block mb-2 text-gray-700 font-sans font-medium">Email:</label>
               <input
                 type="email"
                 name="email"
                 value={otpInp.email}
                 onChange={handleOtpChange}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-700 focus:outline-none"
+                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 font-sans focus:ring-custom-purple focus:outline-none"
                 placeholder="Enter your email"
               />
             </div>
 
             {/* OTP Input */}
             <div className="mb-4">
-              <label htmlFor="otp" className="block mb-2 text-gray-700 font-medium">OTP:</label>
+              <label htmlFor="otp" className="block mb-2 text-gray-700 font-medium font-sans">OTP:</label>
               <input
                 type="text"
                 name="otp"
                 value={otpInp.otp}
                 onChange={handleOtpChange}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-700 focus:outline-none"
+                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 font-sans focus:ring-custom-purple focus:outline-none"
                 placeholder="Enter the OTP"
               />
             </div>
@@ -1410,7 +1394,7 @@ signOutFinal();
             <div className="w-full flex justify-center mt-6">
               <button
                 onClick={handleForgetOtpSubmit}
-                className="w-full md:w-auto px-6 py-3 bg-gradient-to-r bg-purple-700  text-white rounded-lg hover:bg-purple-700 focus:ring-4 focus:bg-purple-700 transition duration-300"
+                className="w-full md:w-auto px-6 py-3 bg-gradient-to-r bg-custom-purple font-sans  text-white rounded-lg hover:bg-purple-700 focus:ring-4 focus:bg-purple-700 transition duration-300"
               >
                 Submit
               </button>
@@ -1423,27 +1407,27 @@ signOutFinal();
       {/* forget password  */}
       {/* Forgot Password Popup */}
       {showForgotPassword && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
-          <div className="relative bg-white p-4 md:p-6 lg:p-8 rounded-lg shadow-lg w-full max-w-md">
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4 font-sans">
+          <div className="relative bg-white p-4 md:p-6 lg:p-8 rounded-lg shadow-lg w-full font-sans max-w-md">
             {/* Close Icon */}
             <button
               onClick={cancelForgotPassword}
-              className="absolute top-2 right-2 text-gray-600 hover:text-black"
+              className="absolute top-2 right-2 text-gray-600 hover:text-black font-sans"
             >
               <IoClose size={24} />
             </button>
             {/* Icon and Forgot Password Text */}
-            <div className="flex items-center mb-4">
+            <div className="flex items-center mb-4 font-sans">
               {/* Add an icon next to the text */}
               <IoMail size={28} className="text-purple-700 mr-2" />
-              <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800">
+              <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 font-sans">
                 Forgot Password
               </h2>
             </div>
-            <p className="mb-4 text-gray-600">We will send you an OTP to the provided email.</p>
+            <p className="mb-4 text-gray-600 font-sans">We will send you an OTP to the provided email.</p>
             <div className="mb-4">
               {/* Email Input */}
-              <label htmlFor="email" className="block mb-2 text-lg font-semibold text-black">
+              <label htmlFor="email" className="block font-sans mb-2 text-lg font-semibold text-black">
                 Email:
               </label>
               <input
@@ -1452,12 +1436,12 @@ signOutFinal();
                 value={forgetPassword.email}
                 onChange={handleForgetChange}
                 placeholder="Enter your email"
-                className="w-full p-3 border border-gray-300 rounded-lg"
+                className="w-full p-3 border border-gray-300 rounded-lg font-sans"
               />
             </div>
             <div className="mb-4">
               {/* New Password Input */}
-              <label htmlFor="newPassword" className="block mb-2 text-lg font-semibold text-black">
+              <label htmlFor="newPassword" className="block mb-2 text-lg font-semibold font-sans text-black">
                 New Password:
               </label>
               <input
@@ -1466,17 +1450,17 @@ signOutFinal();
                 value={forgetPassword.newPassword}
                 onChange={handleForgetChange}
                 placeholder="Enter your new password"
-                className="w-full p-3 border border-gray-300 rounded-lg"
+                className="w-full p-3 border border-gray-300 rounded-lg font-sans"
               />
               {/* Password Requirement Information */}
-              <p className="mt-2 text-sm text-gray-500">
+              <p className="mt-2 text-sm text-gray-500 font-sans">
                 Password must be at least 8 characters long.
               </p>
             </div>
-            <div className="w-full flex justify-center mt-6">
+            <div className="w-full flex justify-center mt-6 font-sans">
               <button
                 onClick={handleForgetSubmit}
-                className="w-full md:w-auto px-6 py-3 bg-purple-700 text-white rounded-lg hover:bg-blue-600"
+                className="w-full md:w-auto px-6 py-3 bg-custom-purple font-sans text-white rounded-lg hover:bg-blue-600"
               >
                 Reset Password
               </button>

@@ -15,17 +15,18 @@ const stripePromise = loadStripe('pk_test_51PwHSsEG3HGCzHQObRXv9wyFoyemECwDoHjbR
 const CardSection = () => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-lg border border-gray-200">
-      <h2 className="text-xl font-medium mb-4 text-gray-700">Payment Details</h2>
+      <h2 className="text-2xl font-medium mb-4 text-gray-700 font-sans">Payment Details</h2>
       
       {/* Card logos at the top */}
       <div className="flex space-x-4 justify-center mb-4 flex-wrap">
         <img src={visa} alt="Visa" className="w-12" />
         <img src={mastercard} alt="MasterCard" className="w-12" />
+        <img src={Paypal} alt='paypal' className='w-12'></img>
        
       </div>
 
       <div className="mb-5">
-        <label htmlFor="card-number-input" className="block text-gray-600 text-sm mb-2">Card Number</label>
+        <label htmlFor="card-number-input" className="block text-gray-600 text-xl mb-2 font-sans">Card Number</label>
         <div id="card-number-input" className="border border-gray-300 rounded-lg p-3">
           <CardNumberElement
             options={{
@@ -48,7 +49,7 @@ const CardSection = () => {
 
       <div className="flex space-x-4 mb-5">
         <div className="w-1/2">
-          <label htmlFor="card-expiry-input" className="block text-gray-600 text-sm mb-2">Expiry Date</label>
+          <label htmlFor="card-expiry-input" className="block text-gray-600 text-xl font-sans  mb-2">Expiry Date</label>
           <div id="card-expiry-input" className="border border-gray-300 rounded-lg p-3">
             <CardExpiryElement
               options={{
@@ -70,7 +71,7 @@ const CardSection = () => {
         </div>
         
         <div className="w-1/2">
-          <label htmlFor="card-cvc-input" className="block text-gray-600 text-sm mb-2">CVC</label>
+          <label htmlFor="card-cvc-input" className="block text-gray-600 text-xl font-sans mb-2">CVC</label>
           <div id="card-cvc-input" className="border border-gray-300 rounded-lg p-3">
             <CardCvcElement
               options={{
@@ -185,10 +186,10 @@ const PaymentForm = ({ totalPrice,finalObject }) => {
   }
   return (
     <div className="max-w-lg mx-auto mt-10 p-8 bg-gray-50 rounded-lg shadow-lg"> 
-    <h1 className="text-2xl font-semibold mb-6 text-gray-800">Complete Your Payment</h1>
+    <h1 className="text-2xl font-sans font-semibold mb-6 text-gray-800">Complete Your Payment</h1>
     <form onSubmit={handleSubmit} className="space-y-6">
       <CardSection />
-      <div className="text-lg font-medium mb-4">
+      <div className="text-lg font-medium mb-4 font-sans">
         <p>Total Amount: <span className="text-blue-600">{totalPrice.toFixed(2)} £</span></p>
       </div>
       <button 
@@ -202,10 +203,10 @@ const PaymentForm = ({ totalPrice,finalObject }) => {
   
       {/* Additional payment method */}
       <div className="mt-6 text-center">
-        <p className="text-lg font-semibold text-gray-700 mb-4">Or you can pay with cash:</p>
+        <p className="text-lg font-semibold text-gray-700 mb-4 font-sans">Or you can pay with cash:</p>
         <button
           type="button"
-          className="w-full py-3 px-6 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition duration-300"
+          className="w-full py-3 px-6 bg-green-500 font-sans text-white rounded-lg shadow-md hover:bg-green-600 transition duration-300"
         onClick={handlePayWithCash}
        >
          {processing2}

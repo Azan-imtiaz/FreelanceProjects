@@ -64,7 +64,7 @@
 /* Media query for smaller screens */
 @media (max-width: 768px) {
   .line-breaker {
-    margin: 1rem 0; /* Reduce margin on smaller screens */
+    margin: 3rem  0; /* Reduce margin on smaller screens */
   }
 
   .line {

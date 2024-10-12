@@ -8,7 +8,7 @@ import Payment from './pages/PaymentPage.jsx';
 import GoogleMapsLoader from './components/GoogleMapsLoader';
 import SuccessPage from './components/SuccessPage.jsx';
 import CancelPage from './components/CancelPage.jsx';
-
+import ShowMap from './components/ShowMap.jsx';
 const apiKey = import.meta.env.VITE_API_KEY;
 import './App.css';
 
@@ -45,6 +45,7 @@ function App() {
             <Route exact path="/vehicle-selection" element={<VehicleSelection />} />
             <Route exact path="/success" element={<SuccessPage />} />
             <Route exact path="/cancel" element={<CancelPage />} />
+            <Route path="/show-map" element={<ShowMap />} />
 
             <Route path="/booking" element={<Booking />} />
             <Route path="/payment" element={<Payment />} />

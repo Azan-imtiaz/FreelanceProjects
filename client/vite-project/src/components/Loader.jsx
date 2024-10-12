@@ -1,10 +1,11 @@
 import React from 'react';
 import { FaSpinner } from 'react-icons/fa';
-import logo from './logo.png'; // Adjust the path to where your logo is stored
+// import logo from './logo.png'; 
+import logo from '../assets/ICON.jpg'; 
 
 function LoadingPage() {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-purple-700 text-white">
+    <div className="flex items-center justify-center min-h-screen bg-white text-black">
       <div className="flex flex-col items-center">
         <div className="mb-4">
           <img src={logo} alt="ComfortTrip Logo" className="h-20 " /> {/* Adjust height as needed */}

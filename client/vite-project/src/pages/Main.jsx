@@ -14,9 +14,9 @@ import AboutUs from "../components/AboutUs";
 const Main = () => {
   return (
     <div className="App">
-            <Header />
+            <Header  />
              <main className="custom-scrollbar container mx-auto  p-[0.5px] lg:p-4 pt-12 mt-8 ">
-               <BookingForm />
+               <BookingForm  />
              
                <SectionBreak />
                <InfoBoxes />
