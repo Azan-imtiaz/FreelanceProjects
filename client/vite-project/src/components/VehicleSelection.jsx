@@ -150,17 +150,40 @@ const [errors, setErrors] = useState({
     });
   };
 
-
+  let to;
+  let from ;
+  let data;
+  let vData;
   const navigate = useNavigate(); // Hook to handle navigation
   const location = useLocation();
-  const data = location.state?.formData;
-    let to;
-    let from ;
+  if(location.state?.vehicleData){
+    console.log("i m azan");
+     data = location.state?.formData;
+      vData=location.state?.vehicleData;
+      console.log(vData);
+   
   if(data.mode==='ride'){
      to=data.to;
      from=data.from;
   }
+  data.postalCode=true;
+    console.log(location.state?.vehicleData);
+  }
+ else{
    
+   data = location.state?.formData;
+   data.postalCode=false;
+   
+  if(data.mode==='ride'){
+     to=data.to;
+     from=data.from;
+  }
+
+ }
+  
+  
+   
+
 
   
   useEffect(() => {
@@ -179,11 +202,66 @@ const [errors, setErrors] = useState({
     { id: 3, name: 'Payment', icon: <FaCreditCard /> },
   ];
 
+  const updatePrice = (name,name2) => {
+    let vehiclePrice;
+  
+    // Check if the mode is 'ride'
+    if (data.mode === 'ride') {
+      const vehicleMainData = {
+        "Economy": data.distance <= 5 ? 6 : 4,
+        "Standard": data.distance <= 5 ? 8 : 5,
+        "Executive": data.distance <= 5 ? 12 : 7,
+        "MPV": data.distance <= 5 ? 15: 8,
+        "Standard Van": data.distance <= 5 ? 15 : 9,
+        "Luxuary Van": data.distance <= 5 ? 15 : 12,
+        "Minibus": data.distance <= 5 ? 15 : 18,
+      };
+  
+      // Assign price based on name
+      const price = vehicleMainData[name] !== undefined ? vehicleMainData[name] : 0;
+  
+      // If postalCode is true, use vData; otherwise, calculate based on distance
+      if (data.postalCode) {
+        vehiclePrice = vData[name2]; // Use the vehicle price if postalCode is true
+        vehiclePrice+=10;
+      } else {
+        vehiclePrice = data.distance * price; // Use distance-based calculation if postalCode is false
+      }
+    } else {
+      const vehicleMainData = {
+        "Economy": 6,
+        "Standard": 8,
+        "Executive": 12,
+        "MPV": 15,
+        "Standard Van": 15,
+        "Luxuary Van": 15,
+        "Minibus": 15,
+      };
+  
+      // Assign price based on name and calculate based on hours
+      const price = vehicleMainData[name] !== undefined ? vehicleMainData[name] : 0;
+      vehiclePrice = data.hour * price;
+    }
+  
+    return vehiclePrice ? (vehiclePrice).toFixed(2) : "0.00";
+
+  };
+  
+
+  // {
+  //   id: 1,
+  //   name: 'Vw jatta or similar',
+  //   price: `£ ${(data.mode === 'ride' ? data.distance * 4.5 :  data.hour * 4).toFixed(2)}`,
+  //   passengers: '3',
+  //   image: `${economy}`,
+  //   luggage: '2',
+  //   handLuggage: '2'
+  // }
   const vehicles = [
     {
       id: 1,
       name: 'Vw jatta or similar',
-      price: `£ ${(data.mode === 'ride' ? data.distance * 4.5 :  data.hour * 4).toFixed(2)}`,
+      price: `£ ${updatePrice("Economy","SALOON")}`,
       passengers: '3',
       image: `${economy}`,
       luggage: '2',
@@ -192,7 +270,7 @@ const [errors, setErrors] = useState({
     {
       id: 2,
       name: 'Kia niro or similar',
-      price: `£ ${(data.mode === 'ride' ? data.distance * 6.5 : data.hour * 4).toFixed(2)}`,
+      price: `£ ${updatePrice("Standard","Estate")}`,
       passengers: '4',
       image: `${standard}`,
       luggage: '2',
@@ -201,7 +279,7 @@ const [errors, setErrors] = useState({
     {
       id: 3,
       name: 'Mercedes e class or similar',
-      price: `£ ${(data.mode === 'ride' ? data.distance * 9.5 :  data.hour * 4).toFixed(2)}`,
+      price: `£ ${updatePrice("Executive","EXECUTIVE")}`,
       passengers: '3',
       image: `${firstClass}`,
       luggage: '2',
@@ -210,7 +288,7 @@ const [errors, setErrors] = useState({
     {
       id: 4,
       name: 'Toyota voxy or similar',
-      price: `£ ${(data.mode === 'ride' ? data.distance * 6.2 :  data.hour * 4).toFixed(2)}`,
+      price: `£ ${updatePrice("MPV","MPV5")}`,
       passengers: '5',
       image: `${suvs}`,
       luggage: '3',
@@ -219,7 +297,7 @@ const [errors, setErrors] = useState({
     {
       id: 5,
       name: 'Mercedes v class or similar',
-      price: `£ ${(data.mode === 'ride' ? data.distance * 6.9 :  data.hour * 4).toFixed(2)}`,
+      price: `£ ${updatePrice("Standard Van","MPV6")}`,
       passengers: '6',
       image: `${standardVan}`,
       luggage: '5',
@@ -228,7 +306,7 @@ const [errors, setErrors] = useState({
     {
       id: 6,
       name: 'Vw transporter,ford tourneo or similar',
-      price: `£ ${(data.mode === 'ride' ? data.distance * 9.2 :  data.hour * 4).toFixed(2)}`,
+      price: `£ ${updatePrice("Luxuary Van","MPV8")}`,
       passengers: '8',
       image: `${firstClassVan}`,
       luggage: '8',
@@ -237,7 +315,7 @@ const [errors, setErrors] = useState({
     {
       id: 7,
       name: 'Renauld traffic sport,vw transporter or similar',
-      price: `£ ${(data.mode === 'ride' ? data.distance * 12.4 :  data.hour * 4).toFixed(2)}`,
+      price: `£ ${updatePrice("Minibus","MPV16")}`,
       passengers: '14',
       image: `${minibus2}`,
       luggage: '14',
@@ -542,7 +620,7 @@ const handleCheckboxChange = (e) => {
             <h2 className="text-3xl font-bold text-black">{vehicle.price}</h2>
             <div className="flex items-center justify-center mt-2">
               <FaCheckCircle className="text-custom-gold mr-1" /> {/* Tick icon */}
-              <span className="text-sm text-gray-600">Includes Tips</span>
+              <span className="text-sm text-gray-600">Best Service</span>
             </div>
             <div className="bg-black text-white text-md font-bold px-4 py-2 rounded-md mt-3" onClick={() => selectVehicle(vehicle.id)}>
               Select

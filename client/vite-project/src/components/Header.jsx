@@ -14,11 +14,11 @@ function Header() {
   
   const MySwal = withReactContent(Swal);
  const { isSignedInFinal,  signInFinal, signOutFinal,userEmail, setUserEmail,popUp,signInPopUpFalse,signInPopUpTrue  }=  useContext(AuthContext);
-
-  const [showMenu, setShowMenu] = useState(false);
-  const [showSignInForm, setShowSignInForm] = useState(false);
-  const [showCreateAccountForm, setShowCreateAccountForm] = useState(false);
-  const [isSignedIn, setIsSignedIn] = useState(false);
+ 
+ const [showMenu, setShowMenu] = useState(false);
+ const [showSignInForm, setShowSignInForm] = useState(false);
+ const [showCreateAccountForm, setShowCreateAccountForm] = useState(false);
+ const [isSignedIn, setIsSignedIn] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [showChangePasswordForm, setShowChangePasswordForm] = useState(false);
@@ -27,6 +27,7 @@ function Header() {
   const [showForgotPassword, setShowForgotPassword] = new useState(false);
   const [showForgotOtpVerification, setForgotOtpVerification] = new useState(false);
 
+  const navigate = useNavigate();
 
   const [signInData, setSignInData] = useState({ username: '', password: '' });
   const [createAccountData, setCreateAccountData] = useState({ newUsername: '', email: '', newpassword: '' });
@@ -39,7 +40,6 @@ function Header() {
   const [createAccountErrors, setCreateAccountErrors] = useState({ newUsername: false, email: false, newpassword: false });
   const [changePasswordErrors, setChangePasswordErrors] = useState({ newPassword: false, confirmPassword: false, oldPassword: false });
 
-  const navigate = useNavigate();
 
   useEffect(()=>{
    
@@ -740,7 +740,10 @@ signOutFinal();
   }
 
 
-
+function handleClickBooking(){
+ 
+  navigate("/");
+}
 
   return (
     <>
@@ -757,11 +760,11 @@ signOutFinal();
               <div className="relative flex items-center gap-4">
                 
        
-<button className="flex items-center text-lg text-black font-sans border-b-4 border-transparent hover:border-black hover:border-b-4 hover:translate-y-1 transition duration-300">
+<button  onClick={handleClickBooking}   className="flex items-center text-lg text-black font-sans border-b-4 border-transparent hover:border-black hover:border-b-4 hover:translate-y-1 transition duration-300">
   <FaCar className="mr-2" /> Airport Rides
 </button>
 
-<button className="flex items-center text-lg text-black font-sans border-b-4 border-transparent hover:border-black hover:border-b-4 hover:translate-y-1 transition duration-300">
+<button  onClick={handleClickBooking}   className="flex items-center text-lg text-black font-sans border-b-4 border-transparent hover:border-black hover:border-b-4 hover:translate-y-1 transition duration-300">
   <FaCity className="mr-2" /> City Rides
 </button>         
                 
@@ -796,11 +799,11 @@ signOutFinal();
 
 
 
-<button className="flex items-center text-lg text-black font-sans border-b-4 border-transparent hover:border-black hover:border-b-4 hover:translate-y-1 transition duration-300">
+<button onClick={handleClickBooking}  className="flex items-center text-lg text-black font-sans border-b-4 border-transparent hover:border-black hover:border-b-4 hover:translate-y-1 transition duration-300">
   <FaCar className="mr-2" /> Airport Rides
 </button>
 
-<button className="flex items-center text-lg text-black font-sans border-b-4 border-transparent hover:border-black hover:border-b-4 hover:translate-y-1 transition duration-300">
+<button  onClick={handleClickBooking}  className="flex items-center text-lg text-black font-sans border-b-4 border-transparent hover:border-black hover:border-b-4 hover:translate-y-1 transition duration-300">
   <FaCity className="mr-2" /> City Rides
 </button>
 
@@ -842,11 +845,11 @@ signOutFinal();
                 </div> */}
           
             
-<button  onClick={handleBookNowClick} className="flex items-center text-lg text-black font-sans border-b-4 border-transparent hover:border-black w-36 hover:border-b-4 hover:translate-y-1 transition duration-300">
+<button  onClick={handleClickBooking}  className="flex items-center text-lg text-black font-sans border-b-4 border-transparent hover:border-black w-36 hover:border-b-4 hover:translate-y-1 transition duration-300">
   <FaCar className="mr-2" /> Airport Rides
 </button>
 
-<button  onClick={handleBookNowClick} className="flex items-center text-lg text-black font-sans border-b-4 border-transparent w-36 hover:border-black hover:border-b-4 hover:translate-y-1 transition duration-300">
+<button  onClick={handleClickBooking}  className="flex items-center text-lg text-black font-sans border-b-4 border-transparent w-36 hover:border-black hover:border-b-4 hover:translate-y-1 transition duration-300">
   <FaCity className="mr-2" /> City Rides
 </button>            
            
@@ -870,11 +873,11 @@ signOutFinal();
               <>
               
             
-<button  onClick={handleBookNowClick} className="flex items-center text-lg text-black font-sans border-b-4 border-transparent hover:border-black w-36 hover:border-b-4 hover:translate-y-1 transition duration-300">
-  <FaCar className="mr-2" /> Airport Rides
+<button  onClick={handleClickBooking} className="flex items-center text-lg text-black font-sans border-b-4 border-transparent hover:border-black w-36 hover:border-b-4 hover:translate-y-1 transition duration-300">
+  <FaCar className="mr-2"  /> Airport Rides
 </button>
 
-<button  onClick={handleBookNowClick} className="flex items-center text-lg text-black font-sans border-b-4 border-transparent w-36 hover:border-black hover:border-b-4 hover:translate-y-1 transition duration-300">
+<button  onClick={handleClickBooking} className="flex items-center text-lg text-black font-sans border-b-4 border-transparent w-36 hover:border-black hover:border-b-4 hover:translate-y-1 transition duration-300">
   <FaCity className="mr-2" /> City Rides
 </button>         
            

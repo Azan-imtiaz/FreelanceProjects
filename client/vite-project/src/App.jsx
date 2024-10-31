@@ -13,17 +13,17 @@ const apiKey = import.meta.env.VITE_API_KEY;
 import './App.css';
 
 function App() {
-  const [check, setCheck] = useState(true);
+ 
   const [isMapsLoaded, setIsMapsLoaded] = useState(false);
   
-  useEffect(() => {
+  // useEffect(() => {
   
-    const timer = setTimeout(() => {
-      setCheck(false);
-    }, 3000);
+  //   const timer = setTimeout(() => {
+  //     setCheck(false);
+  //   }, 3000);
 
-    return () => clearTimeout(timer);
-  }, []);
+  //   return () => clearTimeout(timer);
+  // }, []);
 
   const handleMapsLoad = () => {
     setIsMapsLoaded(true);
@@ -34,9 +34,7 @@ function App() {
   const libraries = ['places','geometry'];
 
   return (
-    check ? (
-      <LoadingPage />
-    ) : (
+    (
       <Router>
         <GoogleMapsLoader apiKey={apiKey} libraries={libraries} onLoad={handleMapsLoad} />
         {isMapsLoaded ? (

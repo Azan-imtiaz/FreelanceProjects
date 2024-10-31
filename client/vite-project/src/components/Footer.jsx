@@ -44,12 +44,21 @@ function Footer() {
               <li>Stansted Airport</li>
               <li>Luton Airport</li>
               <li>London City Airport</li>
-              <li>Birmingham Airport</li>
-              <li>Manchester Airport</li>
-              <li>Bristol Airport</li>
-              <li>Edinburgh Airport</li>
-              <li>Glasgow Airport</li>
+              
             </ul>
+
+            <h3 className="text-2xl font-bold text-black">Seaports</h3>
+            <ul className="text-gray-700 space-y-2">
+              <li>Southampton </li>
+              <li>Portsmouth</li>
+              <li>Dover</li>
+              <li>Bournemouth </li>
+              <li>Eastbourne</li>
+              
+            </ul>
+        
+
+
           </div>
 
           {/* Column 3: Franfeero Services and Company */}
@@ -70,6 +79,8 @@ function Footer() {
               <li className="hover:text-gray-900 transition-colors">Careers</li>
               <li className="hover:text-gray-900 transition-colors">Privacy Policy</li>
             </ul>
+
+
           </div>
 
           {/* Column 4: Why Us, Reviews, Payment Methods, Follow Us */}

@@ -32,7 +32,7 @@ const AboutUs = () => {
         >
           <FaPlaneDeparture className="service-icon text-custom-purple  font-sans  mb-2 text-5xl" />
           <h3 className="font-semibold text-xl font-sans">Airport Transfers</h3>
-          <p className="text-gray-600 font-sans">Hassle-free transfers to and from major London airports.</p>
+          <p className="text-gray-600 font-sans">Hassle-free transfers to and from major  airports.</p>
         </motion.div>
 
         <motion.div
@@ -53,8 +53,11 @@ const AboutUs = () => {
           transition={{ duration: 0.7 }}
         >
           <FaMap className="service-icon  mb-2 text-5xl text-custom-purple  font-sans " />
-          <h3 className="font-semibold text-xl font-sans ">Day Trips</h3>
-          <p className="text-gray-600  font-sans ">Customized trips to explore iconic sights around London.</p>
+          {/* <h3 className="font-semibold text-xl font-sans ">Day Trips</h3>
+          <p className="text-gray-600  font-sans ">Customized trips to explore iconic sights around London.</p> */}
+          <h3 className="font-semibold text-xl font-sans">Seaport Transfers</h3>
+<p className="text-gray-600 font-sans">Effortless, reliable transfers to  major seaports, tailored to your travel schedule and needs.</p>
+
         </motion.div>
 
         <motion.div

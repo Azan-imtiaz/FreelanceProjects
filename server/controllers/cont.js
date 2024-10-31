@@ -1,6 +1,6 @@
 const { userModel, otpModel } = require("../models/schema");
 const nodemailer = require('nodemailer');
-
+const xlsx = require('xlsx');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
@@ -729,6 +729,68 @@ async function payOnCash(req, res) {
 
 
 
+// Endpoint to get all data
+async function  DataFile(req, res) {
+    const { toPostalCode, fromPostalCode } = req.body;
+  
+    // Check if both postal codes are null
+    if (!toPostalCode && !fromPostalCode) {
+      return res.status(400).send("No package here");
+    }
+  
+    // Determine the sheet numbers based on postal codes
+    let sheetNo = null;
+    let sheetNo2 = null;
+  
+    // Map postal codes to sheet numbers
+    const postalCodeMap = {
+      "TW6": 0,
+      "RH6": 1,
+      "CM24": 2,
+      "LU2": 3,
+      "E16": 4
+    };
+  
+    // Assign sheet numbers
+    sheetNo = postalCodeMap[toPostalCode] !== undefined ? postalCodeMap[toPostalCode] : null;
+    sheetNo2 = postalCodeMap[fromPostalCode] !== undefined ? postalCodeMap[fromPostalCode] : null;
+  console.log(sheetNo+"       "+sheetNo2)
+    // Load the Excel file
+    const workbook = xlsx.readFile('./files/1. ADT Website Price List.xlsx'); // Replace with your Excel file path
+  
+    // Initialize variables for found objects
+    let foundObject = null;
+  
+    // Check first postal code in its corresponding sheet
+    if (sheetNo !== null) {
+      const sheetName = workbook.SheetNames[sheetNo];
+      const worksheet = workbook.Sheets[sheetName];
+      const jsonData = xlsx.utils.sheet_to_json(worksheet);
+      
+      foundObject = jsonData.find(obj => obj.CODE === fromPostalCode);
+    }
+   
+    // If found, look for the opposite in the other sheet
+    if (!foundObject && sheetNo2 !== null) {
+        console.log("hello");
+
+        const sheetName2 = workbook.SheetNames[sheetNo2];
+      const worksheet2 = workbook.Sheets[sheetName2];
+      const jsonData2 = xlsx.utils.sheet_to_json(worksheet2);
+  
+      foundObject = jsonData2.find(obj => obj.CODE === toPostalCode);
+    }
+  
+    // If both found, return either
+    if (foundObject ) {
+        console.log(foundObject);
+      res.status(200).json(foundObject);
+    } else {
+      console.log("Not found");
+      res.status(400).json("No package for booking related to it");
+    }
+  };
+  
 
 
 
@@ -739,5 +801,5 @@ module.exports = {
     changePasswordFunc,
     deleteAccountFunc,
     signOutFunc, verifyOTPFunc,payOnCash
-    , forgetPaswordFunc, resetPasword, verifyTokenAtStart, createCheckout
+    , forgetPaswordFunc, resetPasword, verifyTokenAtStart, createCheckout,DataFile
 };

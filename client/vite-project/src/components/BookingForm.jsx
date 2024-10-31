@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Spinner from 'react-bootstrap/Spinner';
-
+import {fetchDataPricing } from "../Services/apis";
 const libraries = ['places'];
 
 const BookingForm = () => {
@@ -51,6 +51,8 @@ const BookingForm = () => {
     }
     return newErrors;
   };
+
+
   const validateFormForHour = () => {
     const newErrors = {};
     if (!formData.from) newErrors.from = 'Pickup location is required';
@@ -63,122 +65,348 @@ const BookingForm = () => {
    
     return newErrors;
   };
-
   const isWithinEngland = (place) => {
-    const validCountries = ['England', 'United Kingdom','UK'];
+    const validCountries = ['England', 'United Kingdom', 'UK'];
     return validCountries.some(country => place.address_components.some(component => component.long_name.includes(country)));
   };
+  
+  // Helper function to get postal code from place
+// Helper function to extract postal codes
+// Helper function to extract postal codes
+const extractPostalCode = (address) => {
+  // Check for specific airports and return corresponding postal codes
+  if (address.includes("Hounslow, UK")) {
+    return "TW6"; // Hounslow postal code
+  }
+  if (address.includes("London Heathrow")) {
+    return "TW6"; // London Heathrow postal code
+  }
+  if (address.includes("Gatwick Airport")) {
+    return "RH6"; // Gatwick Airport postal code
+  }
+  if (address.includes("Stanstead Airport")) {
+    return "CM24"; // Stanstead Airport postal code
+  }
+  if (address.includes("Luton Airport")) {
+    return "LU2"; // Luton Airport postal code
+  }
+  if (address.includes("London City Airport")) {
+    return "E16"; // London City Airport postal code
+  }
 
-  const calculateDistance = () => {
-    return new Promise((resolve, reject) => {
-      if (!formData.from || !formData.to) {
-        reject('Origin and destination are required');
-        return;
-      }
+  // Regex to find UK postal codes based on provided examples
+  const postalCodeMatch = address.match(/\b[A-Z]{1,2}\d{1,2}[A-Z]?\d[A-Z]{2}\b|\b[A-Z]{1,2}\d{1,2}\b|\b[A-Z]{1}\d[A-Z]?\b/);
+  return postalCodeMatch ? postalCodeMatch[0] : null;
+};
 
-      const service = new window.google.maps.DistanceMatrixService();
-      service.getDistanceMatrix(
-        {
-          origins: [formData.from],
-          destinations: [formData.to],
-          travelMode: 'DRIVING',
-        },
-        (response, status) => {
-          if (status === 'OK') {
-            const element = response.rows[0].elements[0];
-            const distanceValueInMeters = element.distance.value;
-            const distanceValueInMiles = distanceValueInMeters * 0.000621371;
-            const distanceTextInMiles = distanceValueInMiles.toFixed(2) + ' miles';
-            const durationText = element.duration.text;
-            resolve({ distanceTextInMiles, distanceValueInMiles, durationText });
-          } else {
-            reject('Error calculating distance');
-          }
+const calculateDistance = () => {
+  return new Promise((resolve, reject) => {
+    if (!formData.from || !formData.to) {
+      reject('Origin and destination are required');
+      return;
+    }
+
+    const service = new window.google.maps.DistanceMatrixService();
+    service.getDistanceMatrix(
+      {
+        origins: [formData.from],
+        destinations: [formData.to],
+        travelMode: 'DRIVING',
+      },
+      (response, status) => {
+        if (status === 'OK') {
+          const element = response.rows[0].elements[0];
+          const distanceValueInMeters = element.distance.value;
+          const distanceValueInMiles = distanceValueInMeters * 0.000621371;
+          const distanceTextInMiles = distanceValueInMiles.toFixed(2) + ' miles';
+          const durationText = element.duration.text;
+
+          // Extract postal codes from formatted addresses
+          const fromPostalCode = extractPostalCode(response.originAddresses[0]);
+          const toPostalCode = extractPostalCode(response.destinationAddresses[0]);
+
+          // console.log("fromPostalCode: " + fromPostalCode);
+          // console.log("toPostalCode: " + toPostalCode);
+          resolve({ 
+            distanceTextInMiles, 
+            distanceValueInMiles, 
+            durationText, 
+            fromPostalCode, 
+            toPostalCode 
+          });
+        } else {
+          reject('Error calculating distance');
         }
-      );
-    });
-  };
+      }
+    );
+  });
+};
 
+ 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    formData.mode=mode;
-    //  console.log(formData);
-     if(mode==='ride'){
-    const validationErrors = validateForm();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
-
-    if (!isWithinEngland({ address_components: [{ long_name: formData.from }] })) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Invalid Location',
-        text: 'Pickup location outside England is not supported.',
-      });
-      return;
-    }
-
-    if (!isWithinEngland({ address_components: [{ long_name: formData.to }] })) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Invalid Location',
-        text: 'Destination outside England is not supported.',
-      });
-      return;
-    }
-
-    try {
-      setSpin(true);
-      const { distanceTextInMiles, distanceValueInMiles, durationText } = await calculateDistance();
+    formData.mode = mode;
+  
+    if (mode === 'ride') {
+      const validationErrors = validateForm();
+      if (Object.keys(validationErrors).length > 0) {
+        setErrors(validationErrors);
+        return;
+      }
+  
+      if (!isWithinEngland({ address_components: [{ long_name: formData.from }] })) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid Location',
+          text: 'Pickup location outside England is not supported.',
+        });
+        return;
+      }
+  
+      if (!isWithinEngland({ address_components: [{ long_name: formData.to }] })) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid Location',
+          text: 'Destination outside England is not supported.',
+        });
+        return;
+      }
+  
+      try {
+        setSpin(true);
+       
+        const { distanceTextInMiles, distanceValueInMiles, durationText, fromPostalCode, toPostalCode } = await calculateDistance();
+     
+     if((toPostalCode !="TW6" && toPostalCode != "RH6" &&  toPostalCode != "CM24" && toPostalCode != "LU2" && toPostalCode != "E16") && (fromPostalCode !="TW6" && fromPostalCode != "RH6" &&  fromPostalCode != "CM24" && fromPostalCode != "LU2" && fromPostalCode != "E16") ){
+  
       const updatedFormData = {
         ...formData,
         distance: distanceValueInMiles.toFixed(2),
         estimatedTime: durationText,
-      };
+        fromPostalCode,
+        toPostalCode,
+        postalCode:false
+       };
 
-      updatedFormData.checkedLuggage=formData.luggage;
-      updatedFormData.persons=formData.passenger;
+       updatedFormData.checkedLuggage = formData.luggage;
+       updatedFormData.persons = formData.passenger;
        
-      clearFormData();
-      setSpin(false);
-      navigate('/vehicle-selection', { state: { formData: updatedFormData } });
-    } catch (error) {
-      setSpin(false);
-      console.error('Error calculating distance:', error);
-      setErrors((prevErrors) => ({ ...prevErrors, distance: 'Could not calculate distance', estimatedTime: "Could not calculate" }));
-    }
-     }
-     else{
-       const validationErrors = validateFormForHour();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
+     clearFormData();
+     setSpin(false);
+    //  console.log("chekced="+updatedFormData)
+     navigate('/vehicle-selection', { state: { formData: updatedFormData, vehicleData:null} });
+   }
+       
 
-    if (!isWithinEngland({ address_components: [{ long_name: formData.from }] })) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Invalid Location',
-        text: 'Pickup location outside England is not supported.',
-      });
-      return;
-    }
-    try {
-      setSpin(true);
-     const updatedFormData={
-      from:formData.from,persons:formData.passenger,checkedLuggage:formData.luggage,pickupDate:formData.pickupDate,pickupTime:formData.pickupTime,mode:formData.mode,hour:formData.hour
-     };
-    
-      setSpin(false);
-    clearFormData();
-    navigate('/vehicle-selection', { state: { formData: updatedFormData } });
+
+      else{
+
+        
+        const resp=await fetchDataPricing (toPostalCode,fromPostalCode);
+        console.log(resp);
+        if(resp){
+
+         const updatedFormData = {
+           ...formData,
+           distance: distanceValueInMiles.toFixed(2),
+           estimatedTime: durationText,
+           fromPostalCode,
+           toPostalCode,
+           postalCode:false
+          };
+          
+          updatedFormData.checkedLuggage = formData.luggage;
+          updatedFormData.persons = formData.passenger;
+          
+          clearFormData();
+        setSpin(false);
+        // console.log("chekced="+updatedFormData)
+        navigate('/vehicle-selection', { state: { formData: updatedFormData,vehicleData:resp } });
+      }
+      else{
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid Location',
+          text: 'No package .',
+        });
+        return;
+
+      }
+      }
     } catch (error) {
+      setSpin(false);
+      // console.error('Error calculating distance:', error);
       setErrors((prevErrors) => ({ ...prevErrors, distance: 'Could not calculate distance', estimatedTime: "Could not calculate" }));
     }
-     }
-    
+  } else {
+      const validationErrors = validateFormForHour();
+      if(formData.hour < 3 || formData.hour > 24){
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid Duration',
+          text: 'Enter Duration in correct Range(3h to 24h).',
+        });
+
+        return;
+
+      }
+
+      if (Object.keys(validationErrors).length > 0) {
+        setErrors(validationErrors);
+        return;
+      }
+  
+      if (!isWithinEngland({ address_components: [{ long_name: formData.from }] })) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid Location',
+          text: 'Pickup location outside England is not supported.',
+        });
+        return;
+      }
+      try {
+        setSpin(true);
+        const updatedFormData = {
+          from: formData.from,
+          persons: formData.passenger,
+          checkedLuggage: formData.luggage,
+          pickupDate: formData.pickupDate,
+          pickupTime: formData.pickupTime,
+          mode: formData.mode,
+          hour: formData.hour,
+          postalCode:false
+        };
+  
+        setSpin(false);
+        clearFormData();
+        // console.log("checked"+updatedFormData);
+        navigate('/vehicle-selection', { state: { formData: updatedFormData,vehicleData:null } });
+      } catch (error) {
+        setErrors((prevErrors) => ({ ...prevErrors, distance: 'Could not calculate distance', estimatedTime: "Could not calculate" }));
+      }
+    }
   };
+  
+  // const isWithinEngland = (place) => {
+  //   const validCountries = ['England', 'United Kingdom','UK'];
+  //   return validCountries.some(country => place.address_components.some(component => component.long_name.includes(country)));
+  // };
+
+  // const calculateDistance = () => {
+  //   return new Promise((resolve, reject) => {
+  //     if (!formData.from || !formData.to) {
+  //       reject('Origin and destination are required');
+  //       return;
+  //     }
+
+  //     const service = new window.google.maps.DistanceMatrixService();
+  //     service.getDistanceMatrix(
+  //       {
+  //         origins: [formData.from],
+  //         destinations: [formData.to],
+  //         travelMode: 'DRIVING',
+  //       },
+  //       (response, status) => {
+  //         if (status === 'OK') {
+  //           const element = response.rows[0].elements[0];
+  //           const distanceValueInMeters = element.distance.value;
+  //           const distanceValueInMiles = distanceValueInMeters * 0.000621371;
+  //           const distanceTextInMiles = distanceValueInMiles.toFixed(2) + ' miles';
+  //           const durationText = element.duration.text;
+  //           resolve({ distanceTextInMiles, distanceValueInMiles, durationText });
+  //         } else {
+  //           reject('Error calculating distance');
+  //         }
+  //       }
+  //     );
+  //   });
+  // };
+
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   formData.mode=mode;
+  //   //  console.log(formData);
+  //    if(mode==='ride'){
+  //   const validationErrors = validateForm();
+  //   if (Object.keys(validationErrors).length > 0) {
+  //     setErrors(validationErrors);
+  //     return;
+  //   }
+
+  //   if (!isWithinEngland({ address_components: [{ long_name: formData.from }] })) {
+  //     Swal.fire({
+  //       icon: 'error',
+  //       title: 'Invalid Location',
+  //       text: 'Pickup location outside England is not supported.',
+  //     });
+  //     return;
+  //   }
+
+  //   if (!isWithinEngland({ address_components: [{ long_name: formData.to }] })) {
+  //     Swal.fire({
+  //       icon: 'error',
+  //       title: 'Invalid Location',
+  //       text: 'Destination outside England is not supported.',
+  //     });
+  //     return;
+  //   }
+
+  //   try {
+  //     setSpin(true);
+  //     const { distanceTextInMiles, distanceValueInMiles, durationText } = await calculateDistance();
+  //     const updatedFormData = {
+  //       ...formData,
+  //       distance: distanceValueInMiles.toFixed(2),
+  //       estimatedTime: durationText,
+  //     };
+
+  //     updatedFormData.checkedLuggage=formData.luggage;
+  //     updatedFormData.persons=formData.passenger;
+       
+  //     clearFormData();
+  //     setSpin(false);
+      
+              
+         
+
+
+  //     navigate('/vehicle-selection', { state: { formData: updatedFormData } });
+  //   } catch (error) {
+  //     setSpin(false);
+  //     console.error('Error calculating distance:', error);
+  //     setErrors((prevErrors) => ({ ...prevErrors, distance: 'Could not calculate distance', estimatedTime: "Could not calculate" }));
+  //   }
+  //    }
+  //    else{
+  //      const validationErrors = validateFormForHour();
+  //   if (Object.keys(validationErrors).length > 0) {
+  //     setErrors(validationErrors);
+  //     return;
+  //   }
+
+  //   if (!isWithinEngland({ address_components: [{ long_name: formData.from }] })) {
+  //     Swal.fire({
+  //       icon: 'error',
+  //       title: 'Invalid Location',
+  //       text: 'Pickup location outside England is not supported.',
+  //     });
+  //     return;
+  //   }
+  //   try {
+  //     setSpin(true);
+  //    const updatedFormData={
+  //     from:formData.from,persons:formData.passenger,checkedLuggage:formData.luggage,pickupDate:formData.pickupDate,pickupTime:formData.pickupTime,mode:formData.mode,hour:formData.hour
+  //    };
+    
+  //     setSpin(false);
+  //   clearFormData();
+  //   navigate('/vehicle-selection', { state: { formData: updatedFormData } });
+  //   } catch (error) {
+  //     setErrors((prevErrors) => ({ ...prevErrors, distance: 'Could not calculate distance', estimatedTime: "Could not calculate" }));
+  //   }
+  //    }
+    
+  // };
   
 
    // Function to clear all values
@@ -433,14 +661,14 @@ const BookingForm = () => {
   mode==='byHour' && (
 <div className="mb-4">
       <label htmlFor="passenger" className="block text-gray-700 text-xl font-semibold mb-2 font-sans">
-       Duration
+       Duration 
       </label>
       <div className="flex items-center border border-gray-300 rounded-lg font-sans">
         <FaClock className="text-gray-500 ml-3 font-sans" />
         <input
           type="number"
           id="hour"
-          placeholder="Duration of Booking(In Hours)"
+          placeholder="Duration of Booking(In Hours) Range (3h-24h)"
           value={formData.hour}
           onChange={handleChange}
           className="flex-1 p-2 rounded-r-lg focus:outline-none text-sm md:text-base font-sans"
