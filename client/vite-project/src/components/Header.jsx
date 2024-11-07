@@ -741,7 +741,7 @@ signOutFinal();
 
 
 function handleClickBooking(){
- 
+ console.log("heyy")
   navigate("/");
 }
 
