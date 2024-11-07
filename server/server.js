@@ -17,11 +17,18 @@ const cors = require("cors");
 
 // Configure CORS with specific origin and credentials
 app.use(cors({
-  origin: process.env.ORIGIN, // Replace this with your React app's actual URL
-  //  origin:'https://www.comforttrips.co.uk',
+  origin: (origin, callback) => {
+    // Allow requests from the production domain or localhost for development
+    const allowedOrigins = ['https://www.comforttrips.co.uk', 'http://localhost:5173'];
+    
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true); // Allow the request
+    } else {
+      callback(new Error('Not allowed by CORS')); // Reject the request
+    }
+  },
   credentials: true, // Allow credentials (cookies) to be sent
 }));
-
 
 app.use(cookieParser());
 require("./conn/conn");
