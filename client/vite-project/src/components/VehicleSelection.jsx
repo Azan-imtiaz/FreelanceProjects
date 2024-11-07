@@ -14,14 +14,14 @@ import withReactContent from 'sweetalert2-react-content';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import PaymentComponent from "../components/PaymentComponent";
-import economy from "../assets/economy.jpg"
-import standard from "../assets/standard.jpg"
-import firstClass from "../assets/firstClass.jpg"
+import economy from "../assets/ecm.jpg"
+import standard from "../assets/standardLast.jpg"
+import firstClass from "../assets/excecutive.jpg"
 import minibus1 from "../assets/minibus1.jpg"
-import minibus2 from "../assets/minibus2.jpg"
-import firstClassVan from "../assets/firstClassVan.jpg"
-import suvs from "../assets/suv.jpg"
-import standardVan from "../assets/standardVan.jpg"
+import minibus2 from "../assets/suvLast.jpg"
+import firstClassVan from "../assets/vanMain.jpg"
+import suvs from "../assets/img6.jpg"
+import standardVan from "../assets/img8.png"
 
 
 
@@ -229,13 +229,13 @@ const [errors, setErrors] = useState({
       }
     } else {
       const vehicleMainData = {
-        "Economy": 6,
-        "Standard": 8,
-        "Executive": 12,
-        "MPV": 15,
-        "Standard Van": 15,
-        "Luxuary Van": 15,
-        "Minibus": 15,
+        "Economy": 39,
+        "Standard": 40,
+        "Executive": 63,
+        "MPV": 55,
+        "Standard Van": 75,
+        "Luxuary Van": 79,
+        "Minibus": 150,
       };
   
       // Assign price based on name and calculate based on hours
@@ -260,7 +260,8 @@ const [errors, setErrors] = useState({
   const vehicles = [
     {
       id: 1,
-      name: 'Vw jatta or similar',
+      name: 'Vw Jetta, Toyota Prius or Similar',
+      head:"Economy",
       price: `£ ${updatePrice("Economy","SALOON")}`,
       passengers: '3',
       image: `${economy}`,
@@ -269,7 +270,8 @@ const [errors, setErrors] = useState({
     },
     {
       id: 2,
-      name: 'Kia niro or similar',
+      head:"Standard",
+      name: 'Kia Niro, Skoda or Similar',
       price: `£ ${updatePrice("Standard","Estate")}`,
       passengers: '4',
       image: `${standard}`,
@@ -278,7 +280,8 @@ const [errors, setErrors] = useState({
     },
     {
       id: 3,
-      name: 'Mercedes e class or similar',
+      head:"Executive",
+      name: 'Mercedes E Class, BMW 5 Series or Similar',
       price: `£ ${updatePrice("Executive","EXECUTIVE")}`,
       passengers: '3',
       image: `${firstClass}`,
@@ -287,7 +290,8 @@ const [errors, setErrors] = useState({
     },
     {
       id: 4,
-      name: 'Toyota voxy or similar',
+      head:"MPV",
+      name: 'Volkswagen XL, VW Van or Similar',
       price: `£ ${updatePrice("MPV","MPV5")}`,
       passengers: '5',
       image: `${suvs}`,
@@ -296,16 +300,18 @@ const [errors, setErrors] = useState({
     },
     {
       id: 5,
-      name: 'Mercedes v class or similar',
-      price: `£ ${updatePrice("Standard Van","MPV6")}`,
+      head:"Standard Van",
+      name: 'Mercedes Vito, Hyundai or Similar',
+      price: `£ ${updatePrice("Standard Van","MPV7")}`,
       passengers: '6',
-      image: `${standardVan}`,
+      image: `${minibus2}`,
       luggage: '5',
       handLuggage: '3'
     },
     {
       id: 6,
-      name: 'Vw transporter,ford tourneo or similar',
+      head:"Luxuary Van",
+      name: 'Mercedes V Class, Vito 8seats or Similar',
       price: `£ ${updatePrice("Luxuary Van","MPV8")}`,
       passengers: '8',
       image: `${firstClassVan}`,
@@ -314,10 +320,11 @@ const [errors, setErrors] = useState({
     },
     {
       id: 7,
-      name: 'Renauld traffic sport,vw transporter or similar',
+      head:"Minibus",
+      name: 'Vw Transporter, Renauld Traffic Sport or Similar',
       price: `£ ${updatePrice("Minibus","MPV16")}`,
       passengers: '14',
-      image: `${minibus2}`,
+      image: `${standardVan}`,
       luggage: '14',
       handLuggage: '10'
     }
@@ -572,7 +579,7 @@ const handleCheckboxChange = (e) => {
             <img 
               src={vehicle.image} 
               alt={vehicle.name} 
-              className="w-32 lg:w-48 lg:h-40 h-24 object-cover rounded-lg" // Adjust image size
+              className="w-32 lg:w-56 lg:h-40 h-24 object-cover rounded-lg" // Adjust image size
             />
             <div>
               <h3 className="text-sm text-gray-600">{vehicle.name}</h3>
@@ -583,7 +590,7 @@ const handleCheckboxChange = (e) => {
           <div className="flex-grow flex flex-col justify-between ml-4"> {/* Added margin-left for spacing */}
             {/* Centered Economy and Details */}
             <div className="flex flex-col mt-4"> {/* Economy Section */}
-              <h1 className='font-sans text-black text-2xl font-bold'>Economy</h1>
+              <h1 className='font-sans text-black text-2xl font-bold'>{vehicle.head}</h1>
 
               <div className="flex items-center mt-3"> {/* Passengers and Luggage */}
                 <div className="flex items-center">

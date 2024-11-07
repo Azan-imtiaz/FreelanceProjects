@@ -81,7 +81,7 @@ import standardVan from "../assets/standardVan.jpg";
  import support from "../assets/support.jpg";
 //  import ReliableTransfer from "../assets/ReliableTransfer.jpg";
 
- import services2 from "../assets/services.jpg";
+ import services2 from "../assets/bg.jpg";
 
  import comfort from "../assets/comfort.jpg";
 

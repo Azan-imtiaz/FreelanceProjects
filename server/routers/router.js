@@ -7,7 +7,7 @@ const {  loginFunc,payOnCash,
     signOutFunc,verifyOTPFunc, forgetPaswordFunc ,resetPasword,verifyTokenAtStart,createCheckout,DataFile} = require("../controllers/cont");
 
 router.post("/signin", loginFunc);
-router.post("/create-account", registerFunc);
+router.post("/create-account", registerFunc); 
 router.put("/change-password", changePasswordFunc);
 router.post("/signout", signOutFunc);
 router.delete("/delete-account", deleteAccountFunc);

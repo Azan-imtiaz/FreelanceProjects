@@ -363,7 +363,7 @@ async function registerFunc(req, res) {
         return res.status(200).send({ st: 200, message: "OTP sent to email" });
 
     } catch (err) {
-        console.error(err.message);
+        console.error(err);
         res.status(500).send({ st: 500, message: "Internal server error" });
     }
 }
@@ -752,8 +752,8 @@ async function  DataFile(req, res) {
     };
   
     // Assign sheet numbers
-    sheetNo = postalCodeMap[toPostalCode] !== undefined ? postalCodeMap[toPostalCode] : null;
-    sheetNo2 = postalCodeMap[fromPostalCode] !== undefined ? postalCodeMap[fromPostalCode] : null;
+    sheetNo2 = postalCodeMap[toPostalCode] !== undefined ? postalCodeMap[toPostalCode] : null;
+    sheetNo = postalCodeMap[fromPostalCode] !== undefined ? postalCodeMap[fromPostalCode] : null;
   console.log(sheetNo+"       "+sheetNo2)
     // Load the Excel file
     const workbook = xlsx.readFile('./files/1. ADT Website Price List.xlsx'); // Replace with your Excel file path
@@ -767,18 +767,19 @@ async function  DataFile(req, res) {
       const worksheet = workbook.Sheets[sheetName];
       const jsonData = xlsx.utils.sheet_to_json(worksheet);
       
-      foundObject = jsonData.find(obj => obj.CODE === fromPostalCode);
+      foundObject = jsonData.find(obj => obj.CODE === toPostalCode);
     }
    
     // If found, look for the opposite in the other sheet
     if (!foundObject && sheetNo2 !== null) {
+     
         console.log("hello");
 
         const sheetName2 = workbook.SheetNames[sheetNo2];
       const worksheet2 = workbook.Sheets[sheetName2];
       const jsonData2 = xlsx.utils.sheet_to_json(worksheet2);
   
-      foundObject = jsonData2.find(obj => obj.CODE === toPostalCode);
+      foundObject = jsonData2.find(obj => obj.CODE === fromPostalCode);
     }
   
     // If both found, return either

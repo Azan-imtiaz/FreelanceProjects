@@ -1,15 +1,17 @@
 import React from 'react';
-import { FaCheckCircle, FaArrowRight } from 'react-icons/fa';
+import { FaCheckCircle, FaArrowRight,FaClock } from 'react-icons/fa';
 
 // Import images from the assets folder
-import economy from "../assets/economy.jpg"
-import standard from "../assets/standard.jpg"
-import firstClass from "../assets/firstClass.jpg"
-import minibus1 from "../assets/minibus1.jpg"
-import minibus2 from "../assets/minibus2.jpg"
-import firstClassVan from "../assets/firstClassVan.jpg"
-import suv from "../assets/suv.jpg"
-import standardVan from "../assets/standardVan.jpg"
+import economy from "../assets/ecm.jpg"
+import standard from "../assets/standardLast.jpg"
+import firstClass from "../assets/excecutive.jpg"
+
+// import minibus1 from "../assets/minibus1.jpg"
+import minibus2 from "../assets/suvLast.jpg"
+import firstClassVan from "../assets/vanMain.jpg"
+import suvs from "../assets/img6.jpg"
+import standardVan from "../assets/img8.png"
+
 
 
 
@@ -18,41 +20,48 @@ function VehicleShowcase() {
   const vehicles = [
     {
       image: economy,
-      name: 'Vw jatta or similar',
+      head:"Economy",
+      name: 'Vw Jetta, Toyota Prius or Similar',
       capacity: '3 Passengers',
       description: 'Licensed Vehicle & Professional Drivers',
     },
     {
       image:standard,
-      name: 'Kia niro or similar',
+      head:"Standard",
+      name: 'Kia Niro, Skoda, Mitsubishi, MG, Hyundai or Similar',
       capacity: '4 Passengers',
       description: 'Licensed Vehicle & Professional Drivers',
     },
     {
       image: firstClass,
-      name: 'Mercedes e class or similar',
+      head:"Executive",
+      name: 'Mercedes E Class, BMW 5 Series, Tesla, Jaguar or Similar',
       capacity: '3 Passengers',
       description: 'Licensed Vehicle & Professional Drivers',
     },
     {
-      image: suv,
-      name: 'Toyota voxy or similar ',
+      image: suvs,
+      head:"MPV",
+      name: 'Volkswagen XL, Ford Glaxay, VW Van or Similar',
       capacity: '5 Passengers',
       description: 'Licensed Vehicle & Professional Drivers',
     },
     {
-      image: standardVan ,
-      name: 'Mercedes v class or similar',
+      image:  minibus2,
+      head:"Standard Van",
+      name: 'Mercedes Vito, Ford Custom, Hyundai or Similar',
       capacity: '6 Passengers',
       description: 'Licensed Vehicle & Professional Drivers',
     },{
       image: firstClassVan ,
-      name: 'Vw transporter, ford tourneo or similar',
+      head:"Luxuary Van",
+      name: 'Mercedes V Class, Vito 8seats or Similar',
       capacity: '8 Passengers',
       description: 'Licensed Vehicle & Professional Drivers',
     },{
-      image: minibus1,
-      name: 'Renauld traffic sport, vw transporter or similar ',
+      image:standardVan,
+      head:"Minibus",
+      name: 'Vw Transporter, Renauld Traffic Sport or Similar',
       capacity: '14 Passengers',
       description: 'Licensed Vehicle & Professional Drivers',
     }
@@ -92,9 +101,9 @@ function VehicleShowcase() {
       ></div>
       <div className="p-4">
         <h3 className="text-2xl font-bold text-gray-900 mb-1 tracking-wide">
-          Economy
+          {vehicle.head}
         </h3>
-        <h4 className="text-xl font-semibold text-custom-purple mb-2">
+        <h4 className="text-sm font-semibold text-custom-purple mb-2">
           {vehicle.name}
         </h4>
         <p className="text-gray-700 mb-2">{vehicle.capacity}</p>
@@ -102,6 +111,10 @@ function VehicleShowcase() {
           <FaCheckCircle className="text-green-500 mr-2" />
           {vehicle.description}
         </p>
+        <p className="text-sm ">
+        {/* <FaClock className="text-blue-500" /> */}
+        Free Waiting Time: 60 mins for airport and 15 mins for other pickups
+      </p>
       </div>
     </div>
   ))}
