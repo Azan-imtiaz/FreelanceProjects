@@ -127,6 +127,7 @@ const calculateDistance = () => {
 
           // console.log("fromPostalCode: " + fromPostalCode);
           // console.log("toPostalCode: " + toPostalCode);
+           console.log("distanceValueInMiles : " + distanceValueInMiles);
           resolve({ 
             distanceTextInMiles, 
             distanceValueInMiles, 
@@ -171,12 +172,19 @@ const calculateDistance = () => {
         });
         return;
       }
+
+      let distanceValueInMile, durationTex,fromPostalCod,toPostalCod;
   
       try {
         setSpin(true);
+        console.log("hello")
        
         const { distanceTextInMiles, distanceValueInMiles, durationText, fromPostalCode, toPostalCode } = await calculateDistance();
-     
+        distanceValueInMile=distanceValueInMiles;
+        durationTex=durationText;
+        fromPostalCod= fromPostalCode;
+        toPostalCod= toPostalCode;
+
      if((toPostalCode !="TW6" && toPostalCode != "RH6" &&  toPostalCode != "CM24" && toPostalCode != "LU2" && toPostalCode != "E16") && (fromPostalCode !="TW6" && fromPostalCode != "RH6" &&  fromPostalCode != "CM24" && fromPostalCode != "LU2" && fromPostalCode != "E16") ){
   
       const updatedFormData = {
@@ -234,9 +242,23 @@ const calculateDistance = () => {
       }
       }
     } catch (error) {
-      setSpin(false);
-      // console.error('Error calculating distance:', error);
-      setErrors((prevErrors) => ({ ...prevErrors, distance: 'Could not calculate distance', estimatedTime: "Could not calculate" }));
+      const updatedFormData = {
+        ...formData,
+        distance: distanceValueInMile.toFixed(2),
+        estimatedTime: durationTex,
+        fromPostalCod,
+        toPostalCod,
+        postalCode:false
+       };
+
+       updatedFormData.checkedLuggage = formData.luggage;
+       updatedFormData.persons = formData.passenger;
+       
+     clearFormData();
+     setSpin(false);
+    //  console.log("chekced="+updatedFormData)
+     navigate('/vehicle-selection', { state: { formData: updatedFormData, vehicleData:null} });
+
     }
   } else {
       const validationErrors = validateFormForHour();

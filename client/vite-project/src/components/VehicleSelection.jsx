@@ -561,80 +561,95 @@ const handleCheckboxChange = (e) => {
           <h1 className="text-2xl font-bold mb-4  text-custom-purple font-sans mt-2">Select Your Vehicle</h1>
           <div className="bg-white rounded-lg shadow-lg p-4 md:p-6 lg:p-6">
   <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
-    {vehicles
-      .filter(vehicle => {
-        // Convert passengers and luggage to numbers for comparison
-        const passengers = Number(vehicle.passengers);
-        const luggage = Number(vehicle.luggage);
-        return (passengers >= data.persons && luggage >= data.checkedLuggage);
-      })
-      .map((vehicle) => (
-        <div
-          key={vehicle.id}
-          className="relative flex flex-col md:flex-row p-4 border border-gray-300 rounded-lg mb-6 cursor-pointer"
-        >
-         
-          {/* Image and Details Section */}
-          <div className="flex-shrink-0">
-            <img 
-              src={vehicle.image} 
-              alt={vehicle.name} 
-              className="w-32 lg:w-56 lg:h-40 h-24 object-cover rounded-lg" // Adjust image size
-            />
-            <div>
-              <h3 className="text-sm text-gray-600">{vehicle.name}</h3>
-              <h4 className="text-lg font-semibold text-black mt-1">Private Transfer</h4>
+  {vehicles
+  .filter(vehicle => {
+    const passengers = Number(vehicle.passengers);
+    const luggage = Number(vehicle.luggage);
+    return (passengers >= data.persons && luggage >= data.checkedLuggage);
+  })
+  .map((vehicle) => (
+    <div
+      key={vehicle.id}
+      className="relative flex flex-col md:flex-row p-4 border border-gray-300 rounded-lg mb-6 cursor-pointer"
+    >
+      {/* Image and Details Section */}
+      <div className="flex-shrink-0">
+        <img 
+          src={vehicle.image} 
+          alt={vehicle.name} 
+          className="w-32 lg:w-56 lg:h-40 h-24 object-cover rounded-lg"
+        />
+        <div>
+          <h3 className="text-sm text-gray-600">{vehicle.name}</h3>
+          <h4 className="text-lg font-semibold text-black mt-1">Private Transfer</h4>
+        </div>
+      </div>
+
+      <div className="flex-grow flex flex-col justify-between ml-4">
+        {/* Centered Economy and Details */}
+        <div className="flex flex-col mt-4">
+          <h1 className='font-sans text-black text-2xl font-bold'>{vehicle.head}</h1>
+
+          {/* Passengers and Luggage */}
+          <div className="flex items-center mt-3">
+            <div className="flex items-center">
+              <FaUser className="text-custom-gold mr-1 text-xl" />
+              <span className="text-gold-500 text-md md:text-lg font-semibold">Up to {vehicle.passengers} passengers</span>
+            </div>
+            <div className="flex items-center ml-4">
+              <FaSuitcase className="text-custom-gold mx-2 text-xl" />
+              <span className="text-gold-500 text-md md:text-lg font-semibold">Up to {vehicle.luggage} luggage</span>
             </div>
           </div>
 
-          <div className="flex-grow flex flex-col justify-between ml-4"> {/* Added margin-left for spacing */}
-            {/* Centered Economy and Details */}
-            <div className="flex flex-col mt-4"> {/* Economy Section */}
-              <h1 className='font-sans text-black text-2xl font-bold'>{vehicle.head}</h1>
-
-              <div className="flex items-center mt-3"> {/* Passengers and Luggage */}
-                <div className="flex items-center">
-                  <FaUser className="text-custom-gold mr-1 text-xl" />
-                  <span className="text-gold-500 text-md md:text-lg font-semibold">Up to {vehicle.passengers} passengers</span>
-                </div>
-                <div className="flex items-center ml-4"> {/* Margin left to separate icons */}
-                  <FaSuitcase className="text-custom-gold mx-2 text-xl" />
-                  <span className="text-gold-500 text-md md:text-lg font-semibold">Up to {vehicle.luggage} luggage</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Gray Background Features */}
-            <div className="flex flex-row flex-wrap mt-4 gap-4"> 
-              <div className="bg-gray-200 p-2 rounded-md flex items-center">
-                <FaClock className="text-gold-500 mr-2" /> {/* Icon */}
-                <span className="text-black text-md">Free Waiting Time</span>
-              </div>
-              <div className="bg-gray-200 p-2 rounded-md flex items-center">
-                <FaBriefcase className="text-gold-500 mr-2" /> {/* Icon */}
-                <span className="text-black text-md">Door to Door</span>
-              </div>
-              <div className="bg-gray-200 p-2 rounded-md flex items-center">
-                <FaSuitcase className="text-gold-500 mr-2" /> {/* Icon for Porter Service */}
-                <span className="text-black text-md">Porter Service</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Total Price Section */}
-          <div className="flex-shrink-0 text-center mt-4 md:mt-0 md:ml-4"> {/* Margin left for spacing on larger screens */}
-            <p className="text-sm text-gray-600">Total One Price</p>
-            <h2 className="text-3xl font-bold text-black">{vehicle.price}</h2>
-            <div className="flex items-center justify-center mt-2">
-              <FaCheckCircle className="text-custom-gold mr-1" /> {/* Tick icon */}
-              <span className="text-sm text-gray-600">Best Service</span>
-            </div>
-            <div className="bg-black text-white text-md font-bold px-4 py-2 rounded-md mt-3" onClick={() => selectVehicle(vehicle.id)}>
-              Select
-            </div>
+          {/* Luggage Bag Size Card */}
+          <div className=" p-2 mt-2 rounded-lg ">
+            <h4 className="text-gray-800 font-semibold mb-1">Luggage Bag Size</h4>
+            <p className="text-gray-600 text-sm">63cm (height) x 36cm (width) x 21cm (depth)</p>
           </div>
         </div>
-      ))}
+
+        {/* Features Section */}
+        <div className="flex flex-row flex-wrap mt-4 gap-4">
+          <div className="bg-gray-200 p-2 rounded-md flex items-center">
+            <FaClock className="text-gold-500 mr-2" />
+            <span className="text-black text-md">Free Waiting Time</span>
+          </div>
+          <div className="bg-gray-200 p-2 rounded-md flex items-center">
+            <FaBriefcase className="text-gold-500 mr-2" />
+            <span className="text-black text-md">Door to Door</span>
+          </div>
+          <div className="bg-gray-200 p-2 rounded-md flex items-center">
+            <FaSuitcase className="text-gold-500 mr-2" />
+            <span className="text-black text-md">Porter Service</span>
+          </div>
+        </div>
+
+        {/* Free Waiting Time Card */}
+        <div className=" p-2 mt-2 rounded-lg ">
+          <h4 className="text-gray-800 font-semibold mb-1">Free Waiting Time</h4>
+          <p className="text-gray-600 text-sm">60 min for airport pickups, 15 min for other pickups</p>
+        </div>
+      </div>
+
+      {/* Total Price Section */}
+      <div className="flex-shrink-0 text-center mt-4 md:mt-0 md:ml-4">
+        <p className="text-sm text-gray-600">Total One Price</p>
+        <h2 className="text-3xl font-bold text-black">{vehicle.price}</h2>
+        <div className="flex items-center justify-center mt-2">
+          <FaCheckCircle className="text-custom-gold mr-1" />
+          <span className="text-sm text-gray-600">Best Service</span>
+        </div>
+        <div 
+          className="bg-black text-white text-md font-bold px-4 py-2 rounded-md mt-3"
+          onClick={() => selectVehicle(vehicle.id)}
+        >
+          Select
+        </div>
+      </div>
+    </div>
+  ))}
+
   </div>
 </div>
 
