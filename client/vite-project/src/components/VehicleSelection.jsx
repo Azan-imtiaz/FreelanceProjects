@@ -471,7 +471,7 @@ const selectVehicle = (vehicleId) => {
 
   const calculatePrice = () => {
     let totalPrice = 0;
-    if (formData.childSeat) totalPrice += 5;
+    if (formData.childSeat) totalPrice += 10;
     if (formData.meetAndGreet) totalPrice += 10;
     return totalPrice;
   };
@@ -846,7 +846,7 @@ const handleCheckboxChange = (e) => {
                   onClick={() => handleAddOnChange('childSeat')}
                   className={`py-3 font-sans px-4 rounded-md border ${formData.addOns.includes('childSeat') ? 'bg-custom-purple text-white' : 'bg-gray-200 text-gray-700'} focus:outline-none flex-1 sm:flex-none`}
                 >
-                  Child Seat (+£5)
+                  Child Seat (+£10)
                 </button>
                 <button
                   type="button"
