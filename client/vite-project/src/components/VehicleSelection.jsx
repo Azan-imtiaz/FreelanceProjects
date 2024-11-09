@@ -437,7 +437,7 @@ const selectVehicle = (vehicleId) => {
     let calculatedPrice = count;
   
     if (formData.addOns.includes('childSeat')) {
-      calculatedPrice += 5;
+      calculatedPrice += 10;
     }
     if (formData.addOns.includes('meetAndGreet')) {
       calculatedPrice += 10;
