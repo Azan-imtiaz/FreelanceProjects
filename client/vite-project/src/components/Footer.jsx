@@ -67,6 +67,7 @@ function Footer() {
             <h3 className="text-2xl font-bold text-black">Services</h3>
             <ul className="text-gray-700 space-y-2">
               <li>Airport Transfers</li>
+              <li>Seaports Transfers</li>
               <li>Chauffeur Services</li>
               <li>Car Rental</li>
               <li>Corporate Services</li>

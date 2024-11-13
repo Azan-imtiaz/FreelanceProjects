@@ -9,8 +9,9 @@ import Gpay from "../assets/Gpay.png"
 import Apay from "../assets/Apay.png"
 import Paypal from "../assets/paypal.png"
 
-// Replace with your own publishable key
-const stripePromise = loadStripe('pk_test_51PwHSsEG3HGCzHQObRXv9wyFoyemECwDoHjbRbTVZDGr2VU3iUEz7CWWnPxJEfYkoQYGbKbvXe3xM0NhwspRidQ300FpKdo9CS');
+// Add    your own publishable key from stripe here in load Stripe
+
+const stripePromise = loadStripe(''); 
 
 const CardSection = () => {
   return (
@@ -216,53 +217,7 @@ const PaymentForm = ({ totalPrice,finalObject }) => {
   </div>
   
   
-    //   <div className="max-w-lg mx-auto mt-10 p-8 bg-gray-50 rounded-lg shadow-lg"> 
-  //   <h1 className="text-2xl font-semibold mb-6 text-gray-800">Complete Your Payment</h1>
-  //   <form onSubmit={handleSubmit} className="space-y-6">
-  //     <CardSection />
-  //     <div className="text-lg font-medium mb-4">
-  //       <p>Total Amount: <span className="text-blue-600">{totalPrice.toFixed(2)} £</span></p>
-  //     </div>
-  //     <button 
-  //       type="submit" 
-  //       disabled={processing} 
-  //       className={`w-full py-3 px-6 bg-blue-600 text-white rounded-lg shadow-md ${processing ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'}`}
-  //     >
-  //       {processing ? 'Processing...' : 'Pay Now'}
-  //     </button>
-  //     {error && <div className="text-red-500 mt-2 text-sm">{error}</div>}
-  
-  //     {/* Pay with Cash Button */}
-  //     <div className="mt-4 text-center">
-  //       <button
-  //         type="button"
-  //         className="w-full py-3 px-6 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition duration-300"
-  //       >
-  //         Pay with Cash
-  //       </button>
-  //     </div>
-  //   </form>
-  // </div>
 
-  
-  
-    // <div className="max-w-lg mx-auto mt-10 p-8 bg-gray-50 rounded-lg shadow-lg">
-    //   <h1 className="text-2xl font-semibold mb-6 text-gray-800">Complete Your Payment</h1>
-    //   <form onSubmit={handleSubmit} className="space-y-6">
-    //     <CardSection />
-    //     <div className="text-lg font-medium mb-4">
-    //       <p>Total Amount: <span className="text-blue-600">{totalPrice.toFixed(2)} £</span></p>
-    //     </div>
-    //     <button 
-    //       type="submit" 
-    //       disabled={processing} 
-    //       className={`w-full py-3 px-6 bg-blue-600 text-white rounded-lg shadow-md ${processing ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'}`}
-    //     >
-    //       {processing ? 'Processing...' : 'Pay Now'}
-    //     </button>
-    //     {error && <div className="text-red-500 mt-2 text-sm">{error}</div>}
-    //   </form>
-    // </div>
   );
 };
 

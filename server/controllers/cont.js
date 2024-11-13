@@ -490,7 +490,7 @@ async function changePasswordFunc(req, res) {
             // Update the user's password
             user.newpassword = hashedPassword;
             await user.save();
-
+            
             // Send success response
             return res.status(200).send({ st: 200, message: "Password updated successfully" });
         } else {
@@ -508,6 +508,7 @@ async function changePasswordFunc(req, res) {
             secure: process.env.NODE_ENV === 'production',
             maxAge: 0
         });
+        console.log(err)
         res.status(500).send({ st: 500, message: "Invalid token" });
     }
 }
@@ -657,7 +658,7 @@ async function forgetPaswordFunc(req, res) {
         return res.status(200).send({ st: 200, message: "OTP sent to email" });
 
     } catch (err) {
-        console.error(err.message);
+        console.error(err);
         res.status(500).send({ st: 500, message: "Internal server error" });
     }
 };
