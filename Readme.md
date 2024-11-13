@@ -11,7 +11,7 @@ Payment Gateway: Stripe
 VPS Server Connection
 To access the VPS server:
 ssh root@92.113.31.23
-Password: P@ssw0rd!2024
+Password: pa1tkgFoqb14@
 The server is connected to this GitHub repository: FreelanceProjects. link   https://github.com/Azan-imtiaz/FreelanceProjects
     
 🌍 Domain Details
